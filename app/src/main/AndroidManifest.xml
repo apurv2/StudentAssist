@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.apurv.studentassist"
+    android:versionCode="5"
+    android:versionName="1.1.3">
+
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <permission
+        android:name="com.apurv.studentassist.notifications.receiver.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="com.apurv.studentassist.notifications.receiver.permission.C2D_MESSAGE" />
+
+    <application
+        android:name=".accommodation.classes.StudentAssistApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_logo"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme">
+        <receiver
+            android:name="com.google.android.gms.gcm.GcmReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                <category android:name="com.apurv.studentassist.notifications.receiver" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".notifications.receiver.MyGcmListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".notifications.receiver.MyInstanceIDListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.gms.iid.InstanceID" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".notifications.receiver.RegistrationIntentService"
+            android:exported="false" />
+
+        <activity
+            android:name=".accommodation.activities.MainActivity"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/app_id" />
+
+        <activity
+            android:name=".accommodation.activities.FacebookLogin"
+            android:label="@string/app_name" />
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name=".accommodation.activities.HomeScreenActivity"
+            android:label="@string/title_activity_home_screen" />
+        <activity
+            android:name=".airport.activities.AirportActivity"
+            android:label="@string/title_activity_airport"
+            android:parentActivityName=".accommodation.activities.HomeScreenActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".accommodation.activities.HomeScreenActivity" />
+        </activity>
+        <activity
+            android:name=".accommodation.activities.AccommodationActivity"
+            android:label="@string/title_activity_accomodation"
+            android:parentActivityName=".accommodation.activities.HomeScreenActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".accommodation.activities.HomeScreenActivity" />
+        </activity>
+        <activity
+            android:name=".accommodation.activities.AdDetailsActivity"
+            android:label="@string/title_activity_ad_details">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".accommodation.activities.AccommodationActivity" />
+        </activity>
+        <activity
+            android:name=".accommodation.activities.NotificationSettingsActivity"
+            android:parentActivityName=".accommodation.activities.AccommodationActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".accommodation.activities.HomeScreenActivity" />
+        </activity>
+        <activity android:name=".accommodation.activities.UserPostsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".accommodation.activities.AccommodationActivity" />
+        </activity>
+        <activity android:name=".accommodation.activities.PostAccomodationActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".accommodation.activities.AccommodationActivity" />
+        </activity>
+    </application>
+
+</manifest>

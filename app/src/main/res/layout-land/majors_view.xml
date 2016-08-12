@@ -1,0 +1,41 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingRight="10dp"
+    android:paddingLeft="10dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:background="#ffffff"
+     >
+
+    <TextView
+        android:id="@+id/majorCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="false"
+        android:layout_centerInParent="false"
+        android:layout_centerVertical="true"
+        android:drawableLeft="@drawable/graduate_cap"
+        android:text="@string/largeText"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#950000ff" />
+
+    <Button
+        android:id="@+id/addCourse"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="25dip"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/blackbuttonssmall"
+        android:drawablePadding="0dp"
+        android:focusable="false"
+        android:onClick="addCourse"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:text="@string/addCoursesymbol"
+        android:textColor="@color/editTextColourWhite" />
+
+    </RelativeLayout>

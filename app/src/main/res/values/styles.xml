@@ -1,0 +1,26 @@
+<resources>
+
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="ApurvTheme">
+        <!-- Customize your theme here. -->
+    </style>
+
+
+    <style name="ApurvTheme" parent="Theme.AppCompat.Light.NoActionBar">
+
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+
+
+    </style>
+
+    <style name="MyCheckBox" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/buttonColourBlack</item>
+        <item name="colorControlActivated">@color/buttonColourBlack</item>
+    </style>
+
+
+</resources>

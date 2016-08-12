@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="mainTextColor">#ffffff</color>
+    <color name="actionBarColor">#006994</color>
+    <color name="courseDetailsBackground">#90000000</color>
+    <color name="editTextColourBlack">#000000</color>
+    <color name="editTextColourRed">#ff0000</color>
+    <color name="editTextColourGreen">#00ff00</color>
+    <color name="editTextColourBlue">#0000ff</color>
+    <color name="editTextColourWhite">#ffffff</color>
+    <color name="buttonColourGreen">#9500ff00</color>
+    <color name="buttonColourBlue">#950000ff</color>
+    <color name="buttonColourRed">#95ff0000</color>
+    <color name="buttonColourBlack">#95000000</color>
+    <color name="buttonColourWhite">#95ffffff</color>
+    <color name="buttonColourGreenSolid">#00ff00</color>
+    <color name="buttonColourBlueSolid">#0000ff</color>
+    <color name="buttonColourRedSolid">#ff0000</color>
+    <color name="buttonColourBlackSolid">#000000</color>
+    <color name="buttonColourWhiteSolid">#ffffff</color>
+    <color name="courseDetailsBackgroundSolid">#000000</color>
+    <color name="buttonColourOrange">#95ffa500</color>
+    <color name="buttonColourOrangeSolid">#ffa500</color>
+    <color name="buttonColourGrey">#BDBDBD</color>
+    <color name="highlight">#000000</color>
+    <color name="normal">#90000000</color>
+    <color name="colorPrimary">#009688</color>
+    <color name="colorSecondary">#009688</color>
+    <color name="colorPrimaryDark">#00796B</color>
+    <color name="colorPrimaryLight">#D1C4E9</color>
+    <color name="colorAccent">#FF9800</color>
+    <color name="colorHighlight">#0D47A1</color>
+    <color name="rippleColor">#009688</color>
+
+
+
+
+</resources>

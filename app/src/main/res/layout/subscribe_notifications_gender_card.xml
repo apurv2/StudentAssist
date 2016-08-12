@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="10dp"
+    android:background="#fff">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/apartmentName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gender"
+                android:textColor="#000"
+                android:textSize="27sp" />
+        </LinearLayout>
+
+        <RadioGroup
+            android:layout_marginLeft="10dp"
+            android:id="@+id/genderRadioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:id="@+id/maleRadio"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/buttonColourBlack"
+                android:text="Male"
+                android:textColor="@color/buttonColourBlack" />
+
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:id="@+id/femaleRadio"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/buttonColourBlack"
+                android:text="Female"
+                android:textColor="@color/buttonColourBlack" />
+
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/doesntMatterRadio"
+                android:buttonTint="@color/buttonColourBlack"
+                android:text="Doesnt Matter"
+                android:textColor="@color/buttonColourBlack" />
+
+        </RadioGroup>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

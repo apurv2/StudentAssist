@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_alignParentBottom="true"
+    android:layout_gravity="bottom"
+    android:orientation="vertical" >
+
+    <TableRow
+        android:id="@+id/tableRow2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+         >
+
+        <Button
+            android:id="@+id/notifications"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
+            android:background="@color/actionBarColor"
+            android:onClick="notifications"
+            android:padding="1dp"
+            android:text="Notifications"
+            android:textColor="@color/editTextColourWhite" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow1"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom" >
+
+        <Button
+            android:id="@+id/editEmail"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
+            android:background="@color/actionBarColor"
+            android:onClick="editEmail"
+            android:padding="1dp"
+            android:text="@string/editEmail"
+            android:textColor="@color/editTextColourWhite" />
+
+        <Button
+            android:id="@+id/editPhone"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
+            android:background="@color/actionBarColor"
+            android:onClick="editPhone"
+            android:padding="1dp"
+            android:text="@string/editPhone"
+            android:textColor="@color/editTextColourWhite" />
+    </TableRow>
+
+</LinearLayout>

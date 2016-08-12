@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="right"
+    android:background="@color/editTextColourBlack"
+    android:orientation="vertical" >
+    
+    <TableRow
+        android:id="@+id/tableRow4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal" >
+
+        <TextView
+            android:id="@+id/errorLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="@string/editPhone"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/editTextColourWhite" />
+
+    </TableRow>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="@color/editTextColourWhite" />
+
+    <TableRow
+        android:id="@+id/tableRow1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp" >
+
+        <TextView
+            android:id="@+id/majorCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/oldPhone"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/editTextColourWhite" />
+
+        <TextView
+            android:id="@+id/oldPhone"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="10dp"
+            android:text="@string/largeText"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/editTextColourWhite" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp" >
+
+        <TextView
+            android:id="@+id/newPhoneLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/newPhone"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/editTextColourWhite" />
+
+        <EditText
+            android:id="@+id/newPhone"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="New Phone"
+            android:inputType="phone"
+            android:textColor="@color/editTextColourWhite" />
+
+    </TableRow>
+
+</LinearLayout>

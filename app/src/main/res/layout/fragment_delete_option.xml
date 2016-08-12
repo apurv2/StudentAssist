@@ -1,0 +1,29 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/buttonColourWhiteSolid"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/ok_button"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_height"
+        android:background="@drawable/borderlessbutton_bg"
+        android:text="@string/delete_subscription"
+        android:textAllCaps="false"
+        android:textColor="@color/buttonColourBlack" />
+
+    <Button
+        android:id="@+id/dont_delete"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_height"
+        android:background="@drawable/borderlessbutton_bg"
+        android:text="@string/Dont_delete"
+        android:textAllCaps="false"
+        android:textColor="@color/buttonColourBlack" />
+
+</LinearLayout>
+
+

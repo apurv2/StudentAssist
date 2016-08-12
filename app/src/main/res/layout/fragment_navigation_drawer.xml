@@ -1,0 +1,62 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context="com.example.apurv.androidfive.NavigationDrawerFragment">
+
+    <LinearLayout
+        android:id="@+id/DrawerLinerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@drawable/teal2"
+        android:orientation="vertical">
+
+
+        <com.pkmmte.view.CircularImageView
+            android:id="@+id/userPhoto"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            app:shadow="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:textSize="25dp"
+            android:text="Ttile"
+            android:textStyle="bold"
+            android:id="@+id/Title"
+            android:textColor="#FFF" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="16dp"
+            android:textSize="20dp"
+            android:text="SubTitle"
+            android:id="@+id/subTitle"
+            android:textColor="#FFF" />
+
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/drawerList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/DrawerLinerLayout">
+
+    </android.support.v7.widget.RecyclerView>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_below="@id/drawerList"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
+
+
+</RelativeLayout>

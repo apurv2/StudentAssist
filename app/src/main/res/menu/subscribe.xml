@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.apurv.studentassist.accommodation.activities.AccommodationActivity">
+
+    <item
+        android:id="@+id/ic_subscribe"
+        android:icon="@drawable/ic_subscribe"
+        android:title="@string/subscribe"
+        app:showAsAction="always|withText" />
+
+</menu>
