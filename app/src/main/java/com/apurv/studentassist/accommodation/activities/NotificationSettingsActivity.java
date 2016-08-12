@@ -75,7 +75,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
     @Bind(R.id.subscriptionSw)
     Switch mSubscriptionSw;
-
+ 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
