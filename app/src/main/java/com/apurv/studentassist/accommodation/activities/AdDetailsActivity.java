@@ -214,11 +214,11 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
         if (clickedAdd.getVacancies().equals(SAConstants.LEASE_TRANSFER)) {
             gender_NumberOfVacancies.setText(clickedAdd.getVacancies());
 
-        } else if (clickedAdd.getLookingFor().equals(SAConstants.MALE_FEMALE[2])) {
+        } else if (clickedAdd.getGender().equals(SAConstants.MALE_FEMALE[2])) {
             gender_NumberOfVacancies.setText(clickedAdd.getVacancies() + " Roommate(s)");
 
         } else {
-            gender_NumberOfVacancies.setText(clickedAdd.getVacancies() + " " + clickedAdd.getLookingFor() + " Roommate(s)");
+            gender_NumberOfVacancies.setText(clickedAdd.getVacancies() + " " + clickedAdd.getGender() + " Roommate(s)");
         }
 
     }

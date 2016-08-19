@@ -25,24 +25,24 @@ public interface UrlInterface {
     public String getNotificationSettingsUrl(String access_token)
             throws UnsupportedEncodingException;
 
-    public String getDeleteNotificationSettingUrl(int notificationId)
+
+    public String getSubscribeNotificationsUrl()
             throws UnsupportedEncodingException;
 
-    public String getInsertNotificationsUrl()
-            throws UnsupportedEncodingException;
 
-
-    public String createUser(String accessToken,String instanceId);
+    public String createUser(String accessToken, String instanceId);
 
     public String getDeleteAccommodationPostUrl(String addId) throws UnsupportedEncodingException;
 
     public String getAirportUrl() throws UnsupportedEncodingException;
 
-    public String getRecentListCheckerUrl(String json) throws UnsupportedEncodingException;
+    public String getRecentlyViewed() throws UnsupportedEncodingException;
 
     public String getApartmentNamesWithTypeUrl() throws UnsupportedEncodingException;
 
     public String setUserVisitedAdds() throws UnsupportedEncodingException;
+
+    public String unSubscribeNotifications() throws UnsupportedEncodingException;
 
 
 }

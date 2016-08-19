@@ -131,6 +131,8 @@ public class SAConstants {
 
     public static final String FAILURE = "Failure";
 
+    public static final String FAILED_TO_UNSUBSCRIBE = "Failed to Unsubscribe! Pleae try again later!";
+
     public static final String NOTIFICATION_TYPE = "notificationType";
 
     public static final String SEARCH_TYPE = "searchType";

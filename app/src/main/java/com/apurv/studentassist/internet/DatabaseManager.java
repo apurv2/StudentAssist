@@ -45,6 +45,7 @@ public class DatabaseManager {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                networkInterface.onResponseUpdate("Failure");
 
                 Toast.makeText(StudentAssistApplication.getAppContext(), SAConstants.VOLLEY_ERROR, Toast.LENGTH_LONG).show();
 
@@ -57,8 +58,8 @@ public class DatabaseManager {
     }
 
     public void volleyPostRequestWithLoadingDialog(String url, final LoadingDialog dialog, final String body) {
-        L.m("url==" + url);
-        L.m("volley POST request");
+        L.m("POST url==" + url);
+        L.m("POST BODY==" + body);
 
         RequestQueue requestQueue = Network.getNetworkInstnace().getRequestQueue();
 
@@ -88,9 +89,16 @@ public class DatabaseManager {
 
     }
 
+    /**
+     * Volley Post Request without Loading Dialog
+     *
+     * @param url
+     * @param networkInterface
+     * @param body
+     */
     public void volleyPostRequest(String url, final NetworkInterface networkInterface, final String body) {
-        L.m("url==" + url);
-        L.m("volley POST request");
+        L.m("POST url==" + url);
+        L.m("POST BODY==" + body);
 
         RequestQueue requestQueue = Network.getNetworkInstnace().getRequestQueue();
 

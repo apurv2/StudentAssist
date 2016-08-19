@@ -2,7 +2,6 @@ package com.apurv.studentassist.accommodation.activities;
 
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
-import android.app.Application;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -24,7 +23,6 @@ import com.apurv.studentassist.accommodation.Interfaces.AccommodationActivityToF
 import com.apurv.studentassist.accommodation.Interfaces.AccommodationBI;
 import com.apurv.studentassist.accommodation.business.rules.AccommodationBO;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
-import com.apurv.studentassist.accommodation.classes.StudentAssistApplication;
 import com.apurv.studentassist.accommodation.fragments.AccommodationDrawerFragment;
 import com.apurv.studentassist.accommodation.fragments.AdvancedSearchFragment;
 import com.apurv.studentassist.accommodation.fragments.SearchAccomodationFragment;
@@ -34,7 +32,6 @@ import com.apurv.studentassist.util.Alerts;
 import com.apurv.studentassist.util.SAConstants;
 import com.apurv.studentassist.util.interfaces.EmptyInterface;
 import com.apurv.studentassist.util.interfaces.LodingDialogInterface;
-import com.squareup.leakcanary.LeakCanary;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +40,8 @@ import java.util.Map;
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
+
+//import com.squareup.leakcanary.LeakCanary;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class AccommodationActivity extends AppCompatActivity implements
@@ -72,7 +71,7 @@ public class AccommodationActivity extends AppCompatActivity implements
 
         setContentView(R.layout.activity_accomodation);
 
-        LeakCanary.install((Application) StudentAssistApplication.getAppContext());
+      //  LeakCanary.install((Application) StudentAssistApplication.getAppContext());
 
         if (savedInstanceState != null) {
             bundle = savedInstanceState;
@@ -188,7 +187,7 @@ public class AccommodationActivity extends AppCompatActivity implements
 
     class MyViewPagerAdapter extends FragmentStatePagerAdapter {
 
-        int tabImageArray[] = {R.drawable.ic_action_copy, R.drawable.ic_post, R.drawable.ic_action_copy};
+        int tabImageArray[] = {R.drawable.ic_simple_search, R.drawable.ic_advanced_search, R.drawable.ic_recents};
         String[] tabStringArray = SAConstants.pageTitles;
 
 

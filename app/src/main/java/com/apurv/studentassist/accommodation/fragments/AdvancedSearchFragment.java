@@ -155,7 +155,7 @@ public class AdvancedSearchFragment extends Fragment implements
             TelephonyManager telephonyManager = (TelephonyManager) getActivity().getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
             String deviceId = telephonyManager.getDeviceId();
 
-            String url = urlGen.getInsertNotificationsUrl("1", aptNames.getSelectedItem().toString(), sex.getSelectedItem().toString(), user.getUserId(), gcmId, deviceId);
+            String url = urlGen.getSubscribeNotificationsUrl("1", aptNames.getSelectedItem().toString(), sex.getSelectedItem().toString(), user.getUserId(), gcmId, deviceId);
 
             new NotificationBO(loadingDialog, url);
 

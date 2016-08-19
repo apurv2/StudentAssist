@@ -25,9 +25,9 @@
     <color name="buttonColourGrey">#BDBDBD</color>
     <color name="highlight">#000000</color>
     <color name="normal">#90000000</color>
-    <color name="colorPrimary">#009688</color>
-    <color name="colorSecondary">#009688</color>
-    <color name="colorPrimaryDark">#00796B</color>
+    <color name="colorPrimary">#006c5f</color>
+    <color name="colorSecondary">#00695C</color>
+    <color name="colorPrimaryDark">#004D40</color>
     <color name="colorPrimaryLight">#D1C4E9</color>
     <color name="colorAccent">#FF9800</color>
     <color name="colorHighlight">#0D47A1</color>

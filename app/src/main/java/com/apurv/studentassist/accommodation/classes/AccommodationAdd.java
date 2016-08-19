@@ -5,21 +5,21 @@ import android.os.Parcelable;
 
 public class AccommodationAdd implements java.io.Serializable, Parcelable {
 
-    private String firstName, lastName, emailId, phoneNumber, ApartmentName, vacancies,
-            lookingFor, noOfRooms, cost, userId, addId, notes;
+    private String firstName, lastName, emailId, phoneNumber, apartmentName, vacancies,
+            gender, noOfRooms, cost, userId, addId, notes;
 
     private boolean userVisitedSw;
 
     public AccommodationAdd(String firstName, String lastName, String emailId, String phoneNumber,
-                            String apartmentName, String vacancies, String lookingFor, String noOfRooms,
+                            String apartmentName, String vacancies, String gender, String noOfRooms,
                             String cost, String userId, String addId, String notes, boolean userVisitedSw) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailId = emailId;
         this.phoneNumber = phoneNumber;
-        ApartmentName = apartmentName;
+        this.apartmentName = apartmentName;
         this.vacancies = vacancies;
-        this.lookingFor = lookingFor;
+        this.gender = gender;
         this.noOfRooms = noOfRooms;
         this.cost = cost;
         this.userId = userId;
@@ -33,9 +33,9 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
         lastName = in.readString();
         emailId = in.readString();
         phoneNumber = in.readString();
-        ApartmentName = in.readString();
+        apartmentName = in.readString();
         vacancies = in.readString();
-        lookingFor = in.readString();
+        gender = in.readString();
         noOfRooms = in.readString();
         cost = in.readString();
         userId = in.readString();
@@ -125,7 +125,7 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
     }
 
     public void setApartmentName(String apartmentName) {
-        ApartmentName = apartmentName;
+        this.apartmentName = apartmentName;
     }
 
     public void setVacancies(String vacancies) {
@@ -136,8 +136,8 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
         this.noOfRooms = noOfRooms;
     }
 
-    public void setLookingFor(String lookingFor) {
-        this.lookingFor = lookingFor;
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public void setCost(String cost) {
@@ -165,7 +165,7 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
     }
 
     public String getApartmentName() {
-        return ApartmentName;
+        return apartmentName;
     }
 
     public String getVacancies() {
@@ -176,8 +176,8 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
         return noOfRooms;
     }
 
-    public String getLookingFor() {
-        return lookingFor;
+    public String getGender() {
+        return gender;
     }
 
     public String getCost() {
@@ -200,9 +200,9 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
         dest.writeString(lastName);
         dest.writeString(emailId);
         dest.writeString(phoneNumber);
-        dest.writeString(ApartmentName);
+        dest.writeString(apartmentName);
         dest.writeString(vacancies);
-        dest.writeString(lookingFor);
+        dest.writeString(gender);
         dest.writeString(noOfRooms);
         dest.writeString(cost);
         dest.writeString(userId);

@@ -30,11 +30,12 @@ public class UrlGenerator implements UrlInterface {
     public static final String CREATE_USERS = "accommodation/createUser";
     public static final String DELETE_ACCOMMODATION = "accommodation/deleteAccommodationAdd";
     public static final String AIRPORT = "airportService/getAllServices";
-    public static final String RECENT_LIST_CHECKER = "accommodation/recentListChecker";
+    public static final String RECENTLY_VIEWED = "accommodation/getRecentlyViewed";
     public static final String GET_ALL_APARTMENT_NAMES = "accommodation/getAllApartmentNames";
     public static final String GET_APARTMENT_NAMES = "accommodation/getApartmentNames";
     public static final String GET_APARTMENTNAMES_WITH_TYPE = "accommodation/getAllApartmentsWithType";
     public static final String SET_USER_VISITED_ADDS = "accommodation/setUserVisitedAdds";
+    public static final String UNSUBSCRIBE_NOTIFICATIONS = "accommodation/unSubscribeNotifications";
 
 
     private static final Map<String, String> apartmentTypeCodeMap;
@@ -58,16 +59,34 @@ public class UrlGenerator implements UrlInterface {
 
     }
 
+    private String getAccessToken() {
+
+
+        FacebookSdk.sdkInitialize(StudentAssistApplication.getAppContext());
+
+        if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
+            String fbToken = AccessToken.getCurrentAccessToken().getToken();
+            return fbToken;
+        }
+
+        return "";
+
+
+    }
+
 
     @Override
     public String getApartmentNamesUrl(String aptType) {
 
         String url = "";
         if (aptType.equals(SAConstants.ALL)) {
-            url = SAConstants.URL + "/" + GET_ALL_APARTMENT_NAMES;
+            url = SAConstants.URL + "/" + GET_ALL_APARTMENT_NAMES
+                    + "?" + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
         } else {
 
-            url = SAConstants.URL + "/" + GET_APARTMENT_NAMES + "?" + SAConstants.APARTMENT_TYPE + "=" + apartmentTypeCodeMap.get(aptType);
+            url = SAConstants.URL + "/" + GET_APARTMENT_NAMES + "?" +
+                    SAConstants.APARTMENT_TYPE + "=" + apartmentTypeCodeMap.get(aptType)
+                    + "&" + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
         }
 
 
@@ -84,25 +103,18 @@ public class UrlGenerator implements UrlInterface {
 
         queryparam = apartmentTypeCodeMap.get(rightSpinner) == null ? rightSpinner : apartmentTypeCodeMap.get(rightSpinner);
 
-        FacebookSdk.sdkInitialize(StudentAssistApplication.getAppContext());
 
-        if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
+        parameters = SAConstants.LEFT_SPINNER + "=" + leftSpinnerCodeMap.get(leftSpinner) + "&" +
+                SAConstants.RIGHT_SPINNER + "=" + URLEncoder.encode(queryparam, "UTF-8") + "&" + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
 
-            String fbToken = AccessToken.getCurrentAccessToken().getToken();
-            parameters = SAConstants.LEFT_SPINNER + "=" + leftSpinnerCodeMap.get(leftSpinner) + "&" +
-                    SAConstants.RIGHT_SPINNER + "=" + URLEncoder.encode(queryparam, "UTF-8") + "&" + SAConstants.ACCESS_TOKEN + "=" + fbToken;
-
-            url = SAConstants.URL + "/" + GET_ACCOMMODATION_ADDS + "?" + parameters;
+        url = SAConstants.URL + "/" + GET_ACCOMMODATION_ADDS + "?" + parameters;
 
 
-            return url;
-
-        } else {
-            return "";
-        }
+        return url;
 
 
     }
+
 
     @Override
     public String getAdvancedSearchAccommodationAdds(String apartmentName, String gender) throws UnsupportedEncodingException {
@@ -110,7 +122,7 @@ public class UrlGenerator implements UrlInterface {
         String url = "", parameters = "";
 
         parameters = SAConstants.APARTMENT_NAME + "=" + URLEncoder.encode(apartmentName, "UTF-8") + "&"
-                + SAConstants.GENDER + "=" + URLEncoder.encode(gender, "UTF-8");
+                + SAConstants.GENDER + "=" + URLEncoder.encode(gender, "UTF-8") + "&" + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
 
         url = SAConstants.URL + "/" + GET_ADVANCED_SEARCH_ADDS + "?" + parameters;
 
@@ -124,7 +136,7 @@ public class UrlGenerator implements UrlInterface {
         String url = "", parameters = "";
 
 
-        parameters = SAConstants.USER_ID + "=" + URLEncoder.encode(userId, "UTF-8");
+        parameters = SAConstants.USER_ID + "=" + URLEncoder.encode(userId, "UTF-8") + "&" + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
 
         url = SAConstants.URL + "/" + GET_USER_POSTS + "?" + parameters;
         return url;
@@ -139,7 +151,7 @@ public class UrlGenerator implements UrlInterface {
 
 
         parameters = SAConstants.APARTMENT_NAME + "=" + URLEncoder.encode(apartmentName, "UTF-8") + "&" + SAConstants.APARTMENT_TYPE + "=" +
-                URLEncoder.encode(queryparam, "UTF-8");
+                URLEncoder.encode(queryparam, "UTF-8") + "&" + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
 
         url = SAConstants.URL + "/" + ADD_NEW_APT + "?" + parameters;
         return url;
@@ -153,25 +165,18 @@ public class UrlGenerator implements UrlInterface {
 
         String url = "", parameters = "";
 
-        FacebookSdk.sdkInitialize(StudentAssistApplication.getAppContext());
 
-        if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
-            String fbToken = AccessToken.getCurrentAccessToken().getToken();
+        parameters = SAConstants.APARTMENT_NAME + "=" + URLEncoder.encode(apartmentName, "UTF-8") + "&"
+                + SAConstants.NO_OF_ROOMS + "=" + URLEncoder.encode(noOfRooms, "UTF-8") + "&"
+                + SAConstants.VACANCIES + "=" + URLEncoder.encode(noOfVacancies, "UTF-8") + "&"
+                + SAConstants.COST + "=" + URLEncoder.encode(cost, "UTF-8") + "&"
+                + SAConstants.GENDER + "=" + URLEncoder.encode(lookingFor, "UTF-8") + "&"
+                + SAConstants.NOTES + "=" + URLEncoder.encode(notes, "UTF-8") + "&"
+                + SAConstants.USER_ID + "=" + URLEncoder.encode(userId, "UTF-8")
+                + "&" + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
 
+        url = SAConstants.URL + "/" + POST_ACCOMMODATION + "?" + parameters;
 
-            parameters = SAConstants.APARTMENT_NAME + "=" + URLEncoder.encode(apartmentName, "UTF-8") + "&"
-                    + SAConstants.NO_OF_ROOMS + "=" + URLEncoder.encode(noOfRooms, "UTF-8") + "&"
-                    + SAConstants.VACANCIES + "=" + URLEncoder.encode(noOfVacancies, "UTF-8") + "&"
-                    + SAConstants.COST + "=" + URLEncoder.encode(cost, "UTF-8") + "&"
-                    + SAConstants.GENDER + "=" + URLEncoder.encode(lookingFor, "UTF-8") + "&"
-                    + SAConstants.ACCESS_TOKEN + "=" + URLEncoder.encode(fbToken, "UTF-8") + "&"
-                    + SAConstants.NOTES + "=" + URLEncoder.encode(notes, "UTF-8") + "&"
-                    + SAConstants.USER_ID + "=" + URLEncoder.encode(userId, "UTF-8");
-
-
-            url = SAConstants.URL + "/" + POST_ACCOMMODATION + "?" + parameters;
-
-        }
         return url;
     }
 
@@ -179,49 +184,14 @@ public class UrlGenerator implements UrlInterface {
     public String getNotificationSettingsUrl(String access_token) throws UnsupportedEncodingException {
         String url = "", parameters = "";
 
-        parameters = SAConstants.ACCESS_TOKEN + "=" + URLEncoder.encode(access_token, "UTF-8");
+        parameters = SAConstants.ACCESS_TOKEN + "=" + URLEncoder.encode(access_token, "UTF-8")
+                + "&" + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
 
         url = SAConstants.URL + "/" + GET_NOTIFICATION_SETTINGS + "?" + parameters;
 
         return url;
     }
 
-    @Override
-    public String getDeleteNotificationSettingUrl(int notificationId) throws UnsupportedEncodingException {
-        String url = "", parameters = "";
-
-        try {
-
-            parameters = SAConstants.NOTIFICATIONID + "=" + URLEncoder.encode(notificationId + "", "UTF-8");
-            url = SAConstants.URL + "/" + DELETE_NOTIFICATION_REQUESTS + "?" + parameters;
-
-        } catch (Exception e) {
-            ErrorReporting.logReport(e);
-            return "";
-        }
-
-
-        return url;
-    }
-
-    @Override
-    public String getInsertNotificationsUrl() throws UnsupportedEncodingException {
-        String url = "", parameters = "";
-
-        try {
-
-            url = SAConstants.URL + "/" + INSERT_NOTIFICATIONS;
-
-        } catch (Exception e) {
-            ErrorReporting.logReport(e);
-            return "";
-        }
-
-
-        return url;
-
-
-    }
 
     @Override
     public String createUser(String accessToken, String instanceId) {
@@ -230,8 +200,8 @@ public class UrlGenerator implements UrlInterface {
 
         try {
 
-            parameters = SAConstants.ACCESS_TOKEN + "=" + URLEncoder.encode(accessToken + "", "UTF-8") + "&" +
-                    SAConstants.INSTANCE_ID + "=" + URLEncoder.encode(instanceId + "", "UTF-8");
+            parameters = SAConstants.INSTANCE_ID + "=" + URLEncoder.encode(instanceId + "", "UTF-8")
+                    + "&" + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
 
 
             url = SAConstants.URL + "/" + CREATE_USERS + "?" + parameters;
@@ -252,7 +222,8 @@ public class UrlGenerator implements UrlInterface {
 
         String url = "", parameters = "";
 
-        parameters = SAConstants.ADD_ID + "=" + URLEncoder.encode(addId + "", "UTF-8");
+        parameters = SAConstants.ADD_ID + "=" + URLEncoder.encode(addId + "", "UTF-8")
+                + "&" + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
 
         url = SAConstants.URL + "/" + DELETE_ACCOMMODATION + "?" + parameters;
 
@@ -263,35 +234,84 @@ public class UrlGenerator implements UrlInterface {
     @Override
     public String getAirportUrl() throws UnsupportedEncodingException {
 
-        String url = SAConstants.URL + "/" + AIRPORT;
+        String url = SAConstants.URL + "/" + AIRPORT + "?" + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
         return url;
     }
 
     @Override
-    public String getRecentListCheckerUrl(String json) throws UnsupportedEncodingException {
+    public String getRecentlyViewed() throws UnsupportedEncodingException {
 
 
-        String parameters = SAConstants.ADD_ID + "=" + URLEncoder.encode(json, "UTF-8");
+        String url = "";
 
-        String url = SAConstants.URL + "/" + RECENT_LIST_CHECKER + "?" + parameters;
+
+        url = SAConstants.URL + "/" + RECENTLY_VIEWED + "?"
+                + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
 
 
         return url;
+    }
+
+    /**
+     * POST REQUEST, the token is already in the body
+     *
+     * @return
+     * @throws UnsupportedEncodingException
+     */
+    @Override
+    public String getSubscribeNotificationsUrl() throws UnsupportedEncodingException {
+        String url = "", parameters = "";
+
+        try {
+
+            url = SAConstants.URL + "/" + INSERT_NOTIFICATIONS;
+
+        } catch (Exception e) {
+            ErrorReporting.logReport(e);
+            return "";
+        }
+
+
+        return url;
+
+
     }
 
     @Override
     public String getApartmentNamesWithTypeUrl() throws UnsupportedEncodingException {
 
 
-        String url = SAConstants.URL + "/" + GET_APARTMENTNAMES_WITH_TYPE;
+        String url = SAConstants.URL + "/" + GET_APARTMENTNAMES_WITH_TYPE + "?"
+                + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
         return url;
     }
 
+    /**
+     * POST REQUEST, the token is already in the body
+     *
+     * @return
+     * @throws UnsupportedEncodingException
+     */
     @Override
     public String setUserVisitedAdds() throws UnsupportedEncodingException {
 
         String url = SAConstants.URL + "/" + SET_USER_VISITED_ADDS;
         return url;
+    }
+
+    /**
+     * POST REQUEST, the token is already in the body
+     *
+     * @return
+     * @throws UnsupportedEncodingException
+     */
+    @Override
+    public String unSubscribeNotifications() throws UnsupportedEncodingException {
+
+        String url = SAConstants.URL + "/" + UNSUBSCRIBE_NOTIFICATIONS;
+        return url;
+
+
     }
 
 

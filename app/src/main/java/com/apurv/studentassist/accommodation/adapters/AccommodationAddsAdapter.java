@@ -14,11 +14,19 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
+import com.apurv.studentassist.accommodation.classes.NotificationSettings;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
+import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
 import com.apurv.studentassist.airport.interfaces.RecyclerTouchInterface;
+import com.apurv.studentassist.internet.DatabaseManager;
 import com.apurv.studentassist.internet.Network;
+import com.apurv.studentassist.internet.NetworkInterface;
+import com.apurv.studentassist.util.ErrorReporting;
+import com.apurv.studentassist.util.L;
 import com.apurv.studentassist.util.SAConstants;
 import com.apurv.studentassist.util.Utilities;
+import com.facebook.AccessToken;
+import com.google.gson.Gson;
 import com.pkmmte.view.CircularImageView;
 
 import java.util.Collections;
@@ -158,12 +166,58 @@ public class AccommodationAddsAdapter extends RecyclerView.Adapter<Accommodation
 
         @Override
         public void onClick(View v) {
-            if(v!=null) {
+            if (v != null) {
                 Utilities.showView(v.findViewById(R.id.userVisited));
+                setUserVisitedAdds(mAccommodationAdds.get(getAdapterPosition()).getAddId());
                 parentActivity.onTouch(getAdapterPosition(), v.findViewById(R.id.userPhoto3));
             }
         }
     }
 
+    private void setUserVisitedAdds(String addId) {
+        try {
+
+            UrlInterface urlGen = new UrlGenerator();
+            String url = urlGen.setUserVisitedAdds();
+            DatabaseManager dbManager = new DatabaseManager();
+
+            NotificationSettings settings = new NotificationSettings();
+
+            if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
+
+                String fbToken = AccessToken.getCurrentAccessToken().getToken();
+
+                UserVisitedAdds userVisitedAdds = new UserVisitedAdds(addId, fbToken);
+                Gson gson = new Gson();
+                String body = gson.toJson(userVisitedAdds);
+
+                L.m("body==" + body);
+
+                dbManager.volleyPostRequest(url, new NetworkInterface() {
+                    @Override
+                    public void onResponseUpdate(String jsonResponse) {
+
+                        L.m("response from setUserVisitedAdds==" + jsonResponse);
+
+                    }
+                }, body);
+            }
+
+
+        } catch (Exception e) {
+            ErrorReporting.logReport(e);
+        }
+    }
+
+    private class UserVisitedAdds {
+
+        String addId;
+        String access_token;
+
+        public UserVisitedAdds(String addId, String token) {
+            this.addId = addId;
+            this.access_token = token;
+        }
+    }
 
 }

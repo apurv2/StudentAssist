@@ -19,9 +19,9 @@ import com.apurv.studentassist.util.ErrorReporting;
 import com.apurv.studentassist.util.L;
 import com.apurv.studentassist.util.SAConstants;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -32,7 +32,6 @@ import java.util.List;
  * Business Object to fetch and receive business information about Search Accommodation from backend
  */
 public class AccommodationBO {
-    final ArrayList<AccommodationAdd> advertisements = new ArrayList<AccommodationAdd>();
     AccommodationBI accommodationBI;
     PostAccommodationBI postAccommodationBI;
 
@@ -60,47 +59,21 @@ public class AccommodationBO {
 
                     try {
 
-                        JSONArray jArray = new JSONArray(jsonResponse);
-                        for (int i = jArray.length() - 1; i >= 0; i--) {
-                            JSONObject json_data = jArray.getJSONObject(i);
 
-                            String firstName, lastName, emailId, phoneNumber, apartmentName, vacancies, noOfRooms, lookingFor, cost, userId, addId, fbId, notes;
-                            boolean userVisitedSw;
+                        Gson gson = new Gson();
+                        ArrayList<AccommodationAdd> advertisements = gson.fromJson(jsonResponse, new TypeToken<List<AccommodationAdd>>() {
+                        }.getType());
 
-                            firstName = json_data.getString(SAConstants.FIRST_NAME);
-                            lastName = json_data.getString(SAConstants.LAST_NAME);
-                            emailId = json_data.has(SAConstants.EMAIL_ID) ? json_data.getString(SAConstants.EMAIL_ID) : "";
-                            phoneNumber = json_data.has(SAConstants.PHONE_NUMBER) ? json_data.getString(SAConstants.EMAIL_ID) : "";
-                            apartmentName = json_data.getString(SAConstants.APARTMENT_NAME);
-                            vacancies = json_data.getString(SAConstants.VACANCIES);
-                            noOfRooms = json_data.getString(SAConstants.NO_OF_ROOMS);
-                            lookingFor = json_data.getString(SAConstants.GENDER);
-                            cost = json_data.getString(SAConstants.COST);
-                            userId = json_data.getString(SAConstants.USER_ID);
-                            addId = json_data.getString(SAConstants.ADD_ID);
-                            notes = json_data.getString(SAConstants.NOTES);
-                            userVisitedSw=json_data.getBoolean(SAConstants.USER_VISITED_SW);
-
-
-
-                            advertisements.add(new AccommodationAdd(firstName,
-                                    lastName, emailId, phoneNumber, apartmentName,
-                                    vacancies, lookingFor, noOfRooms, cost, userId,
-                                    addId, notes,userVisitedSw));
-
-                        }
                         accommodationBI.onAccommodationAddsReady(advertisements);
 
 
-                    } catch (JSONException e) {
+                    } catch (Exception e) {
 
                         ErrorReporting.logReport(e);
+                        accommodationBI.onAccommodationAddsReady(new ArrayList());
 
-                    } finally {
 
                     }
-
-
                 }
 
 
@@ -128,6 +101,7 @@ public class AccommodationBO {
 
                     } catch (Exception e) {
                         e.printStackTrace();
+                        accommodationBI.onApartmentNamesReady(new ArrayList());
                     }
 
 
@@ -192,12 +166,17 @@ public class AccommodationBO {
 
                 } catch (Exception e) {
                     ErrorReporting.logReport(e);
+                    recentListInterface.recentlyVisitedAdvertisements(new ArrayList());
                 }
 
 
             }
         });
 
+
+    }
+
+    public void unSubscribeNotifications(String url) {
 
     }
 
@@ -234,6 +213,8 @@ public class AccommodationBO {
 
                 } catch (Exception e) {
                     ErrorReporting.logReport(e);
+                    notificationsBI.onApartmentNamesReady(new ArrayList());
+
                 }
 
 
@@ -274,12 +255,15 @@ public class AccommodationBO {
             @Override
             public void onResponseUpdate(String jsonResponse) {
 
-                Gson gson = new Gson();
-                NotificationSettings settings = new NotificationSettings();
-                settings = gson.fromJson(jsonResponse, NotificationSettings.class);
+                try {
+                    Gson gson = new Gson();
+                    NotificationSettings settings = gson.fromJson(jsonResponse, NotificationSettings.class);
 
-                notificationsInterface.onResponse(settings);
-
+                    notificationsInterface.onResponse(settings);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    notificationsInterface.onResponse(new NotificationSettings());
+                }
 
             }
         });

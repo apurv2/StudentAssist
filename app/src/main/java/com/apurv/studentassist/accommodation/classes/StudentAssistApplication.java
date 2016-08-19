@@ -3,7 +3,7 @@ package com.apurv.studentassist.accommodation.classes;
 import android.app.Application;
 import android.content.Context;
 
-import com.squareup.leakcanary.LeakCanary;
+//import com.squareup.leakcanary.LeakCanary;
 
 /**
  * Created by apurv on 6/3/15.
@@ -15,7 +15,7 @@ public class StudentAssistApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        LeakCanary.install(this);
+      //  LeakCanary.install(this);
         mInstance = this;
     }
 

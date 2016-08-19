@@ -32,18 +32,13 @@ import com.apurv.studentassist.accommodation.activities.NotificationSettingsActi
 import com.apurv.studentassist.accommodation.adapters.AccommodationAddsAdapter;
 import com.apurv.studentassist.accommodation.business.rules.AccommodationBO;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
-import com.apurv.studentassist.accommodation.classes.NotificationSettings;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
 import com.apurv.studentassist.airport.interfaces.RecyclerTouchInterface;
-import com.apurv.studentassist.internet.DatabaseManager;
-import com.apurv.studentassist.internet.NetworkInterface;
 import com.apurv.studentassist.util.ErrorReporting;
 import com.apurv.studentassist.util.L;
 import com.apurv.studentassist.util.SAConstants;
 import com.apurv.studentassist.util.Utilities;
-import com.facebook.AccessToken;
-import com.google.gson.Gson;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -74,6 +69,8 @@ public class SearchAccomodationFragment extends Fragment implements
 
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Easy Search");
 
+
+        setRetainInstance(true);
 
 
         //reEntry flag is true if device is rotated or fragment state is restored
@@ -180,7 +177,7 @@ public class SearchAccomodationFragment extends Fragment implements
             String deviceId = telephonyManager.getDeviceId();
 
 
-            String url = urlGen.getInsertNotificationsUrl("0", leftSpinner.getSelectedItem().toString(),
+            String url = urlGen.getSubscribeNotificationsUrl("0", leftSpinner.getSelectedItem().toString(),
                     rightSpinner.getSelectedItem().toString(), user.getUserId(), gcmId, deviceId);
 
             new NotificationBO(loadingDialog, url);
@@ -326,8 +323,12 @@ public class SearchAccomodationFragment extends Fragment implements
                         }
                         String rightSpinnerValue = rightSpinner.getSelectedItem().toString();
                         accommodationAddsUrl = urlGen.getSearchAccommodationAdds(leftSpinner.getSelectedItem().toString(), rightSpinnerValue);
-                        getFromServer(accommodationAddsUrl, leftSpinner.getSelectedItem().toString(), rightSpinnerValue);
+                        if (adds.size() < 1) {
+                            getFromServer(accommodationAddsUrl, leftSpinner.getSelectedItem().toString(), rightSpinnerValue);
+                        } else {
+                            populateRecyclerView(adds);
 
+                        }
                     }
 
                 }
@@ -344,8 +345,13 @@ public class SearchAccomodationFragment extends Fragment implements
                     rightSpinnerSameVal = rightSpinnerValue;
 
                     accommodationAddsUrl = urlGen.getSearchAccommodationAdds(leftSpinner.getSelectedItem().toString(), rightSpinnerValue);
-                    getFromServer(accommodationAddsUrl, leftSpinner.getSelectedItem().toString(), rightSpinnerValue);
+                    if (reEntryFlag) {
+                        populateRecyclerView(adds);
 
+                    } else {
+                        getFromServer(accommodationAddsUrl, leftSpinner.getSelectedItem().toString(), rightSpinnerValue);
+
+                    }
                 }
 
             }
@@ -389,6 +395,8 @@ public class SearchAccomodationFragment extends Fragment implements
                             L.m("populating from remote server");
                             reEntryFlag = false;
 
+                            adds.clear();
+                            adds.addAll(advertisements);
                             populateRecyclerView(advertisements);
 
                         }
@@ -421,10 +429,6 @@ public class SearchAccomodationFragment extends Fragment implements
             mAccommodationAddsAdapter.addAll(advertisements);
 
 
-            adds.clear();
-            adds.addAll(advertisements);
-
-
         } catch (Exception e) {
             ErrorReporting.logReport(e);
         }
@@ -436,9 +440,6 @@ public class SearchAccomodationFragment extends Fragment implements
 
         Intent details = new Intent(getActivity(), AdDetailsActivity.class);
         details.putExtra(SAConstants.ACCOMMODATION_ADD_PARCELABLE, (Parcelable) adds.get(position));
-
-        setUserVisitedAdds(adds.get(position).getAddId());
-
         ActivityOptionsCompat options = ActivityOptionsCompat.
                 makeSceneTransitionAnimation(getActivity(), (View) view, "profile");
 
@@ -448,50 +449,6 @@ public class SearchAccomodationFragment extends Fragment implements
 
     }
 
-
-    private void setUserVisitedAdds(String addId) {
-        try {
-
-
-            String url = urlGen.setUserVisitedAdds();
-            DatabaseManager dbManager = new DatabaseManager();
-
-            NotificationSettings settings = new NotificationSettings();
-
-            if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
-
-                String fbToken = AccessToken.getCurrentAccessToken().getToken();
-
-                UserVisitedAdds userVisitedAdds = new UserVisitedAdds(addId, fbToken);
-                Gson gson = new Gson();
-                String body = gson.toJson(userVisitedAdds);
-
-                L.m("body==" + body);
-
-                dbManager.volleyPostRequest(url, new NetworkInterface() {
-                    @Override
-                    public void onResponseUpdate(String jsonResponse) {
-
-                    }
-                }, body);
-            }
-
-
-        } catch (Exception e) {
-            ErrorReporting.logReport(e);
-        }
-    }
-
-    private class UserVisitedAdds {
-
-        String addId;
-        String access_token;
-
-        public UserVisitedAdds(String addId, String token) {
-            this.addId = addId;
-            this.access_token = token;
-        }
-    }
 
     @Override
     public void onPause() {
@@ -507,6 +464,8 @@ public class SearchAccomodationFragment extends Fragment implements
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
+
     }
 
     @Override
