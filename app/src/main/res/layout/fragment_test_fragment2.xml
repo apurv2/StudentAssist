@@ -1,42 +1,41 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#EEE"
-    android:layout_height="match_parent" tools:context="com.example.apurv.androidfive.fragment1">
+    android:layout_height="match_parent"
+    tools:context="com.example.apurv.androidfive.fragment1">
 
 
-<FrameLayout
-    android:layout_marginTop="5dp"
-    android:layout_marginLeft="5dp"
-    android:layout_height="170dp"
-    android:layout_width="match_parent"
-    android:paddingRight="5dp"
->
-
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_gravity="top|left"
-        android:scaleType="centerCrop"
+    <FrameLayout
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
         android:layout_height="170dp"
-        android:id="@+id/imageViewAppugadu"
-        android:src="@drawable/ic_action_delete" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Apurv Kamalapuri"
-        android:textColor="@color/editTextColourWhite"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textStyle="bold"
-        android:paddingBottom="10dp"
-        android:paddingLeft="10dp"
-        android:layout_gravity="bottom|left"/>
+        android:layout_width="match_parent"
+        android:paddingRight="5dp">
 
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_gravity="top|left"
+            android:scaleType="centerCrop"
+            android:layout_height="170dp"
+            android:id="@+id/imageViewAppugadu"
+            android:src="@drawable/ic_action_delete" />
 
-</FrameLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Apurv Kamalapuri"
+            android:textColor="@color/editTextColourWhite"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textStyle="bold"
+            android:paddingBottom="10dp"
+            android:paddingLeft="10dp"
+            android:layout_gravity="bottom|left" />
 
+
+    </FrameLayout>
 
 
 </RelativeLayout>

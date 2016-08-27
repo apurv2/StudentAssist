@@ -1,9 +1,9 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
         android:id="@+id/recents"
         android:orderInCategory="2"
         android:showAsAction="ifRoom"
-        android:title="Recently Viewed"/>
+        android:title="Recently Viewed" />
 
 </menu>

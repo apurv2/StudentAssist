@@ -39,7 +39,6 @@
                 layout="@layout/app_bar" />
 
 
-
         </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>

@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="?android:attr/activatedBackgroundIndicator" >
+    android:background="?android:attr/activatedBackgroundIndicator">
 
     <TextView
         android:id="@+id/ranklabel"
@@ -44,6 +44,5 @@
         android:layout_below="@+id/country"
         android:layout_toRightOf="@+id/populationlabel" />
 
-   
 
 </RelativeLayout>

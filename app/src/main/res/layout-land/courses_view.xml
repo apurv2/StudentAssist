@@ -5,7 +5,7 @@
     android:background="#95ffcc00"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
-    android:paddingTop="10dp" 
+    android:paddingTop="10dp"
     android:id="@+id/courseDetails">
 
     <TextView

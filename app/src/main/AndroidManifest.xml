@@ -10,6 +10,8 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
 
     <permission
         android:name="com.apurv.studentassist.notifications.receiver.permission.C2D_MESSAGE"
@@ -67,8 +69,7 @@
             android:value="@string/app_id" />
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="c7cf2fd08fc516c8b3362ed164fffd42865d0c58"
-            />
+            android:value="c7cf2fd08fc516c8b3362ed164fffd42865d0c58" />
 
         <activity
             android:name=".accommodation.activities.FacebookLogin"

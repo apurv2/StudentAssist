@@ -5,10 +5,9 @@
     android:orientation="vertical"
     android:background="@drawable/wall_2">
 
-       <include
+    <include
         android:id="@+id/applicationBar"
         layout="@layout/app_bar" />
-
 
 
     <FrameLayout

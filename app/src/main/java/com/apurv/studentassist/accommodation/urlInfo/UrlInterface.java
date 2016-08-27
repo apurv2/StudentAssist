@@ -18,9 +18,7 @@ public interface UrlInterface {
 
     public String getAddNewAptUrl(String apartmentName, String apartmentType) throws UnsupportedEncodingException;
 
-    public String getPostAccUrl(String apartmentName, String noOfRooms, String noOfVacancies,
-                                String lookingFor, String userId, String cost, String notes
-    ) throws UnsupportedEncodingException;
+    public String getPostAccUrl() throws UnsupportedEncodingException;
 
     public String getNotificationSettingsUrl(String access_token)
             throws UnsupportedEncodingException;

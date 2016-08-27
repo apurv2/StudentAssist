@@ -28,7 +28,7 @@ public class TestFragment2 extends Fragment {
 
         mView = inflater.inflate(R.layout.fragment_test_fragment2, container, false);
 
-            new getProfilepicture().execute();
+        new getProfilepicture().execute();
 
         return mView;
 
@@ -39,41 +39,39 @@ public class TestFragment2 extends Fragment {
 
         ImageLoader mImageLoader;
         Network network = Network.getNetworkInstnace();
-        mImageLoader=network.getmImageLoader();
+        mImageLoader = network.getmImageLoader();
 
 
-            mImageLoader.get("https://graph.facebook.com/" + "10205308030011466" + "/picture?type=large", new ImageLoader.ImageListener() {
-                @Override
-                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+        mImageLoader.get("https://graph.facebook.com/" + "10205308030011466" + "/picture?type=large", new ImageLoader.ImageListener() {
+            @Override
+            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
 
 
-                    ImageView mImg;
-                    mImg = (ImageView) mView.findViewById(R.id.imageViewAppugadu);
-                    mImg.setImageBitmap(response.getBitmap());
+                ImageView mImg;
+                mImg = (ImageView) mView.findViewById(R.id.imageViewAppugadu);
+                mImg.setImageBitmap(response.getBitmap());
 
 
-                }
+            }
 
-                @Override
-                public void onErrorResponse(VolleyError error) {
+            @Override
+            public void onErrorResponse(VolleyError error) {
 
-                }
-            });
+            }
+        });
 
     }
 
 
-    private class getProfilepicture extends AsyncTask<Void,Void,Bitmap>
-    {
-
+    private class getProfilepicture extends AsyncTask<Void, Void, Bitmap> {
 
 
         @Override
         protected Bitmap doInBackground(Void... params) {
 
-            URL imageURL=null;
-            Bitmap bitmap=null;
-            String userID="10205308030011466";
+            URL imageURL = null;
+            Bitmap bitmap = null;
+            String userID = "10205308030011466";
 
             try {
 
@@ -82,14 +80,11 @@ public class TestFragment2 extends Fragment {
                 bitmap = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
 
 
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             return bitmap;
-
-
 
 
         }
@@ -100,9 +95,6 @@ public class TestFragment2 extends Fragment {
             ImageView mImg;
             mImg = (ImageView) mView.findViewById(R.id.imageViewAppugadu);
             mImg.setImageBitmap(aVoid);
-
-
-
 
 
         }

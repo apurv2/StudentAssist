@@ -23,7 +23,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:titleTextColor="@color/editTextColourWhite"
                 app:layout_scrollFlags="scroll|enterAlways|snap"
-                app:theme="@style/AppTheme"/>
+                app:theme="@style/AppTheme" />
 
 
             <it.neokree.materialtabs.MaterialTabHost

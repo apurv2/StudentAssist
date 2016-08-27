@@ -61,7 +61,7 @@ public class FBOption extends DialogFragment {
             @Override
             public void onClick(View v) {
                 PostAccomodationActivity parentActivity = (PostAccomodationActivity) getActivity();
-               // parentActivity.postVacancy("");
+                // parentActivity.postVacancy("");
                 getDialog().dismiss();
             }
         });

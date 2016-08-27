@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    
+
     <string name="drawer_opened">open navigation drawer</string>
     <string name="drawer_closed"> close navigation drawer</string>
-   
-    
+
+
     <string name="phone_number">Phone number</string>
     <string name="email_address">Email address</string>
-   
+
 
     <string name="app_name">Student Assist</string>
     <string name="facebook_app_id">297115703779135</string>
@@ -136,7 +136,6 @@
         <item>Off-Campus</item>
         <item>Dorms</item>
     </string-array>
-
 
 
 </resources>

@@ -7,16 +7,16 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".PostAccomodationActivity" >
+    tools:context=".PostAccomodationActivity">
 
     <ScrollView
         android:id="@+id/scrollView1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
 
         <TableLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="match_parent">
 
             <TableRow
                 android:id="@+id/tableRow1"
@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
                 android:background="@color/courseDetailsBackground"
-                android:padding="5dp" >
+                android:padding="5dp">
 
                 <TextView
                     android:id="@+id/courseNo"
@@ -41,7 +41,7 @@
                     android:ems="10"
                     android:inputType="text|textCapCharacters"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/editTextColourWhite" >
+                    android:textColor="@color/editTextColourWhite">
 
                     <requestFocus />
                 </EditText>
@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
                 android:background="@color/courseDetailsBackground"
-                android:padding="5dp" >
+                android:padding="5dp">
 
                 <TextView
                     android:id="@+id/courseName"
@@ -79,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
                 android:background="@color/courseDetailsBackground"
-                android:padding="5dp" >
+                android:padding="5dp">
 
                 <TextView
                     android:id="@+id/courseMajor"
@@ -104,7 +104,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
                 android:background="@color/courseDetailsBackground"
-                android:padding="5dp" >
+                android:padding="5dp">
 
                 <TextView
                     android:id="@+id/courseDesc"
@@ -130,7 +130,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
                 android:background="@color/courseDetailsBackground"
-                android:padding="5dp" >
+                android:padding="5dp">
 
                 <TextView
                     android:id="@+id/courseVideoUrl"
@@ -154,7 +154,7 @@
                 android:id="@+id/tableRow7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="2dp" >
+                android:layout_margin="2dp">
 
                 <Button
                     android:id="@+id/reset"

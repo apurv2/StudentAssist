@@ -11,7 +11,7 @@
         android:paddingTop="8dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
 
         <com.pkmmte.view.CircularImageView
@@ -26,7 +26,7 @@
             android:layout_height="match_parent"
             android:paddingLeft="6dp"
             android:layout_marginLeft="5dp"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/large"
@@ -40,6 +40,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
+
                 <TextView
                     android:id="@+id/medium"
                     android:layout_width="wrap_content"

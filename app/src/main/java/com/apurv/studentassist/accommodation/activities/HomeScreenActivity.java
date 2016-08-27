@@ -78,8 +78,6 @@ public class HomeScreenActivity extends AppCompatActivity {
     }
 
 
-
-
     /**
      * @param email
      * @param phone

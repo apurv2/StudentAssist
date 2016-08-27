@@ -32,6 +32,7 @@
             android:textStyle="bold"
             android:id="@+id/Title"
             android:textColor="#FFF" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -52,11 +53,12 @@
         android:layout_below="@+id/DrawerLinerLayout">
 
     </android.support.v7.widget.RecyclerView>
+
     <View
         android:layout_width="fill_parent"
         android:layout_below="@id/drawerList"
         android:layout_height="1dp"
-        android:background="@android:color/darker_gray"/>
+        android:background="@android:color/darker_gray" />
 
 
 </RelativeLayout>

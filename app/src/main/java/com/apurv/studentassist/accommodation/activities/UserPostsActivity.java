@@ -148,7 +148,7 @@ public class UserPostsActivity extends AppCompatActivity implements RecyclerTouc
     }
 
     @Override
-    public void onTouch(int position,View view) {
+    public void onTouch(int position, View view) {
 
         Intent details = new Intent(getApplicationContext(), AdDetailsActivity.class);
         details.putExtra(SAConstants.ACCOMMODATION_ADD_PARCELABLE, (Parcelable) adds.get(position));

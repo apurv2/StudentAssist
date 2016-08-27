@@ -25,9 +25,8 @@ public class Alerts {
         errors.put(10, "Please enter a valid phone Number!");
         errors.put(11, "Please dont forget to add the country code!");
         errors.put(12, "Please grant call permissions and try again!");
-        errors.put(13,"Gender Cannot be empty");
-        errors.put(14,"Apartment Types cannot be empty");
-
+        errors.put(13, "Gender Cannot be empty");
+        errors.put(14, "Apartment Types cannot be empty");
 
 
     }

@@ -5,8 +5,18 @@ import android.os.Parcelable;
 
 public class AccommodationAdd implements java.io.Serializable, Parcelable {
 
-    private String firstName, lastName, emailId, phoneNumber, apartmentName, vacancies,
-            gender, noOfRooms, cost, userId, addId, notes;
+    private String firstName;
+    private String lastName;
+    private String emailId;
+    private String phoneNumber;
+    private String apartmentName;
+    private String vacancies;
+    private String gender;
+    private String noOfRooms;
+    private String cost;
+    private String userId;
+    private String addId;
+    private String notes;
 
     private boolean userVisitedSw;
 
@@ -26,6 +36,18 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
         this.addId = addId;
         this.notes = notes;
         this.userVisitedSw = userVisitedSw;
+    }
+
+    public AccommodationAdd(String apartmentName, String noOfRooms, String vacancies, String cost,
+                            String gender, String notes) {
+
+
+        this.apartmentName = apartmentName;
+        this.noOfRooms = noOfRooms;
+        this.vacancies = vacancies;
+        this.cost = cost;
+        this.gender = gender;
+        this.notes = notes;
     }
 
     protected AccommodationAdd(Parcel in) {
@@ -72,7 +94,6 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
     public void setNotes(String notes) {
         this.notes = notes;
     }
-
 
 
     @Override

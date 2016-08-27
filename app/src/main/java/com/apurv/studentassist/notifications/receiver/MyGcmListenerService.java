@@ -43,7 +43,7 @@ public class MyGcmListenerService extends GcmListenerService {
 
         if (notificationType != null && notificationType.equals(SAConstants.ACCOMMODATION_ADD)) {
 
-            String firstName, lastName, emailId, phoneNumber, ApartmentName, vacancies, NoOfRooms, lookingFor, cost, userId, addId,  notes;
+            String firstName, lastName, emailId, phoneNumber, ApartmentName, vacancies, NoOfRooms, lookingFor, cost, userId, addId, notes;
             boolean userVisitedSw;
 
             firstName = data.getString(SAConstants.FIRST_NAME);
@@ -63,7 +63,7 @@ public class MyGcmListenerService extends GcmListenerService {
 
             sendNotification(new AccommodationAdd(firstName, lastName, emailId,
                     phoneNumber, ApartmentName, vacancies, NoOfRooms, lookingFor,
-                    cost, userId, addId,  notes, userVisitedSw));
+                    cost, userId, addId, notes, userVisitedSw));
 
         } else {
             L.m(data.getString("message"));

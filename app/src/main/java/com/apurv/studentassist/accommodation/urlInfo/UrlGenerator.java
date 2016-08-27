@@ -158,15 +158,15 @@ public class UrlGenerator implements UrlInterface {
     }
 
     @Override
-    public String getPostAccUrl(String apartmentName, String noOfRooms,
-                                String noOfVacancies, String lookingFor, String userId, String cost, String notes
+    public String getPostAccUrl(/*String apartmentName, String noOfRooms,
+                                String noOfVacancies, String lookingFor, String userId, String cost, String notes*/
     ) throws UnsupportedEncodingException {
 
 
         String url = "", parameters = "";
 
 
-        parameters = SAConstants.APARTMENT_NAME + "=" + URLEncoder.encode(apartmentName, "UTF-8") + "&"
+      /*  parameters = SAConstants.APARTMENT_NAME + "=" + URLEncoder.encode(apartmentName, "UTF-8") + "&"
                 + SAConstants.NO_OF_ROOMS + "=" + URLEncoder.encode(noOfRooms, "UTF-8") + "&"
                 + SAConstants.VACANCIES + "=" + URLEncoder.encode(noOfVacancies, "UTF-8") + "&"
                 + SAConstants.COST + "=" + URLEncoder.encode(cost, "UTF-8") + "&"
@@ -174,8 +174,8 @@ public class UrlGenerator implements UrlInterface {
                 + SAConstants.NOTES + "=" + URLEncoder.encode(notes, "UTF-8") + "&"
                 + SAConstants.USER_ID + "=" + URLEncoder.encode(userId, "UTF-8")
                 + "&" + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
-
-        url = SAConstants.URL + "/" + POST_ACCOMMODATION + "?" + parameters;
+*/
+        url = SAConstants.URL + "/"+ POST_ACCOMMODATION ;//+ "?" + parameters;
 
         return url;
     }

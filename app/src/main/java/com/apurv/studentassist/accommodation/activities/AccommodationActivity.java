@@ -71,7 +71,7 @@ public class AccommodationActivity extends AppCompatActivity implements
 
         setContentView(R.layout.activity_accomodation);
 
-      //  LeakCanary.install((Application) StudentAssistApplication.getAppContext());
+        //  LeakCanary.install((Application) StudentAssistApplication.getAppContext());
 
         if (savedInstanceState != null) {
             bundle = savedInstanceState;

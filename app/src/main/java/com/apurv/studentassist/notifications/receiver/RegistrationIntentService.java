@@ -39,15 +39,14 @@ public class RegistrationIntentService extends IntentService {
 
             String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
                     GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
-            uploadUserDetails(token,instanceID.getId());
+            uploadUserDetails(token, instanceID.getId());
 
         } catch (Exception e) {
         }
     }
 
 
-    private void uploadUserDetails(String registrationId,String instanceId) {
-
+    private void uploadUserDetails(String registrationId, String instanceId) {
 
 
         SharedPreferences sharedPreferences = StudentAssistApplication.getAppContext().getSharedPreferences(SAConstants.sharedPreferenceName, 0);
@@ -56,7 +55,7 @@ public class RegistrationIntentService extends IntentService {
         // setting GCM id to user and storing it into shared preferences
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(SAConstants.GCM_ID, registrationId);
-        editor.putString(SAConstants.INSTANCE_ID,instanceId);
+        editor.putString(SAConstants.INSTANCE_ID, instanceId);
         editor.commit();
 
 
@@ -66,17 +65,15 @@ public class RegistrationIntentService extends IntentService {
         if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
 
             fbToken = AccessToken.getCurrentAccessToken().getToken();
-        }
-        else
-        {
-            Toast.makeText(StudentAssistApplication.getAppContext(),"not registered",Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(StudentAssistApplication.getAppContext(), "not registered", Toast.LENGTH_LONG).show();
         }
 
 
         UrlInterface urlGen = new UrlGenerator();
         try {
 
-            String url = urlGen.createUser(fbToken,instanceId);
+            String url = urlGen.createUser(fbToken, instanceId);
 
             new NotificationBO(new NotificationBI() {
                 @Override

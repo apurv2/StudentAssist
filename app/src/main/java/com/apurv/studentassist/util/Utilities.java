@@ -53,9 +53,10 @@ public class Utilities {
 
     /**
      * Utility method to display an alert dialog with a custom message
-     * @param mLoaderText - custom message to be shown on the alert dialog
+     *
+     * @param mLoaderText      - custom message to be shown on the alert dialog
      * @param mFragmentManager - instance of the FragmentManager sent from the calling activity.
-     * @return  AlertDialog instance after launching it
+     * @return AlertDialog instance after launching it
      */
     public static AlertDialogL showALertDialog(String mLoaderText, FragmentManager mFragmentManager) {
 

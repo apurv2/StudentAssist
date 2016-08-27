@@ -4,11 +4,19 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +33,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -32,6 +41,7 @@ import android.widget.Spinner;
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.Dialogs.AccommodationPosted;
 import com.apurv.studentassist.accommodation.Dialogs.AlertDialogL;
+import com.apurv.studentassist.accommodation.Dialogs.ImageViewDialog;
 import com.apurv.studentassist.accommodation.Dialogs.LoadingDialog;
 import com.apurv.studentassist.accommodation.Dialogs.NewApartmentDialog;
 import com.apurv.studentassist.accommodation.Interfaces.AccommodationBI;
@@ -41,6 +51,7 @@ import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
 import com.apurv.studentassist.accommodation.classes.User;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
+import com.apurv.studentassist.internet.DatabaseManager;
 import com.apurv.studentassist.util.Alerts;
 import com.apurv.studentassist.util.ErrorReporting;
 import com.apurv.studentassist.util.GUIUtils;
@@ -50,25 +61,44 @@ import com.apurv.studentassist.util.SAConstants;
 import com.apurv.studentassist.util.Utilities;
 import com.apurv.studentassist.util.interfaces.LodingDialogInterface;
 import com.apurv.studentassist.util.interfaces.OnRevealAnimationListener;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+import com.google.gson.Gson;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class PostAccomodationActivity extends AppCompatActivity implements
         OnItemSelectedListener, LodingDialogInterface {
 
     @Bind(R.id.activity_contact_rl_container)
     RelativeLayout mRlContainer;
+
     @Bind(R.id.activity_contact_fab)
     FloatingActionButton mFab;
 
     @Bind(R.id.parent)
     LinearLayout mLlContainer;
+
+    @Bind(R.id.placeholder1)
+    ImageView imageHolder1;
+
+    @Bind(R.id.placeholder2)
+    ImageView imageHolder2;
+
+    @Bind(R.id.placeholder3)
+    ImageView imageHolder3;
+    List<ImageView> imageHolders;
 
 
     UrlInterface urlGen = new UrlGenerator();
@@ -80,14 +110,23 @@ public class PostAccomodationActivity extends AppCompatActivity implements
     Boolean reEntryFlag = false;
     ArrayList<String> mApartmentNames;
     String aptTypeSpinnerVal = "";
+    Cloudinary cloudinary;
 
+    List<File> mImagesList = new ArrayList<File>();
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_accomodation);
         pageView = findViewById(R.id.parent);
-
         ButterKnife.bind(this);
+
+        imageHolders = new ArrayList<>(Arrays.asList(imageHolder1, imageHolder2, imageHolder3));
+        cloudinary = new Cloudinary("cloudinary://647816789382186:5R3U1Oc9zwvnPOfI-TtlIeI0u_E@duf1ntj7z");
+
+        if (mImagesList.size() == 0) {
+            Utilities.hideView(findViewById(R.id.selectedPhotosView));
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setupEnterAnimation();
             setupExitAnimation();
@@ -108,6 +147,7 @@ public class PostAccomodationActivity extends AppCompatActivity implements
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
         //set spinners
         setSpinners();
 
@@ -125,6 +165,140 @@ public class PostAccomodationActivity extends AppCompatActivity implements
                 }
             }
         });
+
+    }
+
+    @OnClick(R.id.placeholder1)
+    public void placeholder1(View view) {
+
+        openEnlargedImageDialog(view);
+    }
+
+    @OnClick(R.id.placeholder2)
+    public void placeholder2(View view) {
+
+        openEnlargedImageDialog(view);
+    }
+
+    @OnClick(R.id.placeholder3)
+    public void placeholder3(View view) {
+        openEnlargedImageDialog(view);
+
+    }
+
+
+    @OnClick(R.id.gallery)
+    public void gallery(View view) {
+
+        if (mImagesList.size() < 3) {
+
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
+        } else {
+            Utilities.showALertDialog("You can load maximum of 3 mImagesList", getSupportFragmentManager());
+        }
+    }
+
+    private void openEnlargedImageDialog(View mView) {
+
+        try {
+
+
+            ImageView mImageView = (ImageView) mView;
+
+            Bundle extras = new Bundle();
+            extras.putParcelable(SAConstants.PROFILE_PIC, ((BitmapDrawable) mImageView.getDrawable()).getBitmap());
+
+            DialogFragment enlargedImageFragment = new ImageViewDialog();
+            enlargedImageFragment.setArguments(extras);
+            enlargedImageFragment.show(getSupportFragmentManager(), "");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                Uri uri = data.getData();
+                String filePath = "";
+                String wholeID = DocumentsContract.getDocumentId(uri);
+
+                // Split at colon, use second item in the array
+                String id = wholeID.split(":")[1];
+
+                String[] column = {MediaStore.Images.Media.DATA};
+
+                // where id is equal to
+                String sel = MediaStore.Images.Media._ID + "=?";
+
+                Cursor cursor = getApplicationContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        column, sel, new String[]{id}, null);
+
+                int columnIndex = cursor.getColumnIndex(column[0]);
+
+                if (cursor.moveToFirst()) {
+                    filePath = cursor.getString(columnIndex);
+                }
+                cursor.close();
+
+                L.m(filePath);
+                File file = new File(filePath);
+
+                if (file.exists()) {
+
+                    if (mImagesList.size() < 3) {
+                        Utilities.showView(findViewById(R.id.selectedPhotosView));
+                        mImagesList.add(file);
+                        Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                        ImageView mImage = imageHolders.get(mImagesList.size() - 1);
+                        mImage.setImageBitmap(myBitmap);
+
+                    }
+
+                }
+
+
+                //   startUpload(filePath);
+
+            }
+        }
+    }
+
+    private void startUpload(String filePath) {
+
+        AsyncTask<String, Void, String> task = new AsyncTask<String, Void, String>() {
+            protected String doInBackground(String... paths) {
+                Map cloudinaryResult;
+
+
+                try {
+                    File file = new File(paths[0]);
+                    cloudinaryResult = cloudinary.uploader().
+                            upload(file, ObjectUtils.emptyMap());
+
+                } catch (RuntimeException e) {
+                    L.m(e + "Error uploading file");
+                    return "Error uploading file: " + e.toString();
+                } catch (IOException e) {
+                    L.m(e + "Error uploading file");
+                    return "Error uploading file: " + e.toString();
+                }
+                return "";
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+            }
+        };
+        task.execute(filePath);
 
     }
 
@@ -246,14 +420,18 @@ public class PostAccomodationActivity extends AppCompatActivity implements
                     .findViewById(R.id.costOfLivingPerMonth);
             String cost = Field.getText().toString();
 
-            EditText notes = (EditText) pageView.findViewById(R.id.notesText);
-            String mNotes = notes.getText().toString();
+            EditText mNotes = (EditText) pageView.findViewById(R.id.notesText);
+            String notes = mNotes.getText().toString();
+
+            AccommodationAdd mAccommodationAdd = new AccommodationAdd(apartmentName, noOfRooms, noOfVacancies,
+                    cost, lookingFor, notes);
+
+            Gson gson = new Gson();
+            String postAccommodationJson = gson.toJson(mAccommodationAdd);
 
 
-            String url = urlGen.getPostAccUrl(apartmentName, noOfRooms, noOfVacancies, lookingFor, user.getUserId(), cost, mNotes);
-
-
-            new AccommodationBO(url, loadingDialog);
+            DatabaseManager manager = new DatabaseManager();
+            manager.volleyPostRequestWithLoadingDialog(urlGen.getPostAccUrl(), loadingDialog, postAccommodationJson);
 
         } catch (Exception e) {
             ErrorReporting.logReport(e);

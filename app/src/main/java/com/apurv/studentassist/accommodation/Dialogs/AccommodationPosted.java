@@ -26,7 +26,6 @@ public class AccommodationPosted extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
 
-
         View pageView = inflater.inflate(R.layout.dialog_alert, null);
         builder.setView(pageView);
 

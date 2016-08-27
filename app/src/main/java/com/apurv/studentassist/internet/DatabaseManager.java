@@ -1,5 +1,6 @@
 package com.apurv.studentassist.internet;
 
+import android.support.v4.util.ArrayMap;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -13,8 +14,11 @@ import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
 import com.apurv.studentassist.accommodation.classes.StudentAssistApplication;
 import com.apurv.studentassist.util.L;
 import com.apurv.studentassist.util.SAConstants;
+import com.facebook.AccessToken;
+import com.facebook.FacebookSdk;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by apurv on 6/7/15.
@@ -62,6 +66,14 @@ public class DatabaseManager {
         L.m("POST BODY==" + body);
 
         RequestQueue requestQueue = Network.getNetworkInstnace().getRequestQueue();
+        Map<String, String> mHeaders = new ArrayMap<String, String>();
+
+        FacebookSdk.sdkInitialize(StudentAssistApplication.getAppContext());
+
+        if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
+            String fbToken = AccessToken.getCurrentAccessToken().getToken();
+            mHeaders.put(SAConstants.ACCESS_TOKEN, fbToken);
+        }
 
 
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
@@ -78,6 +90,10 @@ public class DatabaseManager {
                 Toast.makeText(StudentAssistApplication.getAppContext(), SAConstants.VOLLEY_ERROR, Toast.LENGTH_LONG).show();
             }
         }) {
+            public Map<String, String> getHeaders() {
+                return mHeaders;
+            }
+
             @Override
             public byte[] getBody() throws AuthFailureError {
                 return body.getBytes();
@@ -101,6 +117,14 @@ public class DatabaseManager {
         L.m("POST BODY==" + body);
 
         RequestQueue requestQueue = Network.getNetworkInstnace().getRequestQueue();
+        Map<String, String> mHeaders = new ArrayMap<String, String>();
+
+        FacebookSdk.sdkInitialize(StudentAssistApplication.getAppContext());
+
+        if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
+            String fbToken = AccessToken.getCurrentAccessToken().getToken();
+            mHeaders.put(SAConstants.ACCESS_TOKEN, fbToken);
+        }
 
 
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
@@ -116,6 +140,10 @@ public class DatabaseManager {
                 Toast.makeText(StudentAssistApplication.getAppContext(), SAConstants.VOLLEY_ERROR, Toast.LENGTH_LONG).show();
             }
         }) {
+            public Map<String, String> getHeaders() {
+                return mHeaders;
+            }
+
             @Override
             public byte[] getBody() throws AuthFailureError {
                 return body.getBytes();

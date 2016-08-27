@@ -30,6 +30,7 @@
                 card_view:cardCornerRadius="6dp"
                 card_view:cardElevation="10dp"
                 card_view:cardUseCompatPadding="true">
+
                 <include layout="@layout/subscribe_notifications_apt_types_card" />
 
 
@@ -68,7 +69,6 @@
 
         </LinearLayout>
     </ScrollView>
-
 
 
 </LinearLayout>

@@ -1,6 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent">
 
     <TextView
         android:id="@+id/editText"
@@ -10,8 +10,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="188dp"
         android:text="This functionality is coming soon"
-        
-      >
+
+        >
 
         <requestFocus />
     </TextView>

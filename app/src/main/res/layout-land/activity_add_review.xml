@@ -7,7 +7,7 @@
     android:layout_margin="5dp"
     android:background="@color/editTextColourBlack"
     android:orientation="vertical"
-    android:padding="5dp" >
+    android:padding="5dp">
 
     <TableRow
         android:id="@+id/tableRow1"
@@ -16,8 +16,8 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
         android:paddingLeft="5dp"
-        android:paddingRight="5dp" 
-        android:gravity="center_horizontal" >
+        android:paddingRight="5dp"
+        android:gravity="center_horizontal">
 
         <TextView
             android:id="@+id/majorCode"
@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:gravity="center_horizontal" >
+        android:gravity="center_horizontal">
 
         <TextView
             android:id="@+id/TextView01"
@@ -74,7 +74,7 @@
         android:layout_marginTop="10dp"
         android:gravity="center_horizontal"
         android:paddingLeft="5dp"
-        android:paddingRight="5dp" >
+        android:paddingRight="5dp">
 
         <TextView
             android:id="@+id/courseStructure"
@@ -90,7 +90,7 @@
         android:id="@+id/tableRow6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal" >
+        android:gravity="center_horizontal">
 
         <TextView
             android:id="@+id/TextView03"
@@ -124,8 +124,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp" 
-        android:gravity="center_horizontal" >
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal">
 
         <TextView
             android:id="@+id/jobDescription"
@@ -142,7 +142,7 @@
         android:id="@+id/tableRow7"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal" >
+        android:gravity="center_horizontal">
 
         <TextView
             android:id="@+id/TextView05"

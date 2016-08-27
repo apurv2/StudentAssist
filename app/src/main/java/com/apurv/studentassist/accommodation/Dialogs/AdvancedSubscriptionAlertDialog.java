@@ -79,8 +79,6 @@ public class AdvancedSubscriptionAlertDialog extends DialogFragment {
     }
 
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (getDialog() != null) {

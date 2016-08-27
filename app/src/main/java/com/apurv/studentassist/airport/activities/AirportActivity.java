@@ -105,7 +105,7 @@ public class AirportActivity extends AppCompatActivity implements RecyclerTouchI
     }
 
     @Override
-    public void onTouch(int position,View view) {
+    public void onTouch(int position, View view) {
 
         AirportService service = services.get(position);
 

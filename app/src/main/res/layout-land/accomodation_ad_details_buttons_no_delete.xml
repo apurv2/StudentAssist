@@ -4,13 +4,13 @@
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
     android:gravity="bottom"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <TableRow
         android:id="@+id/tableRow2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="bottom" >
+        android:gravity="bottom">
 
         <ImageView
             android:id="@+id/imageView1"

@@ -5,8 +5,7 @@ package com.apurv.studentassist.util;
  */
 public class ErrorReporting {
 
-    public static void logReport(Exception e)
-    {
+    public static void logReport(Exception e) {
         e.printStackTrace();
 
         //add your server calls here

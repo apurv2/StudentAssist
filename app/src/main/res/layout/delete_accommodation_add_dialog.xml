@@ -9,6 +9,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_marginTop="20dp">
 
         <TextView
@@ -36,9 +38,9 @@
         <Button
             android:id="@+id/no"
             style="?android:attr/borderlessButtonStyle"
-            android:background="@drawable/borderlessbutton_bg"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/button_height"
+            android:background="@drawable/borderlessbutton_bg"
             android:text="@string/no"
             android:textAllCaps="false"
             android:textColor="@color/buttonColourBlack" />
@@ -47,8 +49,8 @@
             android:id="@+id/yes"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
-            android:background="@drawable/borderlessbutton_bg"
             android:layout_height="@dimen/button_height"
+            android:background="@drawable/borderlessbutton_bg"
             android:text="@string/yes"
             android:textAllCaps="false"
             android:textColor="@color/buttonColourBlack" />

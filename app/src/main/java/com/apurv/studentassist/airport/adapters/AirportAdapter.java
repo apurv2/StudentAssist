@@ -107,7 +107,7 @@ public class AirportAdapter extends RecyclerView.Adapter<AirportAdapter.MyViewHo
         public void onClick(View v) {
 
             int position = getAdapterPosition();
-            parentActivity.onTouch(position,v);
+            parentActivity.onTouch(position, v);
 
         }
     }

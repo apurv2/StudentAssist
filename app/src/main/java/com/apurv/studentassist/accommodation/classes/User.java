@@ -7,6 +7,7 @@ public class User implements java.io.Serializable {
     private String email;
     private String phoneNo;
     private String userId;
+
     @Override
     public String toString() {
         return "User{" +

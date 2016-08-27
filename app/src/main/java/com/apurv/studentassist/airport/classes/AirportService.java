@@ -6,7 +6,7 @@ import android.os.Parcelable;
 /**
  * Created by akamalapuri on 11/15/2015.
  */
-public class AirportService implements Parcelable{
+public class AirportService implements Parcelable {
 
     private String serviceName;
     private String description;

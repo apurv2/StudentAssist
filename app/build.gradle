@@ -13,6 +13,7 @@ buildscript {
     }
 }
 
+
 apply plugin: 'io.fabric'
 
 repositories {
@@ -26,6 +27,7 @@ android {
         applicationId "com.apurv.studentassist"
         minSdkVersion 16
         targetSdkVersion 23
+        multiDexEnabled true
 
     }
 
@@ -71,6 +73,8 @@ dependencies {
         compile 'com.facebook.android:facebook-android-sdk:4.14.0'
         compile 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
         compile 'com.jakewharton:butterknife:7.0.1'
+        compile 'com.cloudinary:cloudinary-android:1.1.2'
+
 
         compile group: 'com.squareup.leakcanary', name: 'leakcanary-android', version: '1.3.1'
 

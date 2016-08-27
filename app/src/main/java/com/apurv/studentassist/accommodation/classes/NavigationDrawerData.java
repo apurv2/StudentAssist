@@ -21,8 +21,7 @@ public class NavigationDrawerData {
         this.iconId = id;
     }
 
-    public int getIconId()
-    {
+    public int getIconId() {
         return iconId;
     }
 

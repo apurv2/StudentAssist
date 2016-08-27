@@ -22,8 +22,6 @@ public class TestFragment1 extends Fragment {
         return mView;
 
 
-
-
     }
 
 }

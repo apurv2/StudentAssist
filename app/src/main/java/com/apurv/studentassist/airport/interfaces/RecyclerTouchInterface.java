@@ -7,5 +7,5 @@ import android.view.View;
  */
 public interface RecyclerTouchInterface {
 
-    public void onTouch(int position,View view);
+    public void onTouch(int position, View view);
 }

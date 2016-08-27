@@ -5,8 +5,7 @@
     android:paddingLeft="10dp"
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
-    android:background="#ffffff"
-     >
+    android:background="#ffffff">
 
     <TextView
         android:id="@+id/majorCode"
@@ -38,4 +37,4 @@
         android:text="@string/addCoursesymbol"
         android:textColor="@color/editTextColourWhite" />
 
-    </RelativeLayout>
+</RelativeLayout>

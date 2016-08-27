@@ -43,9 +43,6 @@ import com.apurv.studentassist.util.SAConstants;
 import com.apurv.studentassist.util.Utilities;
 import com.apurv.studentassist.util.interfaces.LodingDialogInterface;
 
-import java.util.ArrayList;
-import java.util.List;
-
 //Using Serialization because parcel cannot be stored into shared Preferences
 
 public class AdDetailsActivity extends AppCompatActivity implements LodingDialogInterface {
@@ -145,48 +142,6 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
         });
     }
 
-    @Deprecated
-    private void updateRecentlyViewed() {
-
-        sharedPreferences = getSharedPreferences(SAConstants.sharedPreferenceName, 0);
-        editor = sharedPreferences.edit();
-
-        if (sharedPreferences.getString(SAConstants.RECENTS, "").equals("")) {
-
-            List<AccommodationAdd> recentsList = new ArrayList<AccommodationAdd>();
-            recentsList.add(clickedAdd);
-
-            editor.putString(SAConstants.RECENTS, Base64.encodeToString(ObjectSerializer.serialize(recentsList), Base64.DEFAULT));
-
-        } else {
-
-            byte[] recentListBytes = Base64.decode(sharedPreferences.getString(SAConstants.RECENTS, ""), Base64.DEFAULT);
-            List<AccommodationAdd> recentsList = (List<AccommodationAdd>) ObjectSerializer.deserialize(recentListBytes);
-
-
-            if (recentsList.contains(clickedAdd)) {
-
-                recentsList.remove(clickedAdd);
-                recentsList.add(0, clickedAdd);
-
-
-            } else {
-                recentsList.add(0, clickedAdd);
-
-                if (recentsList.size() > 10) {
-                    recentsList.remove(10);
-                }
-
-
-            }
-
-
-            editor.putString(SAConstants.RECENTS, Base64.encodeToString(ObjectSerializer.serialize(recentsList), Base64.DEFAULT));
-        }
-        editor.commit();
-
-
-    }
 
 
     private void populateAccommodationDetails() {

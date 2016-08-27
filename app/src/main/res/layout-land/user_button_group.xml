@@ -4,13 +4,12 @@
     android:layout_height="match_parent"
     android:layout_alignParentBottom="true"
     android:layout_gravity="bottom"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <TableRow
         android:id="@+id/tableRow2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-         >
+        android:layout_height="wrap_content">
 
         <Button
             android:id="@+id/notifications"
@@ -29,7 +28,7 @@
         android:id="@+id/tableRow1"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="bottom" >
+        android:layout_gravity="bottom">
 
         <Button
             android:id="@+id/editEmail"

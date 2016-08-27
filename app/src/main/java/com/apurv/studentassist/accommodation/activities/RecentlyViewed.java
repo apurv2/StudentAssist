@@ -83,8 +83,6 @@ public class RecentlyViewed extends Fragment implements RecyclerTouchInterface {
             public void onAccommodationAddsReady(ArrayList<AccommodationAdd> advertisements) {
 
 
-
-
                 L.m("populating from remote server");
                 adds.clear();
                 adds.addAll(advertisements);

@@ -36,9 +36,9 @@ public class SAConstants {
 
     public static final String APARTMENT_NAME = "apartmentName";
 
-    public static final String URL = "http://studentassist.elasticbeanstalk.com/rest";
+  //  public static final String URL = "http://studentassist.elasticbeanstalk.com/rest";
 
-    // public static final String URL="http://uslmaakamalapu1:8080/StudentAssistWebapp/rest";
+     public static final String URL="http://10.0.2.2:8080/StudentAssistWebapp/rest";
 
 
     public static final String pageTitles[] = {"Easy Search", "Advanced Search", "Recently Viewed"};
@@ -238,4 +238,6 @@ public class SAConstants {
     public static final String NOTIFICATION_SETTINGS = "notificationSettings";
 
     public static final String INSTANCE_ID = "instanceId";
+
+
 }

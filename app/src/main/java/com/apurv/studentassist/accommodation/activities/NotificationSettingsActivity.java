@@ -54,7 +54,6 @@ import java.util.Set;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-//import com.squareup.leakcanary.LeakCanary;
 
 public class NotificationSettingsActivity extends AppCompatActivity implements LodingDialogInterface {
 
@@ -171,7 +170,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
                             @Override
                             public void onResponseUpdate(String jsonResponse) {
 
-                                L.m("json Response=="+jsonResponse);
+                                L.m("json Response==" + jsonResponse);
 
                                 if (SAConstants.SUCCESS.equals(jsonResponse)) {
                                     Utilities.hideView(actionButton);
@@ -645,7 +644,6 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
             for (int i = 0; i < mGenderRadioGroup.getChildCount(); i++) {
                 (mGenderRadioGroup.getChildAt(i)).setEnabled(false);
             }
-
 
 
         } else {

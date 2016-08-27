@@ -5,7 +5,7 @@
     android:paddingBottom="10dp"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
-    android:paddingTop="10dp" >
+    android:paddingTop="10dp">
 
     <TextView
         android:id="@+id/apartmentName"
@@ -26,7 +26,6 @@
         android:text="text"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/buttonColourWhiteSolid" />
-
 
 
 </RelativeLayout>

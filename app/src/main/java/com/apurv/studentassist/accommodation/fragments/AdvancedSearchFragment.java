@@ -64,7 +64,7 @@ public class AdvancedSearchFragment extends Fragment implements
         Utilities.hideView(pageView, R.id.loader);
 
 
-       // ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Advanced Search");
+        // ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Advanced Search");
 
 
         // Initialize and set Spinners
@@ -369,7 +369,7 @@ public class AdvancedSearchFragment extends Fragment implements
     }
 
     @Override
-    public void onTouch(int position,View view) {
+    public void onTouch(int position, View view) {
         Intent details = new Intent(getActivity(), AdDetailsActivity.class);
         details.putExtra(SAConstants.ACCOMMODATION_ADD_PARCELABLE, (Parcelable) adds.get(position));
         details.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
