@@ -43,6 +43,13 @@ import com.apurv.studentassist.util.SAConstants;
 import com.apurv.studentassist.util.Utilities;
 import com.apurv.studentassist.util.interfaces.LodingDialogInterface;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 //Using Serialization because parcel cannot be stored into shared Preferences
 
 public class AdDetailsActivity extends AppCompatActivity implements LodingDialogInterface {
@@ -59,6 +66,16 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
     Bitmap profilePic;
     final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 123;
 
+    @Bind(R.id.adDetails_placeholder1)
+    ImageView imageHolder1;
+
+    @Bind(R.id.adDetails_placeholder2)
+    ImageView imageHolder2;
+
+    @Bind(R.id.adDetails_placeholder3)
+    ImageView imageHolder3;
+    List<ImageView> imageHolders;
+
 
     AccommodationAdd clickedAdd;
 
@@ -67,6 +84,9 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ad_details);
+        ButterKnife.bind(this);
+
+        imageHolders = new ArrayList<>(Arrays.asList(imageHolder1, imageHolder2, imageHolder3));
 
 
         mCoordinator = (CoordinatorLayout) findViewById(R.id.root_coordinator);
@@ -83,6 +103,7 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
         clickedAdd = intent.getExtras().getParcelable(SAConstants.ACCOMMODATION_ADD_PARCELABLE);
         profilePic = intent.getExtras().getParcelable(SAConstants.PROFILE_PIC);
 
+        loadAccommodationPictures(clickedAdd);
 
         populateAccommodationDetails();
         // updateRecentlyViewed();
@@ -91,7 +112,7 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                AdDetailsActivity.super.onBackPressed();
             }
         });
 
@@ -142,7 +163,47 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
         });
     }
 
+    private void loadAccommodationPictures(AccommodationAdd clickedAdd) {
 
+        int counter = 0;
+        if (clickedAdd.getAddPhotoIds().size() > 0) {
+
+            for (String url : clickedAdd.getAddPhotoIds()) {
+                downloadImages(url, imageHolders.get(counter));
+                counter++;
+            }
+
+            for (; counter < 3; counter++) {
+                Utilities.invisibleView(imageHolders.get(counter));
+            }
+
+        }
+
+    }
+
+    private void downloadImages(String url, ImageView mImageView) {
+
+
+        ImageLoader mImageLoader = Network.getNetworkInstnace().getmImageLoader();
+        mImageLoader.get(url, new ImageLoader.ImageListener() {
+            @Override
+            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+
+
+                Bitmap photo = response.getBitmap();
+                if (photo != null) {
+                    mImageView.setImageBitmap(photo);
+                }
+            }
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+
+    }
 
     private void populateAccommodationDetails() {
 
@@ -363,8 +424,5 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
         Intent intent = new Intent(this, AccommodationActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
-
-        finish();
     }
 }

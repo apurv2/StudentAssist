@@ -33,16 +33,13 @@ public class SAConstants {
 
     public static final String GENDER_SPINNER_INFORMATION = "Gender";
 
-
     public static final String APARTMENT_NAME = "apartmentName";
 
-  //  public static final String URL = "http://studentassist.elasticbeanstalk.com/rest";
+    public static final String URL = "http://studentassist.mppzteuums.us-east-1.elasticbeanstalk.com/rest";
 
-     public static final String URL="http://10.0.2.2:8080/StudentAssistWebapp/rest";
-
+   //  public static final String URL="http://10.0.2.2:8080/StudentAssistWebapp/rest";
 
     public static final String pageTitles[] = {"Easy Search", "Advanced Search", "Recently Viewed"};
-
 
     public static final String ACCOMMODATION_ADDS = "AccommodationAdds";
 
@@ -172,6 +169,10 @@ public class SAConstants {
     public static final String REQUESTING_SUBSCTIPTION = "Requesting Subscription";
 
     public static final String POSTING_REQUEST = "Posting Request";
+
+    public static final String UPLOADING_IMAGES = "Uploading Images..";
+
+    public static final String POSTING_ACCOMMODAION = "Posting your Accommodation";
 
     public static final String ERROR = "error";
 

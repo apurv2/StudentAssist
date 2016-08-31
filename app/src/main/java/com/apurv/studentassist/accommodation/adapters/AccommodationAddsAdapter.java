@@ -77,7 +77,7 @@ public class AccommodationAddsAdapter extends RecyclerView.Adapter<Accommodation
         mAccommodationAddRow.noOfRooms.setText(mAccommodationAdd.getNoOfRooms());
         mAccommodationAddRow.costOfLiving.setText("$" + mAccommodationAdd.getCost());
 
-        if (!mAccommodationAdd.getUserVisitedSw()) {
+        if (!mAccommodationAdd.getUserVisitedSw() && mAccommodationAddRow.userVisited != null) {
             Utilities.hideView(mAccommodationAddRow.userVisited);
         }
 

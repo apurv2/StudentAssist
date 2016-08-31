@@ -19,6 +19,8 @@ import com.apurv.studentassist.util.L;
 import com.apurv.studentassist.util.SAConstants;
 import com.google.android.gms.gcm.GcmListenerService;
 
+import java.util.ArrayList;
+
 /**
  * Created by akamalapuri on 10/30/2015.
  */
@@ -63,7 +65,7 @@ public class MyGcmListenerService extends GcmListenerService {
 
             sendNotification(new AccommodationAdd(firstName, lastName, emailId,
                     phoneNumber, ApartmentName, vacancies, NoOfRooms, lookingFor,
-                    cost, userId, addId, notes, userVisitedSw));
+                    cost, userId, addId, notes, userVisitedSw,new ArrayList<String>()));
 
         } else {
             L.m(data.getString("message"));

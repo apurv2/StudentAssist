@@ -9,8 +9,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.apurv.studentassist.R;
-import com.apurv.studentassist.util.interfaces.LodingDialogInterface;
 import com.apurv.studentassist.util.SAConstants;
+import com.apurv.studentassist.util.interfaces.LodingDialogInterface;
 
 /**
  * Created by akamalapuri on 11/5/2015.
@@ -18,6 +18,8 @@ import com.apurv.studentassist.util.SAConstants;
 public class LoadingDialog extends DialogFragment {
 
     public LodingDialogInterface lodingDialogInterface;
+
+    View pageView;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -29,13 +31,12 @@ public class LoadingDialog extends DialogFragment {
         setRetainInstance(true);
         setCancelable(false);
 
-        final View pageView = inflater.inflate(R.layout.loading_dialog, null);
+        pageView = inflater.inflate(R.layout.loading_dialog, null);
         builder.setView(pageView);
 
 
         Bundle bundle = this.getArguments();
         final String text = bundle.getString(SAConstants.LOADER_TEXT);
-
 
         TextView loadingText = (TextView) pageView.findViewById(R.id.loading);
         loadingText.setText(text);
@@ -52,5 +53,12 @@ public class LoadingDialog extends DialogFragment {
         lodingDialogInterface = (LodingDialogInterface) activity;
     }
 
+    public void changeText(String text) {
+        TextView loadingText = (TextView) pageView.findViewById(R.id.loading);
+
+        if (loadingText != null) {
+            loadingText.setText(text);
+        }
+    }
 
 }

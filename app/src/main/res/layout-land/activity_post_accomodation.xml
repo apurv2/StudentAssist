@@ -68,6 +68,18 @@
                     <include layout="@layout/vacancy_information_card" />
                 </android.support.v7.widget.CardView>
 
+                <android.support.v7.widget.CardView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="vertical"
+                    card_view:cardCornerRadius="6dp"
+                    card_view:cardElevation="10dp"
+                    card_view:cardUseCompatPadding="true">
+
+                    <include layout="@layout/post_photos" />
+                </android.support.v7.widget.CardView>
+
                 <Button
                     android:id="@+id/postVacancy"
                     android:layout_width="match_parent"

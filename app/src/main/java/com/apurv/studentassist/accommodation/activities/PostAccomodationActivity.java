@@ -69,8 +69,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -111,8 +113,9 @@ public class PostAccomodationActivity extends AppCompatActivity implements
     ArrayList<String> mApartmentNames;
     String aptTypeSpinnerVal = "";
     Cloudinary cloudinary;
-
     List<File> mImagesList = new ArrayList<File>();
+    Set<String> filePaths = new LinkedHashSet<>();
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,6 +138,7 @@ public class PostAccomodationActivity extends AppCompatActivity implements
         }
 
         if (savedInstanceState != null) {
+            mLlContainer.setVisibility(View.VISIBLE);
 
             bundle = savedInstanceState;
             reEntryFlag = true;
@@ -157,10 +161,11 @@ public class PostAccomodationActivity extends AppCompatActivity implements
         postVacancy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
                 if (validateAll()) {
 
-
-                    postVacancy();
+                    startImagesUpload(filePaths);
 
                 }
             }
@@ -227,7 +232,6 @@ public class PostAccomodationActivity extends AppCompatActivity implements
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
                 Uri uri = data.getData();
-                String filePath = "";
                 String wholeID = DocumentsContract.getDocumentId(uri);
 
                 // Split at colon, use second item in the array
@@ -242,16 +246,16 @@ public class PostAccomodationActivity extends AppCompatActivity implements
                         column, sel, new String[]{id}, null);
 
                 int columnIndex = cursor.getColumnIndex(column[0]);
+                File file = null;
 
                 if (cursor.moveToFirst()) {
-                    filePath = cursor.getString(columnIndex);
+                    filePaths.add(cursor.getString(columnIndex));
+                    file = new File(cursor.getString(columnIndex));
                 }
                 cursor.close();
 
-                L.m(filePath);
-                File file = new File(filePath);
 
-                if (file.exists()) {
+                if (file != null && file.exists()) {
 
                     if (mImagesList.size() < 3) {
                         Utilities.showView(findViewById(R.id.selectedPhotosView));
@@ -265,40 +269,52 @@ public class PostAccomodationActivity extends AppCompatActivity implements
                 }
 
 
-                //   startUpload(filePath);
-
             }
         }
     }
 
-    private void startUpload(String filePath) {
+    private void startImagesUpload(final Set<String> filePaths) {
 
-        AsyncTask<String, Void, String> task = new AsyncTask<String, Void, String>() {
-            protected String doInBackground(String... paths) {
+        final LoadingDialog loadingDialog = Utilities.showLoadingDialog(SAConstants.UPLOADING_IMAGES, getSupportFragmentManager());
+
+
+        AsyncTask<Void, Void, List> task = new AsyncTask<Void, Void, List>() {
+            protected List doInBackground(Void... paths) {
                 Map cloudinaryResult;
+                List<String> cloudinaryUrls = new ArrayList<>();
 
 
                 try {
-                    File file = new File(paths[0]);
-                    cloudinaryResult = cloudinary.uploader().
-                            upload(file, ObjectUtils.emptyMap());
 
+                    for (String filePath : filePaths) {
+                        File file = new File(filePath);
+                        cloudinaryResult = cloudinary.uploader().
+                                upload(file, ObjectUtils.emptyMap());
+
+
+                        if (cloudinaryResult.containsKey("url")) {
+                            cloudinaryUrls.add(String.valueOf(cloudinaryResult.get("url")));
+                        }
+                    }
                 } catch (RuntimeException e) {
                     L.m(e + "Error uploading file");
-                    return "Error uploading file: " + e.toString();
+                    new ArrayList<>();
                 } catch (IOException e) {
                     L.m(e + "Error uploading file");
-                    return "Error uploading file: " + e.toString();
+                    new ArrayList<>();
                 }
-                return "";
+                return cloudinaryUrls;
             }
 
             @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
+            protected void onPostExecute(List cloudinaryUrlsList) {
+
+                postVacancy(cloudinaryUrlsList, loadingDialog);
+                loadingDialog.changeText(SAConstants.POSTING_ACCOMMODAION);
+
             }
         };
-        task.execute(filePath);
+        task.execute();
 
     }
 
@@ -400,10 +416,10 @@ public class PostAccomodationActivity extends AppCompatActivity implements
     }
 
 
-    public void postVacancy() {
+    public void postVacancy(List cloudinaryUrls, final LoadingDialog loadingDialog) {
 
 
-        final LoadingDialog loadingDialog = Utilities.showLoadingDialog(SAConstants.POSTING_REQUEST, getSupportFragmentManager());
+        //final LoadingDialog loadingDialog = Utilities.showLoadingDialog(SAConstants.POSTING_REQUEST, getSupportFragmentManager());
 
         try {
 
@@ -424,11 +440,10 @@ public class PostAccomodationActivity extends AppCompatActivity implements
             String notes = mNotes.getText().toString();
 
             AccommodationAdd mAccommodationAdd = new AccommodationAdd(apartmentName, noOfRooms, noOfVacancies,
-                    cost, lookingFor, notes);
+                    cost, lookingFor, notes, cloudinaryUrls);
 
             Gson gson = new Gson();
             String postAccommodationJson = gson.toJson(mAccommodationAdd);
-
 
             DatabaseManager manager = new DatabaseManager();
             manager.volleyPostRequestWithLoadingDialog(urlGen.getPostAccUrl(), loadingDialog, postAccommodationJson);
@@ -736,12 +751,11 @@ public class PostAccomodationActivity extends AppCompatActivity implements
     // This closes this activity after the accommodation add has been posted
     public void closeActivity() {
 
-        Intent intent = new Intent(this, AccommodationActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-
-
+        Intent returnIntent = new Intent();
+        setResult(1000,returnIntent);
         finish();
+        PostAccomodationActivity.super.onBackPressed();
+
     }
 
     @Override

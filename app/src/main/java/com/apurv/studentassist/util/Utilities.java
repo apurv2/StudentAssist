@@ -38,6 +38,11 @@ public class Utilities {
 
     }
 
+    public static void invisibleView(View view) {
+
+        view.setVisibility(View.INVISIBLE);
+    }
+
     public static LoadingDialog showLoadingDialog(String loaderText, FragmentManager manager) {
 
 

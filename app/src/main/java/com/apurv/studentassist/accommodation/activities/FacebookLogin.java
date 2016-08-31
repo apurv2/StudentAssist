@@ -78,7 +78,6 @@ public class FacebookLogin extends AppCompatActivity {
                     | Intent.FLAG_ACTIVITY_CLEAR_TASK
                     | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(homeScreenIntent);
-            // finish();
         }
 
 

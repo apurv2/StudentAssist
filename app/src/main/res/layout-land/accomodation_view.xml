@@ -1,54 +1,47 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:facebook="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
+    xmlns:facebook="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:background="@drawable/custom_bg"
+    android:clickable="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="72dp"
-        android:paddingTop="8dp"
+        android:orientation="horizontal"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:orientation="horizontal">
+        android:paddingTop="8dp">
 
 
         <com.pkmmte.view.CircularImageView
-            android:layout_width="50dp"
             android:id="@+id/userPhoto3"
+            android:layout_width="50dp"
             android:layout_height="50dp"
+            android:transitionName="profile"
             app:shadow="true" />
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingLeft="6dp"
             android:layout_marginLeft="5dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/large"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/largeText"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@color/buttonColourBlackSolid" />
+            android:orientation="vertical"
+            android:paddingLeft="6dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/medium"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/large"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/smallText"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/normal" />
+                    android:text="@string/largeText"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/buttonColourBlackSolid" />
 
                 <TextView
                     android:id="@+id/small"
@@ -57,6 +50,29 @@
                     android:text="@string/smallText"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/normal" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/medium"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:text="@string/smallText"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/normal" />
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:id="@+id/userVisited"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_tick" />
 
             </LinearLayout>
 
