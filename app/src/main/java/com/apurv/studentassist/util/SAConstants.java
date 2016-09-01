@@ -240,5 +240,5 @@ public class SAConstants {
 
     public static final String INSTANCE_ID = "instanceId";
 
-
+    public static final String ACCOMMODATION_ADD_PHOTOS ="accommodation add photos" ;
 }

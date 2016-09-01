@@ -49,6 +49,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 //Using Serialization because parcel cannot be stored into shared Preferences
 
@@ -75,7 +76,6 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
     @Bind(R.id.adDetails_placeholder3)
     ImageView imageHolder3;
     List<ImageView> imageHolders;
-
 
     AccommodationAdd clickedAdd;
 
@@ -412,6 +412,16 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
         b.putString(SAConstants.ALERT_TEXT, SAConstants.SUCCESSFULLY_DELETED);
         dialog.setArguments(b);
         dialog.show(getSupportFragmentManager(), "");
+
+
+    }
+
+    @OnClick(R.id.adDetails_placeholder1)
+    public void imageClick(View view) {
+
+        Intent intent = new Intent(this, PhotosViewActivity.class);
+        intent.putStringArrayListExtra(SAConstants.ACCOMMODATION_ADD_PHOTOS, (ArrayList<String>) clickedAdd.getAddPhotoIds());
+        startActivity(intent);
 
 
     }
