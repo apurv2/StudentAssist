@@ -37,7 +37,7 @@ public class SAConstants {
 
     public static final String URL = "http://studentassist.mppzteuums.us-east-1.elasticbeanstalk.com/rest";
 
-   //  public static final String URL="http://10.0.2.2:8080/StudentAssistWebapp/rest";
+    //public static final String URL = "http://10.0.2.2:8080/StudentAssistWebapp/rest";
 
     public static final String pageTitles[] = {"Easy Search", "Advanced Search", "Recently Viewed"};
 
@@ -128,7 +128,7 @@ public class SAConstants {
 
     public static final String FAILURE = "Failure";
 
-    public static final String FAILED_TO_UNSUBSCRIBE = "Failed to Unsubscribe! Pleae try again later!";
+    public static final String FAILED_TO_UNSUBSCRIBE = "Failed to Unsubscribe! Please try again later!";
 
     public static final String NOTIFICATION_TYPE = "notificationType";
 
@@ -240,5 +240,11 @@ public class SAConstants {
 
     public static final String INSTANCE_ID = "instanceId";
 
-    public static final String ACCOMMODATION_ADD_PHOTOS ="accommodation add photos" ;
+    public static final String LOCAL_IMAGES = "local_images";
+
+    public static final String CLOUDINARY_IMAGES = "cloudinary_images";
+
+    public static final String IMAGE_TYPE = "image_type";
+
+    public static final String ACCOMMODATION_ADD_PHOTOS = "accommodation add photos";
 }

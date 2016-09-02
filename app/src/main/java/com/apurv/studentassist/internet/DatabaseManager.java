@@ -50,6 +50,8 @@ public class DatabaseManager {
             @Override
             public void onErrorResponse(VolleyError error) {
                 networkInterface.onResponseUpdate("Failure");
+                L.m(error.toString());
+
 
                 Toast.makeText(StudentAssistApplication.getAppContext(), SAConstants.VOLLEY_ERROR, Toast.LENGTH_LONG).show();
 
@@ -88,6 +90,10 @@ public class DatabaseManager {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(StudentAssistApplication.getAppContext(), SAConstants.VOLLEY_ERROR, Toast.LENGTH_LONG).show();
+                dialog.lodingDialogInterface.onResponse("Failure");
+                dialog.dismiss();
+
+
             }
         }) {
             public Map<String, String> getHeaders() {
@@ -138,6 +144,8 @@ public class DatabaseManager {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(StudentAssistApplication.getAppContext(), SAConstants.VOLLEY_ERROR, Toast.LENGTH_LONG).show();
+                networkInterface.onResponseUpdate("Failure");
+
             }
         }) {
             public Map<String, String> getHeaders() {

@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -41,7 +40,6 @@ import android.widget.Spinner;
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.Dialogs.AccommodationPosted;
 import com.apurv.studentassist.accommodation.Dialogs.AlertDialogL;
-import com.apurv.studentassist.accommodation.Dialogs.ImageViewDialog;
 import com.apurv.studentassist.accommodation.Dialogs.LoadingDialog;
 import com.apurv.studentassist.accommodation.Dialogs.NewApartmentDialog;
 import com.apurv.studentassist.accommodation.Interfaces.AccommodationBI;
@@ -211,6 +209,14 @@ public class PostAccomodationActivity extends AppCompatActivity implements
         try {
 
 
+
+            Intent intent = new Intent(this, PhotosViewActivity.class);
+            intent.putStringArrayListExtra(SAConstants.ACCOMMODATION_ADD_PHOTOS, (ArrayList<String>)filePaths);
+            intent.putExtra(SAConstants.IMAGE_TYPE,SAConstants.LOCAL_IMAGES);
+            startActivity(intent);
+
+
+/*
             ImageView mImageView = (ImageView) mView;
 
             Bundle extras = new Bundle();
@@ -218,7 +224,7 @@ public class PostAccomodationActivity extends AppCompatActivity implements
 
             DialogFragment enlargedImageFragment = new ImageViewDialog();
             enlargedImageFragment.setArguments(extras);
-            enlargedImageFragment.show(getSupportFragmentManager(), "");
+            enlargedImageFragment.show(getSupportFragmentManager(), "");*/
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -737,13 +743,14 @@ public class PostAccomodationActivity extends AppCompatActivity implements
     @Override
     public void onResponse(String response) {
 
-        Bundle b = new Bundle();
-        b.putString(SAConstants.ALERT_TEXT, SAConstants.SUCCESSFULLY_POSTED);
+        if(response.equals(SAConstants.SUCCESS)) {
+            Bundle b = new Bundle();
+            b.putString(SAConstants.ALERT_TEXT, SAConstants.SUCCESSFULLY_POSTED);
 
-        AccommodationPosted alert = new AccommodationPosted();
-        alert.setArguments(b);
-        alert.show(getSupportFragmentManager(), "");
-
+            AccommodationPosted alert = new AccommodationPosted();
+            alert.setArguments(b);
+            alert.show(getSupportFragmentManager(), "");
+        }
     }
 
 

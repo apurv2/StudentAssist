@@ -30,7 +30,7 @@ public class ImageSliderAdapter extends PagerAdapter {
     private Context context;
 
 
-    public ImageSliderAdapter(Context context, List mImages) {
+    public ImageSliderAdapter(Context context, List mImages,String type) {
         this.context = context;
         this.mImages = mImages;
         inflater = LayoutInflater.from(context);
@@ -54,7 +54,7 @@ public class ImageSliderAdapter extends PagerAdapter {
 
         assert imageLayout != null;
         final ImageView imageView = (ImageView) imageLayout
-                .findViewById(R.id.image);
+                .findViewById(R.id.accommodationImage);
 
         loadImages(imageView, (String) mImages.get(position));
 

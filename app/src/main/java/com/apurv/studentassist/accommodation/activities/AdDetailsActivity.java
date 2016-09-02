@@ -421,6 +421,7 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
 
         Intent intent = new Intent(this, PhotosViewActivity.class);
         intent.putStringArrayListExtra(SAConstants.ACCOMMODATION_ADD_PHOTOS, (ArrayList<String>) clickedAdd.getAddPhotoIds());
+        intent.putExtra(SAConstants.IMAGE_TYPE,SAConstants.CLOUDINARY_IMAGES);
         startActivity(intent);
 
 
