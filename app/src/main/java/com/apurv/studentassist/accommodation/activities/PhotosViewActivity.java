@@ -35,9 +35,6 @@ public class PhotosViewActivity extends AppCompatActivity implements View.OnClic
         List imageUrls = getIntent().getExtras().getParcelableArrayList(SAConstants.ACCOMMODATION_ADD_PHOTOS);
         String imageType = String.valueOf(getIntent().getExtras().get(SAConstants.IMAGE_TYPE));
 
-        imagesArray.add(R.drawable.ic_fbmessenger);
-        imagesArray.add(R.drawable.ic_post);
-        imagesArray.add(R.drawable.ic_us_dollar_256);
 
         init(imageUrls, imageType);
 

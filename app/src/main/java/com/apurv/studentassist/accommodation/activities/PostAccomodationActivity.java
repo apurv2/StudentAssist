@@ -208,10 +208,17 @@ public class PostAccomodationActivity extends AppCompatActivity implements
 
         try {
 
+            List selectedFilePaths = new ArrayList<String>();
+
+            for(String filePath : filePaths)
+            {
+                selectedFilePaths.add(filePath);
+            }
+
 
 
             Intent intent = new Intent(this, PhotosViewActivity.class);
-            intent.putStringArrayListExtra(SAConstants.ACCOMMODATION_ADD_PHOTOS, (ArrayList<String>)filePaths);
+            intent.putStringArrayListExtra(SAConstants.ACCOMMODATION_ADD_PHOTOS, (ArrayList<String>) selectedFilePaths);
             intent.putExtra(SAConstants.IMAGE_TYPE,SAConstants.LOCAL_IMAGES);
             startActivity(intent);
 

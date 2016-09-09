@@ -2,6 +2,7 @@ package com.apurv.studentassist.accommodation.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
@@ -13,7 +14,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.internet.Network;
+import com.apurv.studentassist.util.SAConstants;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -28,14 +31,16 @@ public class ImageSliderAdapter extends PagerAdapter {
     private List mImages;
     private LayoutInflater inflater;
     private Context context;
+    private String imageType;
 
 
-    public ImageSliderAdapter(Context context, List mImages,String type) {
+    public ImageSliderAdapter(Context context, List mImages, String type) {
         this.context = context;
         this.mImages = mImages;
         inflater = LayoutInflater.from(context);
         network = Network.getNetworkInstnace();
         mImageLoader = network.getmImageLoader();
+        this.imageType = type;
     }
 
     @Override
@@ -67,23 +72,38 @@ public class ImageSliderAdapter extends PagerAdapter {
 
     private void loadImages(ImageView imageView, String url) {
 
+        if (SAConstants.CLOUDINARY_IMAGES.equals(imageType)) {
+            mImageLoader.get(url, new ImageLoader.ImageListener() {
+                @Override
+                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
 
-        mImageLoader.get(url, new ImageLoader.ImageListener() {
-            @Override
-            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
 
-
-                Bitmap photo = response.getBitmap();
-                if (photo != null) {
-                    imageView.setImageBitmap(photo);
+                    Bitmap photo = response.getBitmap();
+                    if (photo != null) {
+                        imageView.setImageBitmap(photo);
+                    }
                 }
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+        } else {
+
+            File file = null;
+            file = new File(url);
+
+               if (file != null && file.exists()) {
+
+
+                Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                imageView.setImageBitmap(myBitmap);
+
             }
 
-            @Override
-            public void onErrorResponse(VolleyError error) {
 
-            }
-        });
+        }
 
 
     }
