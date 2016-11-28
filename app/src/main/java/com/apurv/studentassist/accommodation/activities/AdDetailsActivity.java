@@ -421,10 +421,30 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
 
         Intent intent = new Intent(this, PhotosViewActivity.class);
         intent.putStringArrayListExtra(SAConstants.ACCOMMODATION_ADD_PHOTOS, (ArrayList<String>) clickedAdd.getAddPhotoIds());
-        intent.putExtra(SAConstants.IMAGE_TYPE,SAConstants.CLOUDINARY_IMAGES);
+        intent.putExtra(SAConstants.IMAGE_TYPE, SAConstants.CLOUDINARY_IMAGES);
+        intent.putExtra(SAConstants.POSITION, 0);
         startActivity(intent);
+    }
 
 
+    @OnClick(R.id.adDetails_placeholder2)
+    public void imageClick2(View view) {
+
+        Intent intent = new Intent(this, PhotosViewActivity.class);
+        intent.putStringArrayListExtra(SAConstants.ACCOMMODATION_ADD_PHOTOS, (ArrayList<String>) clickedAdd.getAddPhotoIds());
+        intent.putExtra(SAConstants.IMAGE_TYPE, SAConstants.CLOUDINARY_IMAGES);
+        intent.putExtra(SAConstants.POSITION, 1);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.adDetails_placeholder3)
+    public void imageClick3(View view) {
+
+        Intent intent = new Intent(this, PhotosViewActivity.class);
+        intent.putStringArrayListExtra(SAConstants.ACCOMMODATION_ADD_PHOTOS, (ArrayList<String>) clickedAdd.getAddPhotoIds());
+        intent.putExtra(SAConstants.IMAGE_TYPE, SAConstants.CLOUDINARY_IMAGES);
+        intent.putExtra(SAConstants.POSITION, 2);
+        startActivity(intent);
     }
 
 

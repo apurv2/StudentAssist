@@ -34,9 +34,9 @@ public class PhotosViewActivity extends AppCompatActivity implements View.OnClic
 
         List imageUrls = getIntent().getExtras().getParcelableArrayList(SAConstants.ACCOMMODATION_ADD_PHOTOS);
         String imageType = String.valueOf(getIntent().getExtras().get(SAConstants.IMAGE_TYPE));
+        int position = Integer.parseInt(String.valueOf(getIntent().getExtras().get(SAConstants.POSITION)));
 
-
-        init(imageUrls, imageType);
+        init(imageUrls, imageType,position);
 
             getWindow().getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -55,10 +55,11 @@ public class PhotosViewActivity extends AppCompatActivity implements View.OnClic
     }
 
 
-    private void init(List imageUrls, String imageType) {
+    private void init(List imageUrls, String imageType,int position) {
 
 
         mPager.setAdapter(new ImageSliderAdapter(this, imageUrls, imageType));
+        mPager.setCurrentItem(position);
 
         GestureDetector tapGestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
 

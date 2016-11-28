@@ -1,9 +1,11 @@
 package com.apurv.studentassist.accommodation.activities;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,7 +18,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -113,6 +117,7 @@ public class PostAccomodationActivity extends AppCompatActivity implements
     Cloudinary cloudinary;
     List<File> mImagesList = new ArrayList<File>();
     Set<String> filePaths = new LinkedHashSet<>();
+    private final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 0;
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -174,18 +179,37 @@ public class PostAccomodationActivity extends AppCompatActivity implements
     @OnClick(R.id.placeholder1)
     public void placeholder1(View view) {
 
-        openEnlargedImageDialog(view);
+        openPhotosViewActivity(view);
     }
 
     @OnClick(R.id.placeholder2)
     public void placeholder2(View view) {
 
-        openEnlargedImageDialog(view);
+        openPhotosViewActivity(view);
     }
 
     @OnClick(R.id.placeholder3)
     public void placeholder3(View view) {
-        openEnlargedImageDialog(view);
+        openPhotosViewActivity(view);
+
+    }
+
+
+    @OnClick(R.id.camera)
+    public void camera(View view) {
+
+
+        if(checkCameraHardware(getApplicationContext()))
+        {
+
+            Utilities.showALertDialog("Camera is available on this device",getSupportFragmentManager());
+
+        }
+        else
+        {
+
+            Utilities.showALertDialog("Camera is not available on this device",getSupportFragmentManager());
+        }
 
     }
 
@@ -193,33 +217,88 @@ public class PostAccomodationActivity extends AppCompatActivity implements
     @OnClick(R.id.gallery)
     public void gallery(View view) {
 
-        if (mImagesList.size() < 3) {
 
-            Intent intent = new Intent();
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) !=
+                PackageManager.PERMISSION_GRANTED) {
+
+            // If the permission is not already granted, open dialog box to ask for permissions
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
         } else {
-            Utilities.showALertDialog("You can load maximum of 3 mImagesList", getSupportFragmentManager());
+
+            if (mImagesList.size() < 3) {
+
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
+            } else {
+                Utilities.showALertDialog("You can load maximum of 3 mImagesList", getSupportFragmentManager());
+            }
         }
     }
 
-    private void openEnlargedImageDialog(View mView) {
+    /**
+     * Callback method after the user interacts with the Permissions popup
+     *
+     * @param requestCode  contains the request code for the permission
+     * @param permissions  array that contains all permissions
+     * @param grantResults array containing code for granted and not granted.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    //flag to fetch weather data when onResumeActivity method is called after the user grants permission
+                    // mFetchWeatherFlag = true;
+
+                    if (mImagesList.size() < 3) {
+
+                        Intent intent = new Intent();
+                        intent.setType("image/*");
+                        intent.setAction(Intent.ACTION_GET_CONTENT);
+                        startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
+                    } else {
+                        Utilities.showALertDialog("You can load maximum of 3 mImagesList", getSupportFragmentManager());
+                    }
+
+
+                } else {
+
+                    //flag to track the user permission for GPS
+                    // mAskGpsPermissionFlag = true;
+                }
+                return;
+            }
+
+
+        }
+
+
+    }
+
+    /**
+     * opens a new activity with ViewPager to view photos
+     *
+     * @param mView
+     */
+    private void openPhotosViewActivity(View mView) {
 
         try {
 
             List selectedFilePaths = new ArrayList<String>();
 
-            for(String filePath : filePaths)
-            {
+            for (String filePath : filePaths) {
                 selectedFilePaths.add(filePath);
             }
 
 
-
             Intent intent = new Intent(this, PhotosViewActivity.class);
             intent.putStringArrayListExtra(SAConstants.ACCOMMODATION_ADD_PHOTOS, (ArrayList<String>) selectedFilePaths);
-            intent.putExtra(SAConstants.IMAGE_TYPE,SAConstants.LOCAL_IMAGES);
+            intent.putExtra(SAConstants.IMAGE_TYPE, SAConstants.LOCAL_IMAGES);
             startActivity(intent);
 
 
@@ -295,7 +374,6 @@ public class PostAccomodationActivity extends AppCompatActivity implements
             protected List doInBackground(Void... paths) {
                 Map cloudinaryResult;
                 List<String> cloudinaryUrls = new ArrayList<>();
-
 
                 try {
 
@@ -750,7 +828,7 @@ public class PostAccomodationActivity extends AppCompatActivity implements
     @Override
     public void onResponse(String response) {
 
-        if(response.equals(SAConstants.SUCCESS)) {
+        if (response.equals(SAConstants.SUCCESS)) {
             Bundle b = new Bundle();
             b.putString(SAConstants.ALERT_TEXT, SAConstants.SUCCESSFULLY_POSTED);
 
@@ -766,7 +844,7 @@ public class PostAccomodationActivity extends AppCompatActivity implements
     public void closeActivity() {
 
         Intent returnIntent = new Intent();
-        setResult(1000,returnIntent);
+        setResult(1000, returnIntent);
         finish();
         PostAccomodationActivity.super.onBackPressed();
 
@@ -783,6 +861,22 @@ public class PostAccomodationActivity extends AppCompatActivity implements
 
 
     }
+
+    /**
+     * Check if this device has a camera
+     */
+    private boolean checkCameraHardware(Context context) {
+        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+            // this device has a camera
+            return true;
+        } else {
+            // no camera on this device
+            return false;
+        }
+    }
+
+
+
 
 
 }
