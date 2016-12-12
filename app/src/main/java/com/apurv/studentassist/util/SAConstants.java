@@ -247,4 +247,8 @@ public class SAConstants {
     public static final String IMAGE_TYPE = "image_type";
 
     public static final String ACCOMMODATION_ADD_PHOTOS = "accommodation add photos";
+
+    public static final String REQUESTED_PERMISSION_LIST = "requestedPermissionList";
+
+
 }

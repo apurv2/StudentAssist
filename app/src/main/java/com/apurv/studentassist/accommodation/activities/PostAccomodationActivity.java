@@ -40,6 +40,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.Dialogs.AccommodationPosted;
@@ -69,6 +70,7 @@ import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -223,6 +225,21 @@ public class PostAccomodationActivity extends AppCompatActivity implements
 
             // If the permission is not already granted, open dialog box to ask for permissions
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+
+
+            //Storing requested permission into Shared Preferences
+            SharedPreferences pref = getApplicationContext().getSharedPreferences(SAConstants.sharedPreferenceName, 0);
+            SharedPreferences.Editor editor = pref.edit();
+
+            ArrayList<String> requestedPermissionList = new ArrayList();
+            requestedPermissionList.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+
+
+            editor.putString(SAConstants.REQUESTED_PERMISSION_LIST, Base64.encodeToString(ObjectSerializer.serialize(requestedPermissionList), Base64.DEFAULT));
+            editor.commit();
+
+
+
         } else {
 
             if (mImagesList.size() < 3) {
@@ -267,6 +284,22 @@ public class PostAccomodationActivity extends AppCompatActivity implements
 
 
                 } else {
+
+
+                    sharedPreferences = getSharedPreferences(SAConstants.sharedPreferenceName, 0);
+                    byte[] requestedPermissionBytes = Base64.decode(sharedPreferences.getString(SAConstants.REQUESTED_PERMISSION_LIST, ""), Base64.DEFAULT);
+                    ArrayList<String> requestedPermissionList = (ArrayList<String>) ObjectSerializer.deserialize(requestedPermissionBytes);
+
+
+
+                    if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)&&
+                            requestedPermissionList.contains(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+
+                        Toast.makeText(getApplicationContext(),"cameed here",Toast.LENGTH_LONG).show();
+
+                        L.m("camed here");
+                    }
+
 
                     //flag to track the user permission for GPS
                     // mAskGpsPermissionFlag = true;

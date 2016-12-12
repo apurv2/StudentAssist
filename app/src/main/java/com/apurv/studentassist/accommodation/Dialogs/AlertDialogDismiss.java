@@ -26,6 +26,8 @@ public class AlertDialogDismiss extends DialogFragment {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
+        setCancelable(false);
+
 
         View pageView = inflater.inflate(R.layout.dialog_alert, null);
         builder.setView(pageView);
@@ -36,7 +38,6 @@ public class AlertDialogDismiss extends DialogFragment {
         TextView textView = (TextView) pageView.findViewById(R.id.text);
         textView.setText(text);
 
-        L.m(text);
 
         Button okButton = (Button) pageView.findViewById(R.id.ok_button);
         okButton.setOnClickListener(new View.OnClickListener() {
