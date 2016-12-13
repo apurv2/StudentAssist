@@ -62,7 +62,7 @@ public class UserPostsActivity extends AppCompatActivity implements RecyclerTouc
             Utilities.showView(findViewById(R.id.recentAdsList));
             Utilities.showView(findViewById(R.id.loadingPanel));
 
-            sharedPreferences = getSharedPreferences(SAConstants.sharedPreferenceName, 0);
+            sharedPreferences = getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
             editor = sharedPreferences.edit();
 
             setmRecyclerVIew();
@@ -93,7 +93,7 @@ public class UserPostsActivity extends AppCompatActivity implements RecyclerTouc
         try {
 
 
-            sharedPreferences = getSharedPreferences(SAConstants.sharedPreferenceName, 0);
+            sharedPreferences = getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
 
             byte[] userBytes = Base64.decode(sharedPreferences.getString(SAConstants.USER, ""), Base64.DEFAULT);
             User user = (User) ObjectSerializer.deserialize(userBytes);

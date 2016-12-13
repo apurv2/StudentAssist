@@ -14,14 +14,17 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.transition.Fade;
@@ -40,7 +43,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.Dialogs.AccommodationPosted;
@@ -70,9 +72,10 @@ import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -120,6 +123,9 @@ public class PostAccomodationActivity extends AppCompatActivity implements
     List<File> mImagesList = new ArrayList<File>();
     Set<String> filePaths = new LinkedHashSet<>();
     private final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 0;
+    private final int MY_PERMISSIONS_REQUEST_CAMERA = 1;
+    private final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 2;
+
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -201,16 +207,40 @@ public class PostAccomodationActivity extends AppCompatActivity implements
     public void camera(View view) {
 
 
-        if(checkCameraHardware(getApplicationContext()))
-        {
+        if (checkCameraHardware(getApplicationContext())) {
 
-            Utilities.showALertDialog("Camera is available on this device",getSupportFragmentManager());
 
-        }
-        else
-        {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) !=
+                    PackageManager.PERMISSION_GRANTED) {
 
-            Utilities.showALertDialog("Camera is not available on this device",getSupportFragmentManager());
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_CAMERA);
+
+                //Storing requested permission into Shared Preferences
+                SharedPreferences pref = getApplicationContext().getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putString(Manifest.permission.CAMERA, Manifest.permission.CAMERA);
+
+
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                        PackageManager.PERMISSION_GRANTED) {
+
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+
+                    //Storing requested permission into Shared Preferences
+                    editor.putString(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+                }
+
+                editor.commit();
+
+                } else {
+
+                dispatchTakePictureIntent();
+            }
+
+        } else {
+
+            Utilities.showALertDialog("Camera is not available on this device", getSupportFragmentManager());
         }
 
     }
@@ -228,16 +258,10 @@ public class PostAccomodationActivity extends AppCompatActivity implements
 
 
             //Storing requested permission into Shared Preferences
-            SharedPreferences pref = getApplicationContext().getSharedPreferences(SAConstants.sharedPreferenceName, 0);
+            SharedPreferences pref = getApplicationContext().getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
             SharedPreferences.Editor editor = pref.edit();
-
-            ArrayList<String> requestedPermissionList = new ArrayList();
-            requestedPermissionList.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-
-
-            editor.putString(SAConstants.REQUESTED_PERMISSION_LIST, Base64.encodeToString(ObjectSerializer.serialize(requestedPermissionList), Base64.DEFAULT));
+            editor.putString(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
             editor.commit();
-
 
 
         } else {
@@ -265,7 +289,7 @@ public class PostAccomodationActivity extends AppCompatActivity implements
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
         switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: {
+            case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
@@ -286,31 +310,84 @@ public class PostAccomodationActivity extends AppCompatActivity implements
                 } else {
 
 
-                    sharedPreferences = getSharedPreferences(SAConstants.sharedPreferenceName, 0);
-                    byte[] requestedPermissionBytes = Base64.decode(sharedPreferences.getString(SAConstants.REQUESTED_PERMISSION_LIST, ""), Base64.DEFAULT);
-                    ArrayList<String> requestedPermissionList = (ArrayList<String>) ObjectSerializer.deserialize(requestedPermissionBytes);
+                    sharedPreferences = getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
+                    String permission = sharedPreferences.getString(Manifest.permission.READ_EXTERNAL_STORAGE, "");
+
+                    if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
+                            permission.equals(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+
+                        Intent intent = new Intent();
+                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("com.apurv.studentassist", getPackageName(), null);
+                        intent.setData(uri);
+                        startActivity(intent);
 
 
+                      /*  Intent settingsIntent = new Intent();
+                        settingsIntent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
 
-                    if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)&&
-                            requestedPermissionList.contains(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                        Uri settingsUri = Uri.fromParts("com.apurv.studentassist",getPackageName(),null);
+                        settingsIntent.setData(settingsUri);
+                        startActivity(settingsIntent);*/
 
-                        Toast.makeText(getApplicationContext(),"cameed here",Toast.LENGTH_LONG).show();
 
-                        L.m("camed here");
                     }
 
 
                     //flag to track the user permission for GPS
                     // mAskGpsPermissionFlag = true;
                 }
-                return;
-            }
+            case MY_PERMISSIONS_REQUEST_CAMERA:
 
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    L.m("camera granted");
+                    dispatchTakePictureIntent();
+
+                }
 
         }
 
 
+    }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.example.android.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, 1);
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException {
+
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        String mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 
     /**
@@ -552,7 +629,7 @@ public class PostAccomodationActivity extends AppCompatActivity implements
             String apartmentName = apartmentNameSpinner.getSelectedItem().toString();
             String noOfRooms = noOfRoomsSpinner.getSelectedItem().toString();
 
-            sharedPreferences = getSharedPreferences(SAConstants.sharedPreferenceName, 0);
+            sharedPreferences = getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
             byte[] userInformationBytes = Base64.decode(sharedPreferences.getString(SAConstants.USER, ""), Base64.DEFAULT);
             User user = (User) ObjectSerializer.deserialize(userInformationBytes);
 
@@ -907,9 +984,6 @@ public class PostAccomodationActivity extends AppCompatActivity implements
             return false;
         }
     }
-
-
-
 
 
 }

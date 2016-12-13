@@ -127,7 +127,7 @@ public class FacebookLogin extends AppCompatActivity {
                                     null, null, graphUser.getString(SAConstants.G_ID));
 
 
-                            SharedPreferences pref = getApplicationContext().getSharedPreferences(SAConstants.sharedPreferenceName, 0);
+                            SharedPreferences pref = getApplicationContext().getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
                             SharedPreferences.Editor editor = pref.edit();
 
                             editor.putString(SAConstants.USER, Base64.encodeToString(ObjectSerializer.serialize(user), Base64.DEFAULT));

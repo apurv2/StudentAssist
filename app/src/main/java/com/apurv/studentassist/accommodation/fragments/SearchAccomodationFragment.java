@@ -166,7 +166,7 @@ public class SearchAccomodationFragment extends Fragment implements
 
         final LoadingDialog loadingDialog = Utilities.showLoadingDialog(SAConstants.REQUESTING_SUBSCTIPTION, getActivity().getSupportFragmentManager());
 
-        SharedPreferences sharedPreferences = getActivity().getApplicationContext().getSharedPreferences(SAConstants.sharedPreferenceName, 0);
+        SharedPreferences sharedPreferences = getActivity().getApplicationContext().getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
         byte[] userInformationBytes = Base64.decode(sharedPreferences.getString(SAConstants.USER, ""), Base64.DEFAULT);
         User user = (User) ObjectSerializer.deserialize(userInformationBytes);
         String gcmId = sharedPreferences.getString(SAConstants.GCM_ID, "");

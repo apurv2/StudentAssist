@@ -56,7 +56,7 @@ public class AccommodationDrawerFragment extends Fragment {
                              Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
 
-        pref = getActivity().getApplicationContext().getSharedPreferences(SAConstants.sharedPreferenceName, 0);
+        pref = getActivity().getApplicationContext().getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
         editor = pref.edit();
 
         mRecyclerVIew = (RecyclerView) mView.findViewById(R.id.drawerList);
@@ -112,7 +112,7 @@ public class AccommodationDrawerFragment extends Fragment {
 
             try {
 
-                SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SAConstants.sharedPreferenceName, 0);
+                SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
                 byte[] userInformationBytes = Base64.decode(sharedPreferences.getString(SAConstants.USER, ""), Base64.DEFAULT);
                 user = (User) ObjectSerializer.deserialize(userInformationBytes);
 

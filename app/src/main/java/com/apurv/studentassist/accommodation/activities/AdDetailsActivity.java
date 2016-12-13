@@ -275,7 +275,7 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
     private void displayContactDetails() {
 
 
-        sharedPreferences = getSharedPreferences(SAConstants.sharedPreferenceName, 0);
+        sharedPreferences = getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
         byte[] userInformationBytes = Base64.decode(sharedPreferences.getString(SAConstants.USER, ""), Base64.DEFAULT);
         User user = (User) ObjectSerializer.deserialize(userInformationBytes);
 

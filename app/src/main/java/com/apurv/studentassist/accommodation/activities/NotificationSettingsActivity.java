@@ -410,7 +410,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
                 }
 
 
-                SharedPreferences sharedPreferences = StudentAssistApplication.getAppContext().getSharedPreferences(SAConstants.sharedPreferenceName, 0);
+                SharedPreferences sharedPreferences = StudentAssistApplication.getAppContext().getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
                 settings.setGcmId(sharedPreferences.getString(SAConstants.GCM_ID, ""));
                 settings.setDeviceId(sharedPreferences.getString(SAConstants.INSTANCE_ID, ""));
 

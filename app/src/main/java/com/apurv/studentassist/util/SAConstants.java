@@ -13,7 +13,7 @@ public class SAConstants {
     public static final String STUDENT_ASSIST = "Student Assist!";
 
 
-    public static final String sharedPreferenceName = "sharedPreference";
+    public static final String SHARED_PREFERENCE_NAME = "sharedPreference";
 
     public static final String feedbackEmailAddress = "apurv2@gmail.com";
 

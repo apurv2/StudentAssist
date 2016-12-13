@@ -85,7 +85,7 @@ public class HomeScreenActivity extends AppCompatActivity {
     public void emailPhoneCallback(String email, String phone) {
 
 
-        SharedPreferences sharedPreferences = getSharedPreferences(SAConstants.sharedPreferenceName, 0);
+        SharedPreferences sharedPreferences = getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
 
@@ -204,7 +204,7 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     private void settings() {
 
-        SharedPreferences sharedPreferences = getSharedPreferences(SAConstants.sharedPreferenceName, 0);
+        SharedPreferences sharedPreferences = getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
         byte[] userInformationBytes = Base64.decode(sharedPreferences.getString(SAConstants.USER, ""), Base64.DEFAULT);
         User user = (User) ObjectSerializer.deserialize(userInformationBytes);
 
@@ -221,7 +221,7 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     private void logout() {
 
-        SharedPreferences sharedPreferences = getSharedPreferences(SAConstants.sharedPreferenceName, 0);
+        SharedPreferences sharedPreferences = getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
 

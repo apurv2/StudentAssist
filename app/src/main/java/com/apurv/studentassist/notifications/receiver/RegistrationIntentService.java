@@ -49,7 +49,7 @@ public class RegistrationIntentService extends IntentService {
     private void uploadUserDetails(String registrationId, String instanceId) {
 
 
-        SharedPreferences sharedPreferences = StudentAssistApplication.getAppContext().getSharedPreferences(SAConstants.sharedPreferenceName, 0);
+        SharedPreferences sharedPreferences = StudentAssistApplication.getAppContext().getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
 
 
         // setting GCM id to user and storing it into shared preferences
