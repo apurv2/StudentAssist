@@ -2,7 +2,6 @@ package com.apurv.studentassist.accommodation.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
@@ -15,8 +14,10 @@ import com.android.volley.toolbox.ImageLoader;
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.internet.Network;
 import com.apurv.studentassist.util.SAConstants;
+import com.apurv.studentassist.util.Utilities;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -96,10 +97,10 @@ public class ImageSliderAdapter extends PagerAdapter {
 
                if (file != null && file.exists()) {
 
-
-                Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-                imageView.setImageBitmap(myBitmap);
-
+                   Bitmap myBitmap = Utilities.decodeSampledBitmapFromResource(file,500,500);
+                   WeakReference<Bitmap> imageViewReference;
+                   imageViewReference = new WeakReference<Bitmap>(myBitmap);
+                   imageView.setImageBitmap(imageViewReference.get());
             }
 
 

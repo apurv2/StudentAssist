@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -24,13 +23,11 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.transition.Fade;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
-import android.util.Base64;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -53,7 +50,6 @@ import com.apurv.studentassist.accommodation.Interfaces.AccommodationBI;
 import com.apurv.studentassist.accommodation.Interfaces.PostAccommodationBI;
 import com.apurv.studentassist.accommodation.business.rules.AccommodationBO;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
-import com.apurv.studentassist.accommodation.classes.User;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
 import com.apurv.studentassist.internet.DatabaseManager;
@@ -61,7 +57,6 @@ import com.apurv.studentassist.util.Alerts;
 import com.apurv.studentassist.util.ErrorReporting;
 import com.apurv.studentassist.util.GUIUtils;
 import com.apurv.studentassist.util.L;
-import com.apurv.studentassist.util.ObjectSerializer;
 import com.apurv.studentassist.util.SAConstants;
 import com.apurv.studentassist.util.Utilities;
 import com.apurv.studentassist.util.interfaces.LodingDialogInterface;
@@ -70,12 +65,15 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.google.gson.Gson;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -123,9 +121,8 @@ public class PostAccomodationActivity extends AppCompatActivity implements
     List<File> mImagesList = new ArrayList<File>();
     Set<String> filePaths = new LinkedHashSet<>();
     private final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 0;
-    private final int MY_PERMISSIONS_REQUEST_CAMERA = 1;
+    private final int MY_PERMISSIONS_REQUEST_CAMERA_EXTERNAL_STORAGE = 1;
     private final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 2;
-
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -137,9 +134,6 @@ public class PostAccomodationActivity extends AppCompatActivity implements
         imageHolders = new ArrayList<>(Arrays.asList(imageHolder1, imageHolder2, imageHolder3));
         cloudinary = new Cloudinary("cloudinary://647816789382186:5R3U1Oc9zwvnPOfI-TtlIeI0u_E@duf1ntj7z");
 
-        if (mImagesList.size() == 0) {
-            Utilities.hideView(findViewById(R.id.selectedPhotosView));
-        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setupEnterAnimation();
@@ -153,6 +147,34 @@ public class PostAccomodationActivity extends AppCompatActivity implements
 
             bundle = savedInstanceState;
             reEntryFlag = true;
+            ArrayList<String> selectedFilePaths;
+            selectedFilePaths = bundle.getStringArrayList(SAConstants.IMAGE_FILE_PATHS);
+
+
+            for (String selectedFilePath : selectedFilePaths) {
+
+                File file = new File(selectedFilePath);
+
+                filePaths.add(selectedFilePath);
+                mImagesList.add(file);
+
+
+                Bitmap myBitmap = Utilities.decodeSampledBitmapFromResource(file, 100, 100);
+
+                WeakReference<Bitmap> imageViewReference;
+                ImageView mImage = imageHolders.get(mImagesList.size() - 1);
+
+                imageViewReference = new WeakReference<Bitmap>(myBitmap);
+                mImage.setImageBitmap(imageViewReference.get());
+
+
+            }
+
+
+        }
+
+        if (mImagesList.isEmpty()) {
+            Utilities.hideView(findViewById(R.id.selectedPhotosView_post));
         }
 
         // setup toolbar
@@ -166,17 +188,20 @@ public class PostAccomodationActivity extends AppCompatActivity implements
         //set spinners
         setSpinners();
 
-        final Context context = this;
-
         final Button postVacancy = (Button) pageView.findViewById(R.id.postVacancy);
         postVacancy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-
                 if (validateAll()) {
 
-                    startImagesUpload(filePaths);
+                    if (filePaths.isEmpty()) {
+                        postVacancy(Collections.emptyList(),
+                                Utilities.showLoadingDialog(SAConstants.UPLOADING_IMAGES, getSupportFragmentManager()));
+                        ;
+                    } else {
+                        startImagesUpload(filePaths);
+                    }
 
                 }
             }
@@ -187,18 +212,18 @@ public class PostAccomodationActivity extends AppCompatActivity implements
     @OnClick(R.id.placeholder1)
     public void placeholder1(View view) {
 
-        openPhotosViewActivity(view);
+        openPhotosViewActivity(0);
     }
 
     @OnClick(R.id.placeholder2)
     public void placeholder2(View view) {
 
-        openPhotosViewActivity(view);
+        openPhotosViewActivity(1);
     }
 
     @OnClick(R.id.placeholder3)
     public void placeholder3(View view) {
-        openPhotosViewActivity(view);
+        openPhotosViewActivity(2);
 
     }
 
@@ -211,29 +236,29 @@ public class PostAccomodationActivity extends AppCompatActivity implements
 
 
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) !=
+                    PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
                     PackageManager.PERMISSION_GRANTED) {
 
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_CAMERA);
 
-                //Storing requested permission into Shared Preferences
-                SharedPreferences pref = getApplicationContext().getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
-                SharedPreferences.Editor editor = pref.edit();
-                editor.putString(Manifest.permission.CAMERA, Manifest.permission.CAMERA);
+                if (handleDontDisplayPermissionsPopup(new String[]{Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE})) {
 
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_CAMERA_EXTERNAL_STORAGE);
 
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
-                        PackageManager.PERMISSION_GRANTED) {
-
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+                    //Storing requested permission into Shared Preferences
+                    SharedPreferences pref = getApplicationContext().getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putString(Manifest.permission.CAMERA, Manifest.permission.CAMERA);
 
                     //Storing requested permission into Shared Preferences
                     editor.putString(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
+
+                    editor.commit();
                 }
 
-                editor.commit();
-
-                } else {
+            } else {
 
                 dispatchTakePictureIntent();
             }
@@ -245,6 +270,39 @@ public class PostAccomodationActivity extends AppCompatActivity implements
 
     }
 
+    /**
+     * Checks if the user checked the checkbox to disallow permission popup. if so show the application permissions page.
+     *
+     * @param permissionNames
+     * @return true if the user did not check disallow checkbox else returns false.
+     */
+    public boolean handleDontDisplayPermissionsPopup(String[] permissionNames) {
+
+        sharedPreferences = getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
+        String permission;
+        for (String permissionName : permissionNames) {
+            permission = sharedPreferences.getString(permissionName, "");
+
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permissionName) && permission.equals(permissionName) &&
+                    ActivityCompat.checkSelfPermission(this, permissionName) != PackageManager.PERMISSION_GRANTED) {
+
+                final Intent i = new Intent();
+                i.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                i.addCategory(Intent.CATEGORY_DEFAULT);
+                i.setData(Uri.parse("package:" + getApplicationContext().getPackageName()));
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                getApplicationContext().startActivity(i);
+
+                return false;
+            }
+        }
+
+        return true;
+
+    }
+
 
     @OnClick(R.id.gallery)
     public void gallery(View view) {
@@ -253,15 +311,19 @@ public class PostAccomodationActivity extends AppCompatActivity implements
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) !=
                 PackageManager.PERMISSION_GRANTED) {
 
-            // If the permission is not already granted, open dialog box to ask for permissions
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+            if (handleDontDisplayPermissionsPopup(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE})) {
 
 
-            //Storing requested permission into Shared Preferences
-            SharedPreferences pref = getApplicationContext().getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
-            SharedPreferences.Editor editor = pref.edit();
-            editor.putString(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
-            editor.commit();
+                // If the permission is not already granted, open dialog box to ask for permissions
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+
+
+                //Storing requested permission into Shared Preferences
+                SharedPreferences pref = getApplicationContext().getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putString(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
+                editor.commit();
+            }
 
 
         } else {
@@ -273,7 +335,7 @@ public class PostAccomodationActivity extends AppCompatActivity implements
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
             } else {
-                Utilities.showALertDialog("You can load maximum of 3 mImagesList", getSupportFragmentManager());
+                Utilities.showALertDialog("You can load maximum of 3 images", getSupportFragmentManager());
             }
         }
     }
@@ -293,9 +355,6 @@ public class PostAccomodationActivity extends AppCompatActivity implements
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    //flag to fetch weather data when onResumeActivity method is called after the user grants permission
-                    // mFetchWeatherFlag = true;
-
                     if (mImagesList.size() < 3) {
 
                         Intent intent = new Intent();
@@ -303,48 +362,24 @@ public class PostAccomodationActivity extends AppCompatActivity implements
                         intent.setAction(Intent.ACTION_GET_CONTENT);
                         startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
                     } else {
-                        Utilities.showALertDialog("You can load maximum of 3 mImagesList", getSupportFragmentManager());
+                        Utilities.showALertDialog("You can load maximum of 3 images", getSupportFragmentManager());
                     }
 
-
-                } else {
-
-
-                    sharedPreferences = getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
-                    String permission = sharedPreferences.getString(Manifest.permission.READ_EXTERNAL_STORAGE, "");
-
-                    if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
-                            permission.equals(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-
-                        Intent intent = new Intent();
-                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                        Uri uri = Uri.fromParts("com.apurv.studentassist", getPackageName(), null);
-                        intent.setData(uri);
-                        startActivity(intent);
-
-
-                      /*  Intent settingsIntent = new Intent();
-                        settingsIntent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-
-                        Uri settingsUri = Uri.fromParts("com.apurv.studentassist",getPackageName(),null);
-                        settingsIntent.setData(settingsUri);
-                        startActivity(settingsIntent);*/
-
-
-                    }
-
-
-                    //flag to track the user permission for GPS
-                    // mAskGpsPermissionFlag = true;
+                    break;
                 }
-            case MY_PERMISSIONS_REQUEST_CAMERA:
+            case MY_PERMISSIONS_REQUEST_CAMERA_EXTERNAL_STORAGE:
 
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    L.m("camera granted");
+                boolean denied = false;
+                for (int permission_result : grantResults) {
+                    if (permission_result == PackageManager.PERMISSION_DENIED) {
+                        denied = true;
+                    }
+                }
+                if (!denied) {
                     dispatchTakePictureIntent();
 
                 }
+
 
         }
 
@@ -352,50 +387,18 @@ public class PostAccomodationActivity extends AppCompatActivity implements
     }
 
     private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.example.android.fileprovider",
-                        photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, 1);
-            }
-        }
+
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, 2);
     }
 
-    private File createImageFile() throws IOException {
-
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        String mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
 
     /**
      * opens a new activity with ViewPager to view photos
      *
-     * @param mView
+     * @param position
      */
-    private void openPhotosViewActivity(View mView) {
+    private void openPhotosViewActivity(int position) {
 
         try {
 
@@ -409,18 +412,9 @@ public class PostAccomodationActivity extends AppCompatActivity implements
             Intent intent = new Intent(this, PhotosViewActivity.class);
             intent.putStringArrayListExtra(SAConstants.ACCOMMODATION_ADD_PHOTOS, (ArrayList<String>) selectedFilePaths);
             intent.putExtra(SAConstants.IMAGE_TYPE, SAConstants.LOCAL_IMAGES);
+            intent.putExtra(SAConstants.POSITION, position);
             startActivity(intent);
 
-
-/*
-            ImageView mImageView = (ImageView) mView;
-
-            Bundle extras = new Bundle();
-            extras.putParcelable(SAConstants.PROFILE_PIC, ((BitmapDrawable) mImageView.getDrawable()).getBitmap());
-
-            DialogFragment enlargedImageFragment = new ImageViewDialog();
-            enlargedImageFragment.setArguments(extras);
-            enlargedImageFragment.show(getSupportFragmentManager(), "");*/
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -429,27 +423,34 @@ public class PostAccomodationActivity extends AppCompatActivity implements
 
     }
 
+
     @TargetApi(Build.VERSION_CODES.KITKAT)
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
+
                 Uri uri = data.getData();
-                String wholeID = DocumentsContract.getDocumentId(uri);
-
-                // Split at colon, use second item in the array
-                String id = wholeID.split(":")[1];
-
                 String[] column = {MediaStore.Images.Media.DATA};
 
-                // where id is equal to
-                String sel = MediaStore.Images.Media._ID + "=?";
 
-                Cursor cursor = getApplicationContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        column, sel, new String[]{id}, null);
+                Cursor cursor;
+                if (android.os.Build.VERSION.SDK_INT < 23) {
+                    cursor = getContentResolver().query(uri, null, null, null, null);
+
+                } else {
+                    String wholeID = DocumentsContract.getDocumentId(uri);
+                    String id = wholeID.split(":")[1];
+                    String sel = MediaStore.Images.Media._ID + "=?";
+
+                    cursor = getApplicationContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                            column, sel, new String[]{id}, null);
+
+                }
+
 
                 int columnIndex = cursor.getColumnIndex(column[0]);
-                File file = null;
 
+                File file = null;
                 if (cursor.moveToFirst()) {
                     filePaths.add(cursor.getString(columnIndex));
                     file = new File(cursor.getString(columnIndex));
@@ -459,17 +460,67 @@ public class PostAccomodationActivity extends AppCompatActivity implements
 
                 if (file != null && file.exists()) {
 
-                    if (mImagesList.size() < 3) {
-                        Utilities.showView(findViewById(R.id.selectedPhotosView));
+                    if (mImagesList.size() < 3 && !mImagesList.contains(file)) {
+
+                        Utilities.showView(findViewById(R.id.selectedPhotosView_post));
                         mImagesList.add(file);
-                        Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+
+                        Bitmap myBitmap = Utilities.decodeSampledBitmapFromResource(file, 100, 100);
+                        WeakReference<Bitmap> imageViewReference;
                         ImageView mImage = imageHolders.get(mImagesList.size() - 1);
-                        mImage.setImageBitmap(myBitmap);
+                        imageViewReference = new WeakReference<Bitmap>(myBitmap);
+                        mImage.setImageBitmap(imageViewReference.get());
 
                     }
 
                 }
 
+
+            }
+        }
+        if (requestCode == 2) {
+
+            if (resultCode == RESULT_OK) {
+
+                if (mImagesList.size() < 3) {
+
+                    String[] projection = {MediaStore.Images.Media.DATA};
+                    Cursor cursor = getApplicationContext().getContentResolver().query(
+                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                            projection, null, null, null);
+                    int columnIndex = cursor
+                            .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
+
+                    File file = null;
+                    if (cursor.moveToLast()) {
+                        filePaths.add(cursor.getString(columnIndex));
+                        file = new File(cursor.getString(columnIndex));
+                    }
+                    cursor.close();
+
+                    if (file != null && file.exists()) {
+
+                        if (mImagesList.size() < 3 && !mImagesList.contains(file)) {
+
+                            Utilities.showView(findViewById(R.id.selectedPhotosView_post));
+                            mImagesList.add(file);
+                            Bitmap myBitmap = Utilities.decodeSampledBitmapFromResource(file, 100, 100);
+
+                            WeakReference<Bitmap> imageViewReference;
+                            ImageView mImage = imageHolders.get(mImagesList.size() - 1);
+
+                            imageViewReference = new WeakReference<Bitmap>(myBitmap);
+                            mImage.setImageBitmap(imageViewReference.get());
+
+                        }
+
+                    }
+
+
+                } else {
+                    Utilities.showALertDialog("You can load maximum of 3 images", getSupportFragmentManager());
+                }
 
             }
         }
@@ -489,20 +540,44 @@ public class PostAccomodationActivity extends AppCompatActivity implements
 
                     for (String filePath : filePaths) {
                         File file = new File(filePath);
-                        cloudinaryResult = cloudinary.uploader().
-                                upload(file, ObjectUtils.emptyMap());
+                        Bitmap uploadBitmap = Utilities.decodeSampledBitmapFromResource(file, 500, 500);
 
+                        File imageStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                                getResources().getString(R.string.app_name));
+                        // Create the storage directory if it does not exist
+                        if (!imageStorageDir.exists()) {
+                            imageStorageDir.mkdirs();
+                        }
+
+                        File resizedFile = new File(imageStorageDir, "resize.png");
+
+                        OutputStream fOut = null;
+                        try {
+                            fOut = new BufferedOutputStream(new FileOutputStream(resizedFile));
+                            uploadBitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+                            fOut.flush();
+                            fOut.close();
+                            uploadBitmap.recycle();
+
+                        } catch (Exception e) {
+
+                            ErrorReporting.logReport(e);
+                        }
+
+
+                        cloudinaryResult = cloudinary.uploader().
+                                upload(resizedFile, ObjectUtils.emptyMap());
+
+                        resizedFile.delete();
 
                         if (cloudinaryResult.containsKey("url")) {
                             cloudinaryUrls.add(String.valueOf(cloudinaryResult.get("url")));
                         }
                     }
                 } catch (RuntimeException e) {
-                    L.m(e + "Error uploading file");
-                    new ArrayList<>();
+                    ErrorReporting.logReport(e);
                 } catch (IOException e) {
-                    L.m(e + "Error uploading file");
-                    new ArrayList<>();
+                    ErrorReporting.logReport(e);
                 }
                 return cloudinaryUrls;
             }
@@ -510,8 +585,13 @@ public class PostAccomodationActivity extends AppCompatActivity implements
             @Override
             protected void onPostExecute(List cloudinaryUrlsList) {
 
-                postVacancy(cloudinaryUrlsList, loadingDialog);
-                loadingDialog.changeText(SAConstants.POSTING_ACCOMMODAION);
+                if (cloudinaryUrlsList.isEmpty()) {
+                    loadingDialog.dismiss();
+                    Utilities.showALertDialog(SAConstants.VOLLEY_ERROR, getSupportFragmentManager());
+                } else {
+                    postVacancy(cloudinaryUrlsList, loadingDialog);
+                    loadingDialog.changeText(SAConstants.POSTING_ACCOMMODAION);
+                }
 
             }
         };
@@ -619,19 +699,12 @@ public class PostAccomodationActivity extends AppCompatActivity implements
 
     public void postVacancy(List cloudinaryUrls, final LoadingDialog loadingDialog) {
 
-
-        //final LoadingDialog loadingDialog = Utilities.showLoadingDialog(SAConstants.POSTING_REQUEST, getSupportFragmentManager());
-
         try {
 
             String noOfVacancies = noOfVacanciesSpinner.getSelectedItem().toString();
             String lookingFor = occupantSexSpinner.getSelectedItem().toString();
             String apartmentName = apartmentNameSpinner.getSelectedItem().toString();
             String noOfRooms = noOfRoomsSpinner.getSelectedItem().toString();
-
-            sharedPreferences = getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
-            byte[] userInformationBytes = Base64.decode(sharedPreferences.getString(SAConstants.USER, ""), Base64.DEFAULT);
-            User user = (User) ObjectSerializer.deserialize(userInformationBytes);
 
             EditText Field = (EditText) pageView
                     .findViewById(R.id.costOfLivingPerMonth);
@@ -968,6 +1041,14 @@ public class PostAccomodationActivity extends AppCompatActivity implements
 
         outState.putInt(SAConstants.APARTMENT_NAME_POSITION, apartmentNameSpinner.getSelectedItemPosition());
         outState.putStringArrayList(SAConstants.APARTMENT_NAME, mApartmentNames);
+
+        ArrayList<String> selectedFilePaths = new ArrayList<String>();
+
+        for (String filePath : filePaths) {
+            selectedFilePaths.add(filePath);
+        }
+
+        outState.putStringArrayList(SAConstants.IMAGE_FILE_PATHS, selectedFilePaths);
 
 
     }

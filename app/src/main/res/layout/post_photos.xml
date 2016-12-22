@@ -52,7 +52,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/selectedPhotosView"
+        android:id="@+id/selectedPhotosView_post"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
