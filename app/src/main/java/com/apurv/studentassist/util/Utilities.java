@@ -42,7 +42,7 @@ public class Utilities {
 
     }
 
-    public static void invisibleView(View view) {
+    public static void changeToInvisibleView(View view) {
 
         view.setVisibility(View.INVISIBLE);
     }

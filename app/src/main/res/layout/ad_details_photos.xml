@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ad_details_photos"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/editTextColourWhite"
@@ -16,7 +17,6 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/apartmentName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Photos"
@@ -67,36 +67,94 @@
             android:layout_marginRight="10dp"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/adDetails_placeholder1"
+            <FrameLayout
+                android:id="@+id/imageFrameLayout1"
                 android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"
-                android:layout_weight="1"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_gallery" />
+                android:layout_height="match_parent"
+                android:layout_weight="1">
 
-            <ImageView
-                android:id="@+id/adDetails_placeholder2"
+                <RelativeLayout
+                    android:id="@+id/imageLoader1"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center_vertical|center_horizontal">
+
+                    <ProgressBar
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:indeterminate="true" />
+                </RelativeLayout>
+
+                <ImageView
+                    android:id="@+id/adDetails_placeholder1"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:scaleType="centerCrop" />
+            </FrameLayout>
+
+
+            <FrameLayout
+                android:id="@+id/imageFrameLayout2"
                 android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
 
-                android:layout_weight="1"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_gallery" />
+                <RelativeLayout
+                    android:id="@+id/imageLoader2"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center_vertical|center_horizontal">
 
-            <ImageView
-                android:id="@+id/adDetails_placeholder3"
+                    <ProgressBar
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:indeterminate="true" />
+                </RelativeLayout>
+
+                <ImageView
+                    android:id="@+id/adDetails_placeholder2"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:scaleType="centerCrop" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/imageFrameLayout3"
                 android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"
-                android:layout_weight="1"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_gallery" />
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <RelativeLayout
+                    android:id="@+id/imageLoader3"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center_vertical|center_horizontal">
+
+                    <ProgressBar
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:indeterminate="true" />
+                </RelativeLayout>
+
+                <ImageView
+                    android:id="@+id/adDetails_placeholder3"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:scaleType="centerCrop" />
+            </FrameLayout>
+
 
         </LinearLayout>
 

@@ -18,7 +18,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
@@ -77,6 +79,29 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
     ImageView imageHolder3;
     List<ImageView> imageHolders;
 
+
+    @Bind(R.id.imageLoader1)
+    RelativeLayout imageLoader1;
+
+    @Bind(R.id.imageLoader2)
+    RelativeLayout imageLoader2;
+
+    @Bind(R.id.imageLoader3)
+    RelativeLayout imageLoader3;
+    List<RelativeLayout> imageLoaders;
+
+
+    @Bind(R.id.imageFrameLayout1)
+    FrameLayout frameLayout1;
+
+    @Bind(R.id.imageFrameLayout2)
+    FrameLayout frameLayout2;
+
+    @Bind(R.id.imageFrameLayout3)
+    FrameLayout frameLayout3;
+    List<FrameLayout> frameLayouts;
+
+
     AccommodationAdd clickedAdd;
 
 
@@ -87,6 +112,8 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
         ButterKnife.bind(this);
 
         imageHolders = new ArrayList<>(Arrays.asList(imageHolder1, imageHolder2, imageHolder3));
+        imageLoaders = new ArrayList<>(Arrays.asList(imageLoader1, imageLoader2, imageLoader3));
+        frameLayouts = new ArrayList<>(Arrays.asList(frameLayout1, frameLayout2, frameLayout3));
 
 
         mCoordinator = (CoordinatorLayout) findViewById(R.id.root_coordinator);
@@ -166,22 +193,30 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
     private void loadAccommodationPictures(AccommodationAdd clickedAdd) {
 
         int counter = 0;
-        if (clickedAdd.getAddPhotoIds().size() > 0) {
+        L.m("images size===" + clickedAdd.getAddPhotoIds().size());
+
+        if (clickedAdd.getAddPhotoIds().isEmpty()) {
+            Utilities.hideView(findViewById(R.id.ad_details_photos));
+        } else {
 
             for (String url : clickedAdd.getAddPhotoIds()) {
-                downloadImages(url, imageHolders.get(counter));
+
+                Utilities.showView(imageLoaders.get(counter));
+                Utilities.hideView(imageHolders.get(counter));
+
+                downloadImages(url, imageHolders.get(counter), imageLoaders.get(counter));
                 counter++;
             }
 
             for (; counter < 3; counter++) {
-                Utilities.invisibleView(imageHolders.get(counter));
+                Utilities.changeToInvisibleView(frameLayouts.get(counter));
             }
 
         }
 
     }
 
-    private void downloadImages(String url, ImageView mImageView) {
+    private void downloadImages(String url, ImageView mImageView, RelativeLayout loader) {
 
 
         ImageLoader mImageLoader = Network.getNetworkInstnace().getmImageLoader();
@@ -192,6 +227,10 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
 
                 Bitmap photo = response.getBitmap();
                 if (photo != null) {
+
+                    Utilities.showView(mImageView);
+                    Utilities.hideView(loader);
+
                     mImageView.setImageBitmap(photo);
                 }
             }
