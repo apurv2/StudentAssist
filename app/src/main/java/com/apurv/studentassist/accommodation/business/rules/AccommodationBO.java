@@ -5,15 +5,13 @@ import android.widget.Toast;
 import com.apurv.studentassist.accommodation.Dialogs.LoadingDialog;
 import com.apurv.studentassist.accommodation.Interfaces.AccommodationBI;
 import com.apurv.studentassist.accommodation.Interfaces.NotificationsBI;
-import com.apurv.studentassist.accommodation.Interfaces.NotificationsInterface;
 import com.apurv.studentassist.accommodation.Interfaces.PostAccommodationBI;
 import com.apurv.studentassist.accommodation.Interfaces.RecentListInterface;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
 import com.apurv.studentassist.accommodation.classes.ApartmentNamesWithType;
-import com.apurv.studentassist.accommodation.classes.NotificationSettings;
 import com.apurv.studentassist.accommodation.classes.RecentListChecker;
 import com.apurv.studentassist.accommodation.classes.StudentAssistApplication;
-import com.apurv.studentassist.internet.DatabaseManager;
+import com.apurv.studentassist.internet.StudentAssistBO;
 import com.apurv.studentassist.internet.NetworkInterface;
 import com.apurv.studentassist.util.ErrorReporting;
 import com.apurv.studentassist.util.L;
@@ -36,7 +34,7 @@ public class AccommodationBO {
     PostAccommodationBI postAccommodationBI;
 
 
-    DatabaseManager databaseManager = new DatabaseManager();
+    StudentAssistBO studentAssistBO = new StudentAssistBO();
 
     public AccommodationBO() {
     }
@@ -52,7 +50,7 @@ public class AccommodationBO {
 
         if (queryType.equals(SAConstants.ACCOMMODATION_ADDS)) {
 
-            databaseManager.volleyGetRequest(url, new NetworkInterface() {
+            studentAssistBO.volleyGetRequest(url, new NetworkInterface() {
                 @Override
                 public void onResponseUpdate(String jsonResponse) {
 
@@ -84,7 +82,7 @@ public class AccommodationBO {
 
             final ArrayList<String> apartmentNames = new ArrayList<String>();
 
-            databaseManager.volleyGetRequest(url, new NetworkInterface() {
+            studentAssistBO.volleyGetRequest(url, new NetworkInterface() {
                 @Override
                 public void onResponseUpdate(String jsonResponse) {
 
@@ -122,7 +120,7 @@ public class AccommodationBO {
         this.postAccommodationBI = postaccommodationBI;
 
 
-        databaseManager.volleyGetRequest(url, new NetworkInterface() {
+        studentAssistBO.volleyGetRequest(url, new NetworkInterface() {
             @Override
             public void onResponseUpdate(String jsonResponse) {
 
@@ -137,7 +135,7 @@ public class AccommodationBO {
 
     public AccommodationBO(String url, final RecentListInterface recentListInterface) {
 
-        databaseManager.volleyGetRequest(url, new NetworkInterface() {
+        studentAssistBO.volleyGetRequest(url, new NetworkInterface() {
             @Override
             public void onResponseUpdate(String jsonResponse) {
 
@@ -176,13 +174,10 @@ public class AccommodationBO {
 
     }
 
-    public void unSubscribeNotifications(String url) {
-
-    }
 
     public void getApartmentNamesWithType(String url, final NotificationsBI notificationsBI) {
 
-        databaseManager.volleyGetRequest(url, new NetworkInterface() {
+        studentAssistBO.volleyGetRequest(url, new NetworkInterface() {
             @Override
             public void onResponseUpdate(String jsonResponse) {
 
@@ -228,7 +223,7 @@ public class AccommodationBO {
     public AccommodationBO(String url, final LoadingDialog dialog) {
 
 
-        databaseManager.volleyGetRequest(url, new NetworkInterface() {
+        studentAssistBO.volleyGetRequest(url, new NetworkInterface() {
             @Override
             public void onResponseUpdate(String jsonResponse) {
 
@@ -240,29 +235,6 @@ public class AccommodationBO {
 
                 } else {
                     Toast.makeText(StudentAssistApplication.getAppContext(), "There was an error, please try again", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });
-
-    }
-
-
-    // Notification Settings
-    public void getNotificationSettings(String url, final NotificationsInterface notificationsInterface) {
-
-        databaseManager.volleyGetRequest(url, new NetworkInterface() {
-            @Override
-            public void onResponseUpdate(String jsonResponse) {
-
-                try {
-                    Gson gson = new Gson();
-                    NotificationSettings settings = gson.fromJson(jsonResponse, NotificationSettings.class);
-
-                    notificationsInterface.onResponse(settings);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    notificationsInterface.onResponse(new NotificationSettings());
                 }
 
             }

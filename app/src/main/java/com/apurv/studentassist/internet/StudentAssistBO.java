@@ -24,7 +24,7 @@ import java.util.Map;
  * Created by apurv on 6/7/15.
  * Purpose: Minimize the code to make a call to server again and again
  */
-public class DatabaseManager {
+public class StudentAssistBO {
 
     private List<AccommodationAdd> advertisements;
     NetworkInterface networkInterface;
@@ -53,6 +53,39 @@ public class DatabaseManager {
                 L.m(error.toString());
 
 
+                Toast.makeText(StudentAssistApplication.getAppContext(), SAConstants.VOLLEY_ERROR, Toast.LENGTH_LONG).show();
+
+
+            }
+        });
+
+        requestQueue.add(request);
+
+    }
+
+    public void volleyGetRequestLoadingDialog(String url, final LoadingDialog loadingDialog) {
+
+        L.m("url==" + url);
+        L.m("volley request");
+
+        RequestQueue requestQueue = Network.getNetworkInstnace().getRequestQueue();
+        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+
+
+            @Override
+            public void onResponse(String response) {
+
+                L.m("response==" + response);
+                loadingDialog.lodingDialogInterface.onResponse(response);
+                loadingDialog.dismiss();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                loadingDialog.dismiss();
+                loadingDialog.lodingDialogInterface.onResponse(SAConstants.FAILURE);
+
+                L.m(error.toString());
                 Toast.makeText(StudentAssistApplication.getAppContext(), SAConstants.VOLLEY_ERROR, Toast.LENGTH_LONG).show();
 
 

@@ -2,7 +2,7 @@ package com.apurv.studentassist.airport.business.rules;
 
 import com.apurv.studentassist.airport.classes.AirportService;
 import com.apurv.studentassist.airport.interfaces.AirportInterface;
-import com.apurv.studentassist.internet.DatabaseManager;
+import com.apurv.studentassist.internet.StudentAssistBO;
 import com.apurv.studentassist.internet.NetworkInterface;
 import com.apurv.studentassist.util.ErrorReporting;
 import com.apurv.studentassist.util.L;
@@ -22,14 +22,14 @@ import java.util.List;
 public class AirportBO {
 
 
-    DatabaseManager databaseManager = new DatabaseManager();
+    StudentAssistBO studentAssistBO = new StudentAssistBO();
 
 
     // Notification Settings
     public AirportBO(String url, final AirportInterface arportInterface) {
 
 
-        databaseManager.volleyGetRequest(url, new NetworkInterface() {
+        studentAssistBO.volleyGetRequest(url, new NetworkInterface() {
             @Override
             public void onResponseUpdate(String jsonResponse) {
 

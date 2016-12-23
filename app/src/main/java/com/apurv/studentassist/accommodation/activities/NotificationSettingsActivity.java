@@ -2,8 +2,11 @@ package com.apurv.studentassist.accommodation.activities;
 
 
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -19,19 +22,19 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.Dialogs.AlertDialogL;
 import com.apurv.studentassist.accommodation.Dialogs.LoadingDialog;
 import com.apurv.studentassist.accommodation.Interfaces.NotificationsBI;
-import com.apurv.studentassist.accommodation.Interfaces.NotificationsInterface;
 import com.apurv.studentassist.accommodation.business.rules.AccommodationBO;
 import com.apurv.studentassist.accommodation.classes.ApartmentNamesWithType;
 import com.apurv.studentassist.accommodation.classes.NotificationSettings;
 import com.apurv.studentassist.accommodation.classes.StudentAssistApplication;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
-import com.apurv.studentassist.internet.DatabaseManager;
+import com.apurv.studentassist.internet.StudentAssistBO;
 import com.apurv.studentassist.internet.NetworkInterface;
 import com.apurv.studentassist.util.Alerts;
 import com.apurv.studentassist.util.ErrorReporting;
@@ -102,6 +105,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         LeakCanary.install((Application) StudentAssistApplication.getAppContext());
 
+        setFAB();
         hideViews();
         setSubscriptionSw();
         if (savedInstanceState != null) {
@@ -111,13 +115,11 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
             mApartmentNames = savedInstanceState.getParcelableArrayList(SAConstants.APARTMENT_NAMES);
             setCheckboxes(settings);
             createApartmentNamesCheckbox(mApartmentNames, settings);
-            populateSetsAndRadioButons(settings);
+            populateSetsAndRadioButtons(settings);
 
         } else {
             getNotificationSettings();
         }
-
-        setFAB();
 
 
     }
@@ -131,89 +133,91 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
             public void onCheckedChanged(CompoundButton buttonView,
                                          boolean isChecked) {
 
+                if (isNetworkAvailable()) {
 
-                if (isChecked) {
+                    if (isChecked) {
 
-                    mOnCampusCheckbox.setEnabled(true);
-                    mOffCampusCheckbox.setEnabled(true);
-                    mDormsCheckbox.setEnabled(true);
+                        mOnCampusCheckbox.setEnabled(true);
+                        mOffCampusCheckbox.setEnabled(true);
+                        mDormsCheckbox.setEnabled(true);
 
-                    Utilities.showView(actionButton);
-
-
-                    for (int i = 0; i < mGenderRadioGroup.getChildCount(); i++) {
-                        (mGenderRadioGroup.getChildAt(i)).setEnabled(true);
-                    }
-
-                } else {
+                        Utilities.showView(actionButton);
 
 
-                    DatabaseManager manager = new DatabaseManager();
-                    UrlInterface urlgen = new UrlGenerator();
-
-
-                    try {
-
-
-                        UnsuscribeNotifications unsuscribeNotifications = new UnsuscribeNotifications();
-                        if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
-
-                            String fbToken = AccessToken.getCurrentAccessToken().getToken();
-                            unsuscribeNotifications.setAccess_token(fbToken);
+                        for (int i = 0; i < mGenderRadioGroup.getChildCount(); i++) {
+                            (mGenderRadioGroup.getChildAt(i)).setEnabled(true);
                         }
-                        Gson gson = new Gson();
-                        String mUnsubscribeJson = gson.toJson(unsuscribeNotifications);
 
-                        L.m("jsonn==" + mUnsubscribeJson);
+                    } else {
 
-                        manager.volleyPostRequest(urlgen.unSubscribeNotifications(), new NetworkInterface() {
-                            @Override
-                            public void onResponseUpdate(String jsonResponse) {
 
-                                L.m("json Response==" + jsonResponse);
+                        StudentAssistBO manager = new StudentAssistBO();
+                        UrlInterface urlgen = new UrlGenerator();
 
-                                if (SAConstants.SUCCESS.equals(jsonResponse)) {
-                                    Utilities.hideView(actionButton);
 
-                                    unCheckAptNamesCheckboxes((ViewGroup) findViewById(R.id.onCampus));
-                                    unCheckAptNamesCheckboxes((ViewGroup) findViewById(R.id.offCampus));
-                                    unCheckAptNamesCheckboxes((ViewGroup) findViewById(R.id.dorms));
+                        try {
 
-                                    Utilities.hideView(findViewById(R.id.onCampus));
-                                    Utilities.hideView(findViewById(R.id.offCampus));
-                                    Utilities.hideView(findViewById(R.id.dorms));
 
-                                    mOnCampusCheckbox.setChecked(false);
-                                    mOffCampusCheckbox.setChecked(false);
-                                    mDormsCheckbox.setChecked(false);
+                            UnsubscribeNotifications unsubscribeNotifications = new UnsubscribeNotifications();
+                            if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
 
-                                    mGenderRadioGroup.clearCheck();
+                                String fbToken = AccessToken.getCurrentAccessToken().getToken();
+                                unsubscribeNotifications.setAccess_token(fbToken);
+                            }
+                            Gson gson = new Gson();
+                            String mUnsubscribeJson = gson.toJson(unsubscribeNotifications);
 
-                                    mOnCampusCheckbox.setEnabled(false);
-                                    mOffCampusCheckbox.setEnabled(false);
-                                    mDormsCheckbox.setEnabled(false);
+                            manager.volleyPostRequest(urlgen.unSubscribeNotifications(), new NetworkInterface() {
+                                @Override
+                                public void onResponseUpdate(String jsonResponse) {
 
-                                    for (int i = 0; i < mGenderRadioGroup.getChildCount(); i++) {
-                                        (mGenderRadioGroup.getChildAt(i)).setEnabled(false);
+                                    if (SAConstants.SUCCESS.equals(jsonResponse)) {
+                                        Utilities.hideView(actionButton);
+
+                                        unCheckAptNamesCheckboxes((ViewGroup) findViewById(R.id.onCampus));
+                                        unCheckAptNamesCheckboxes((ViewGroup) findViewById(R.id.offCampus));
+                                        unCheckAptNamesCheckboxes((ViewGroup) findViewById(R.id.dorms));
+
+                                        Utilities.hideView(findViewById(R.id.onCampus));
+                                        Utilities.hideView(findViewById(R.id.offCampus));
+                                        Utilities.hideView(findViewById(R.id.dorms));
+
+                                        mOnCampusCheckbox.setChecked(false);
+                                        mOffCampusCheckbox.setChecked(false);
+                                        mDormsCheckbox.setChecked(false);
+
+                                        mGenderRadioGroup.clearCheck();
+
+                                        mOnCampusCheckbox.setEnabled(false);
+                                        mOffCampusCheckbox.setEnabled(false);
+                                        mDormsCheckbox.setEnabled(false);
+
+                                        for (int i = 0; i < mGenderRadioGroup.getChildCount(); i++) {
+                                            (mGenderRadioGroup.getChildAt(i)).setEnabled(false);
+                                        }
+
+
+                                    } else {
+                                        Bundle b = new Bundle();
+                                        b.putString(SAConstants.ALERT_TEXT, SAConstants.FAILED_TO_UNSUBSCRIBE);
+                                        AlertDialogL errorDialog = new AlertDialogL();
+                                        errorDialog.setArguments(b);
+                                        errorDialog.show(getSupportFragmentManager(), "");
+
                                     }
 
-
-                                } else {
-                                    Bundle b = new Bundle();
-                                    b.putString(SAConstants.ALERT_TEXT, SAConstants.FAILED_TO_UNSUBSCRIBE);
-                                    AlertDialogL errorDialog = new AlertDialogL();
-                                    errorDialog.setArguments(b);
-                                    errorDialog.show(getSupportFragmentManager(), "");
-
                                 }
+                            }, mUnsubscribeJson);
 
-                            }
-                        }, mUnsubscribeJson);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
-                    } catch (Exception e) {
-                        e.printStackTrace();
+
                     }
-
+                } else {
+                    Toast.makeText(getApplicationContext(), Alerts.errors.get(2), Toast.LENGTH_LONG).show();
+                    mSubscriptionSw.setChecked(false);
 
                 }
 
@@ -240,7 +244,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
         }
     }
 
-    private class UnsuscribeNotifications {
+    private class UnsubscribeNotifications {
         String access_token;
 
         public String getAccess_token() {
@@ -419,7 +423,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
                 String postParams = gson.toJson(settings);
 
                 UrlInterface urlgen = new UrlGenerator();
-                DatabaseManager manager = new DatabaseManager();
+                StudentAssistBO manager = new StudentAssistBO();
 
 
                 final LoadingDialog loadingDialog = Utilities.showLoadingDialog(SAConstants.POSTING_REQUEST, getSupportFragmentManager());
@@ -597,17 +601,11 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
             try {
                 String fbToken = AccessToken.getCurrentAccessToken().getToken();
                 String url = urlInterface.getNotificationSettingsUrl(fbToken);
-                accommodationBO.getNotificationSettings(url, new NotificationsInterface() {
-                    @Override
-                    public void onResponse(NotificationSettings settings) {
-
-                        setCheckboxes(settings);
-                        getApartmentNames(settings);
-                        populateSetsAndRadioButons(settings);
+                final LoadingDialog loadingDialog = Utilities.showLoadingDialog(SAConstants.GETTING_NOTIFICATION_SETTINGS, getSupportFragmentManager());
 
 
-                    }
-                });
+                StudentAssistBO studentAssistBO = new StudentAssistBO();
+                studentAssistBO.volleyGetRequestLoadingDialog(url, loadingDialog);
 
             } catch (Exception e) {
                 ErrorReporting.logReport(e);
@@ -619,12 +617,18 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
     }
 
+    private void populateNotifications(NotificationSettings settings) {
+        setCheckboxes(settings);
+        getApartmentNames(settings);
+        populateSetsAndRadioButtons(settings);
+    }
+
     /**
      * populates sets with user's preferences and Radio buttons.
      *
      * @param settings
      */
-    private void populateSetsAndRadioButons(NotificationSettings settings) {
+    private void populateSetsAndRadioButtons(NotificationSettings settings) {
 
         mApartmentTypesSet.clear();
         mApartmentNamesSet.clear();
@@ -633,6 +637,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
         mApartmentNamesSet.addAll(settings.getApartmentName());
 
         if (mGender == null) {
+
 
             mSubscriptionSw.setChecked(false);
             Utilities.hideView(actionButton);
@@ -679,13 +684,35 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
             Bundle b = new Bundle();
             b.putString(SAConstants.ALERT_TEXT, SAConstants.SUCCESS);
-            AlertDialogL errorDialog = new AlertDialogL();
-            errorDialog.setArguments(b);
-            errorDialog.show(getSupportFragmentManager(), "");
+            AlertDialogL alertDialogL = new AlertDialogL();
+            alertDialogL.setArguments(b);
+            alertDialogL.show(getSupportFragmentManager(), "");
 
+        } else if (!SAConstants.FAILURE.equals(response)) {
+
+            try {
+                Gson gson = new Gson();
+                NotificationSettings settings = gson.fromJson(response, NotificationSettings.class);
+
+                populateNotifications(settings);
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+
+                populateNotifications(new NotificationSettings());
+
+            }
         }
 
 
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     @Override

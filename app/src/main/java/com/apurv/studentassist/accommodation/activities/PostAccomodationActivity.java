@@ -52,7 +52,7 @@ import com.apurv.studentassist.accommodation.business.rules.AccommodationBO;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
-import com.apurv.studentassist.internet.DatabaseManager;
+import com.apurv.studentassist.internet.StudentAssistBO;
 import com.apurv.studentassist.util.Alerts;
 import com.apurv.studentassist.util.ErrorReporting;
 import com.apurv.studentassist.util.GUIUtils;
@@ -719,7 +719,7 @@ public class PostAccomodationActivity extends AppCompatActivity implements
             Gson gson = new Gson();
             String postAccommodationJson = gson.toJson(mAccommodationAdd);
 
-            DatabaseManager manager = new DatabaseManager();
+            StudentAssistBO manager = new StudentAssistBO();
             manager.volleyPostRequestWithLoadingDialog(urlGen.getPostAccUrl(), loadingDialog, postAccommodationJson);
 
         } catch (Exception e) {

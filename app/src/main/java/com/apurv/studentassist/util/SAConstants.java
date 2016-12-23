@@ -249,4 +249,6 @@ public class SAConstants {
     public static final String ACCOMMODATION_ADD_PHOTOS = "accommodation add photos";
 
     public static final String IMAGE_FILE_PATHS = "imageFilePaths";
+
+    public static final String GETTING_NOTIFICATION_SETTINGS ="Getting Notification Settings" ;
 }

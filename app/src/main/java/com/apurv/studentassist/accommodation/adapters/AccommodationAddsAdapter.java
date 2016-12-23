@@ -18,7 +18,7 @@ import com.apurv.studentassist.accommodation.classes.NotificationSettings;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
 import com.apurv.studentassist.airport.interfaces.RecyclerTouchInterface;
-import com.apurv.studentassist.internet.DatabaseManager;
+import com.apurv.studentassist.internet.StudentAssistBO;
 import com.apurv.studentassist.internet.Network;
 import com.apurv.studentassist.internet.NetworkInterface;
 import com.apurv.studentassist.util.ErrorReporting;
@@ -179,7 +179,7 @@ public class AccommodationAddsAdapter extends RecyclerView.Adapter<Accommodation
 
             UrlInterface urlGen = new UrlGenerator();
             String url = urlGen.setUserVisitedAdds();
-            DatabaseManager dbManager = new DatabaseManager();
+            StudentAssistBO dbManager = new StudentAssistBO();
 
             NotificationSettings settings = new NotificationSettings();
 
