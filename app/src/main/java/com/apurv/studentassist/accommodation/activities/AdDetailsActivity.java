@@ -1,18 +1,13 @@
 package com.apurv.studentassist.accommodation.activities;
 
-import android.Manifest;
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
@@ -27,7 +22,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.Dialogs.AlertDialogDismiss;
-import com.apurv.studentassist.accommodation.Dialogs.AlertDialogL;
 import com.apurv.studentassist.accommodation.Dialogs.DeleteAccommodationAdd;
 import com.apurv.studentassist.accommodation.Dialogs.ImageViewDialog;
 import com.apurv.studentassist.accommodation.Dialogs.LoadingDialog;
@@ -331,61 +325,7 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
     }
 
 
-    @TargetApi(Build.VERSION_CODES.M)
-    public void callPoster() {
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-
-            requestPermissions(new String[]{Manifest.permission.CALL_PHONE},
-                    MY_PERMISSIONS_REQUEST_CALL_PHONE);
-
-            return;
-        }
-        Intent callIntent = new Intent(Intent.ACTION_CALL);
-        callIntent.setData(Uri.parse("tel:" + clickedAdd.getPhoneNumber()));
-        startActivity(callIntent);
-
-
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_CALL_PHONE: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    Intent callIntent = new Intent(Intent.ACTION_CALL);
-                    callIntent.setData(Uri.parse("tel:" + clickedAdd.getPhoneNumber()));
-                    if (checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-
-                        Bundle b = new Bundle();
-                        b.putString(SAConstants.ALERT_TEXT, "");
-                        AlertDialogL AlertDialogL = new AlertDialogL();
-                        AlertDialogL.show(getSupportFragmentManager(), "");
-                        return;
-                    }
-                    startActivity(callIntent);
-
-
-                } else {
-
-                    Bundle b = new Bundle();
-                    b.putString(SAConstants.ALERT_TEXT, "");
-                    AlertDialogL AlertDialogL = new AlertDialogL();
-                    AlertDialogL.show(getSupportFragmentManager(), "");
-                }
-                return;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
-        }
-    }
-
-
+    @Deprecated
     public void emailPoster(View view) {
 
         Intent intent = new Intent(Intent.ACTION_SEND);

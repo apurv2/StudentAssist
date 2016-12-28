@@ -25,11 +25,11 @@ import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.Dialogs.SimpleSubscriptionAlertDialog;
 import com.apurv.studentassist.accommodation.Interfaces.AccommodationActivityToFragmentInterface;
 import com.apurv.studentassist.accommodation.Interfaces.AccommodationBI;
-import com.apurv.studentassist.accommodation.Interfaces.DialogCallback;
+import com.apurv.studentassist.accommodation.Interfaces.OnLoadMoreListener;
 import com.apurv.studentassist.accommodation.activities.AccommodationActivity;
 import com.apurv.studentassist.accommodation.activities.AdDetailsActivity;
 import com.apurv.studentassist.accommodation.activities.NotificationSettingsActivity;
-import com.apurv.studentassist.accommodation.adapters.AccommodationAddsAdapter;
+import com.apurv.studentassist.accommodation.adapters.AccommodationAddsAdapterLoader;
 import com.apurv.studentassist.accommodation.business.rules.AccommodationBO;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
@@ -45,14 +45,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SearchAccomodationFragment extends Fragment implements
-        OnItemSelectedListener, DialogCallback, RecyclerTouchInterface {
+        OnItemSelectedListener, RecyclerTouchInterface {
 
 
     private View pageView;
     Spinner leftSpinner, rightSpinner;
     UrlInterface urlGen = new UrlGenerator();
     private RecyclerView mRecyclerVIew;
-    private AccommodationAddsAdapter mAccommodationAddsAdapter;
+    private AccommodationAddsAdapterLoader mAccommodationAddsAdapter;
     ArrayList<AccommodationAdd> adds = new ArrayList<AccommodationAdd>();
     String historyLeftSpinner = "", historyRightSpinner = "";
     String leftSpinnerSameVal = "", rightSpinnerSameVal = "";
@@ -145,50 +145,6 @@ public class SearchAccomodationFragment extends Fragment implements
 
     }
 
-    /**
-     * The user has responded to subscribe to push notifications
-     *
-     * @param response
-     * @throws UnsupportedEncodingException
-     */
-    @Override
-    public void OnDialogResponse(int response) throws UnsupportedEncodingException {
-        insertNotifications();
-    }
-
-
-    /**
-     * code to insert notification
-     */
-    public void insertNotifications() {
-
-       /* //  Utilities.showView(pageView, R.id.loadingPanel);
-
-        final LoadingDialog loadingDialog = Utilities.showLoadingDialog(SAConstants.REQUESTING_SUBSCTIPTION, getActivity().getSupportFragmentManager());
-
-        SharedPreferences sharedPreferences = getActivity().getApplicationContext().getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
-        byte[] userInformationBytes = Base64.decode(sharedPreferences.getString(SAConstants.USER, ""), Base64.DEFAULT);
-        User user = (User) ObjectSerializer.deserialize(userInformationBytes);
-        String gcmId = sharedPreferences.getString(SAConstants.GCM_ID, "");
-
-        try {
-
-            TelephonyManager telephonyManager = (TelephonyManager) getActivity().getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
-            String deviceId = telephonyManager.getDeviceId();
-
-
-            String url = urlGen.getSubscribeNotificationsUrl("0", leftSpinner.getSelectedItem().toString(),
-                    rightSpinner.getSelectedItem().toString(), user.getUserId(), gcmId, deviceId);
-
-            new NotificationBO(loadingDialog, url);
-
-
-        } catch (Exception e) {
-            ErrorReporting.logReport(e);
-        }*/
-
-
-    }
 
     public void setSpinners() {
         // data from local
@@ -209,15 +165,26 @@ public class SearchAccomodationFragment extends Fragment implements
     public void setmRecyclerVIew() {
 
         try {
-
-
-            mAccommodationAddsAdapter = new AccommodationAddsAdapter(pageView.getContext(), new ArrayList<AccommodationAdd>(), this);
-
             mRecyclerVIew = (RecyclerView) pageView.findViewById(R.id.addslist);
+
+            mAccommodationAddsAdapter = new AccommodationAddsAdapterLoader(pageView.getContext(), new ArrayList<AccommodationAdd>(), this, mRecyclerVIew);
             mRecyclerVIew.setAdapter(mAccommodationAddsAdapter);
-
-
             mRecyclerVIew.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+
+            mAccommodationAddsAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
+                @Override
+                public void onLoadMore() {
+
+                    mAccommodationAddsAdapter.add(null);
+
+
+                    //   remove progress item
+                    mAccommodationAddsAdapter.pop();
+                    mAccommodationAddsAdapter.setLoaded();
+                    //or you can add all at once but do not forget to call mAdapter.notifyDataSetChanged();
+
+                }
+            });
 
 
         } catch (Exception e) {
@@ -445,10 +412,7 @@ public class SearchAccomodationFragment extends Fragment implements
 
         details.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivityForResult(details, 1, options.toBundle());
-
-
     }
-
 
     @Override
     public void onPause() {
@@ -480,13 +444,4 @@ public class SearchAccomodationFragment extends Fragment implements
         }
     }
 
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        L.m(resultCode+"");
-
-
-    }
 }
