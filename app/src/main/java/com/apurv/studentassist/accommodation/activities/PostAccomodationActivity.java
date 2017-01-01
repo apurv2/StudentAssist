@@ -150,7 +150,6 @@ public class PostAccomodationActivity extends AppCompatActivity implements
             ArrayList<String> selectedFilePaths;
             selectedFilePaths = bundle.getStringArrayList(SAConstants.IMAGE_FILE_PATHS);
 
-
             for (String selectedFilePath : selectedFilePaths) {
 
                 File file = new File(selectedFilePath);
@@ -166,11 +165,7 @@ public class PostAccomodationActivity extends AppCompatActivity implements
 
                 imageViewReference = new WeakReference<Bitmap>(myBitmap);
                 mImage.setImageBitmap(imageViewReference.get());
-
-
             }
-
-
         }
 
         if (mImagesList.isEmpty()) {
@@ -659,10 +654,8 @@ public class PostAccomodationActivity extends AppCompatActivity implements
             Animation animation = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
             animation.setDuration(300);
             mLlContainer.startAnimation(animation);
-            // mIvClose.startAnimation(animation);
             mLlContainer.setVisibility(View.VISIBLE);
 
-            //    mIvClose.setVisibility(View.VISIBLE);
         });
 
 

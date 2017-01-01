@@ -58,7 +58,7 @@ public class AccommodationAddsAdapterLoader extends RecyclerView.Adapter {
     // before loading more.
     private int visibleThreshold = 10;
     private int lastVisibleItem, totalItemCount;
-    private boolean loading;
+    private boolean loading = false;
     private OnLoadMoreListener onLoadMoreListener;
 
     public AccommodationAddsAdapterLoader(Context context, List<AccommodationAdd> data, RecyclerTouchInterface parentActivity, RecyclerView recyclerView) {
@@ -80,16 +80,20 @@ public class AccommodationAddsAdapterLoader extends RecyclerView.Adapter {
 
                 totalItemCount = linearLayoutManager.getItemCount();
                 lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                if (!loading
-                        && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
+                if (!loading && totalItemCount == lastVisibleItem + 1 && totalItemCount >=visibleThreshold) {
                     // End has been reached Do something
                     if (onLoadMoreListener != null) {
-                        onLoadMoreListener.onLoadMore();
+                        onLoadMoreListener.onLoadMore(totalItemCount);
                     }
-                    loading = true;
+                           loading = true;
                 }
             }
         });
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return mAccommodationAdds.get(position) != null ? VIEW_ITEM : VIEW_PROG;
     }
 
 
@@ -102,7 +106,6 @@ public class AccommodationAddsAdapterLoader extends RecyclerView.Adapter {
             mviewHolder = new AccommodationAddsViewHolder(view);
         } else {
             View v = inflater.inflate(R.layout.progressbar_item, viewGroup, false);
-
             mviewHolder = new ProgressViewHolder(v);
         }
         return mviewHolder;

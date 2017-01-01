@@ -5,5 +5,5 @@ package com.apurv.studentassist.accommodation.Interfaces;
  */
 
 public interface OnLoadMoreListener {
-    void onLoadMore();
+    void onLoadMore(int position);
 }

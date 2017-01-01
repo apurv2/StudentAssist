@@ -29,6 +29,7 @@ import com.apurv.studentassist.accommodation.Interfaces.OnLoadMoreListener;
 import com.apurv.studentassist.accommodation.activities.AccommodationActivity;
 import com.apurv.studentassist.accommodation.activities.AdDetailsActivity;
 import com.apurv.studentassist.accommodation.activities.NotificationSettingsActivity;
+import com.apurv.studentassist.accommodation.adapters.AccommodationAddsAdapter;
 import com.apurv.studentassist.accommodation.adapters.AccommodationAddsAdapterLoader;
 import com.apurv.studentassist.accommodation.business.rules.AccommodationBO;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
@@ -56,6 +57,7 @@ public class SearchAccomodationFragment extends Fragment implements
     ArrayList<AccommodationAdd> adds = new ArrayList<AccommodationAdd>();
     String historyLeftSpinner = "", historyRightSpinner = "";
     String leftSpinnerSameVal = "", rightSpinnerSameVal = "";
+    String recentUrl = "";
 
     Bundle bundle;
     boolean reEntryFlag = false;
@@ -166,22 +168,47 @@ public class SearchAccomodationFragment extends Fragment implements
 
         try {
             mRecyclerVIew = (RecyclerView) pageView.findViewById(R.id.addslist);
+            mRecyclerVIew.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+
+            //old adapter
+            //  mAccommodationAddsAdapter = new AccommodationAddsAdapter(pageView.getContext(), new ArrayList<AccommodationAdd>(), this);
+
 
             mAccommodationAddsAdapter = new AccommodationAddsAdapterLoader(pageView.getContext(), new ArrayList<AccommodationAdd>(), this, mRecyclerVIew);
             mRecyclerVIew.setAdapter(mAccommodationAddsAdapter);
-            mRecyclerVIew.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
 
             mAccommodationAddsAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
                 @Override
-                public void onLoadMore() {
+                public void onLoadMore(int position) {
 
                     mAccommodationAddsAdapter.add(null);
 
 
-                    //   remove progress item
-                    mAccommodationAddsAdapter.pop();
-                    mAccommodationAddsAdapter.setLoaded();
-                    //or you can add all at once but do not forget to call mAdapter.notifyDataSetChanged();
+                    new AccommodationBO(UrlGenerator.getPaginationUrl(recentUrl, position), new AccommodationBI() {
+                        @Override
+                        public void onAccommodationAddsReady(ArrayList<AccommodationAdd> advertisements) {
+                            mAccommodationAddsAdapter.pop();
+
+                            L.m("populating pagination");
+                            adds.addAll(advertisements);
+                            addToRecyclerView(advertisements);
+
+                            //   remove progress item
+                                mAccommodationAddsAdapter.setLoaded();
+
+
+                        }
+
+                        //not needed
+                        @Override
+                        public void onApartmentNamesReady(ArrayList<String> apartmentNames) {
+
+                        }
+
+
+                    }, SAConstants.ACCOMMODATION_ADDS);
+
+
 
                 }
             });
@@ -336,6 +363,8 @@ public class SearchAccomodationFragment extends Fragment implements
 
     private void getFromServer(String url, String left, String right) {
 
+        recentUrl = url;
+
         try {
 
             // Checking if the server call happens only once for the same parameters. It does not however store the previous history.
@@ -400,6 +429,17 @@ public class SearchAccomodationFragment extends Fragment implements
             ErrorReporting.logReport(e);
         }
     }
+
+    private void addToRecyclerView(ArrayList<AccommodationAdd> advertisements) {
+
+        try {
+
+            mAccommodationAddsAdapter.addAll(advertisements);
+        } catch (Exception e) {
+            ErrorReporting.logReport(e);
+        }
+    }
+
 
     @Override
     public void onTouch(int position, View view) {

@@ -9,7 +9,10 @@ import com.facebook.FacebookSdk;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+
+import static java.sql.DriverManager.println;
 
 /**
  * Created by apurv on 6/7/15.
@@ -175,7 +178,7 @@ public class UrlGenerator implements UrlInterface {
                 + SAConstants.USER_ID + "=" + URLEncoder.encode(userId, "UTF-8")
                 + "&" + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
 */
-        url = SAConstants.URL + "/"+ POST_ACCOMMODATION ;//+ "?" + parameters;
+        url = SAConstants.URL + "/" + POST_ACCOMMODATION;//+ "?" + parameters;
 
         return url;
     }
@@ -321,5 +324,61 @@ public class UrlGenerator implements UrlInterface {
         return url;
     }
 
+    public static String getPaginationUrl(String url, int position) {
+        String preUrl = url.split("\\?")[0];
+        String params = url.split("\\?")[1];
+
+        LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) getQueryMap(params);
+
+        if (map.containsKey(SAConstants.POSITION)) {
+
+            map.remove(SAConstants.POSITION);
+        }
+        map.put(SAConstants.POSITION, String.valueOf(position));
+
+        return frameUrlFromMap(preUrl, map);
+
+
+    }
+
+    private static String frameUrlFromMap(String preUrl, LinkedHashMap<String, String> map) {
+
+        try {
+            StringBuffer url = new StringBuffer(preUrl + "?");
+
+            for (String key : map.keySet()) {
+                url.append(key);
+                url.append("=");
+                url.append(map.get(key));
+                url.append("&");
+
+
+            }
+            url.deleteCharAt(url.length() - 1);
+
+            return url.toString();
+        } catch (Exception e) {
+            ErrorReporting.logReport(e);
+        }
+        return "";
+    }
+
+    public static Map<String, String> getQueryMap(String query) {
+        String[] params = query.split("&");
+        Map<String, String> map = new LinkedHashMap<String, String>();
+        for (String param : params) {
+            String name = param.split("=")[0];
+            String value = param.split("=")[1];
+            map.put(name, value);
+        }
+        return map;
+    }
+
+    public static Map<String, String> getUrlFromMap(Map queryMap) {
+
+
+        return null;
+
+    }
 
 }
