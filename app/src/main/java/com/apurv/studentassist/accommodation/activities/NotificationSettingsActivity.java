@@ -157,15 +157,8 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
                         try {
 
-
-                            UnsubscribeNotifications unsubscribeNotifications = new UnsubscribeNotifications();
-                            if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
-
-                                String fbToken = AccessToken.getCurrentAccessToken().getToken();
-                                unsubscribeNotifications.setAccess_token(fbToken);
-                            }
                             Gson gson = new Gson();
-                            String mUnsubscribeJson = gson.toJson(unsubscribeNotifications);
+                            String mUnsubscribeJson = gson.toJson(new UnsubscribeNotifications(urlgen.getAccessToken()));
 
                             manager.volleyPostRequest(urlgen.unSubscribeNotifications(), new NetworkInterface() {
                                 @Override
@@ -246,6 +239,10 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
     private class UnsubscribeNotifications {
         String access_token;
+
+        UnsubscribeNotifications(String access_token) {
+            this.access_token = access_token;
+        }
 
         public String getAccess_token() {
             return access_token;

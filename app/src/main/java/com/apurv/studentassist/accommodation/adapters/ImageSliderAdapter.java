@@ -49,6 +49,11 @@ public class ImageSliderAdapter extends PagerAdapter {
         container.removeView((View) object);
     }
 
+    public void removeItem(int position) {
+        mImages.remove(position);
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
         return mImages.size();
@@ -95,12 +100,12 @@ public class ImageSliderAdapter extends PagerAdapter {
             File file = null;
             file = new File(url);
 
-               if (file != null && file.exists()) {
+            if (file != null && file.exists()) {
 
-                   Bitmap myBitmap = Utilities.decodeSampledBitmapFromResource(file,500,500);
-                   WeakReference<Bitmap> imageViewReference;
-                   imageViewReference = new WeakReference<Bitmap>(myBitmap);
-                   imageView.setImageBitmap(imageViewReference.get());
+                Bitmap myBitmap = Utilities.decodeSampledBitmapFromResource(file, 500, 500);
+                WeakReference<Bitmap> imageViewReference;
+                imageViewReference = new WeakReference<Bitmap>(myBitmap);
+                imageView.setImageBitmap(imageViewReference.get());
             }
 
 
@@ -124,5 +129,14 @@ public class ImageSliderAdapter extends PagerAdapter {
         return null;
     }
 
+    @Override
+    public int getItemPosition(Object object) {
 
+        if (mImages.contains((View) object)) {
+
+            return mImages.indexOf((View) object);
+        } else {
+            return POSITION_NONE;
+        }
+    }
 }

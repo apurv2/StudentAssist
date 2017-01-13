@@ -119,7 +119,7 @@ public class PostAccomodationActivity extends AppCompatActivity implements
     String aptTypeSpinnerVal = "";
     Cloudinary cloudinary;
     List<File> mImagesList = new ArrayList<File>();
-    Set<String> filePaths = new LinkedHashSet<>();
+    List<String> filePaths = new ArrayList<>();
     private final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 0;
     private final int MY_PERMISSIONS_REQUEST_CAMERA_EXTERNAL_STORAGE = 1;
     private final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 2;
@@ -408,7 +408,7 @@ public class PostAccomodationActivity extends AppCompatActivity implements
             intent.putStringArrayListExtra(SAConstants.ACCOMMODATION_ADD_PHOTOS, (ArrayList<String>) selectedFilePaths);
             intent.putExtra(SAConstants.IMAGE_TYPE, SAConstants.LOCAL_IMAGES);
             intent.putExtra(SAConstants.POSITION, position);
-            startActivity(intent);
+            startActivityForResult(intent, 3);
 
 
         } catch (Exception e) {
@@ -507,21 +507,50 @@ public class PostAccomodationActivity extends AppCompatActivity implements
 
                             imageViewReference = new WeakReference<Bitmap>(myBitmap);
                             mImage.setImageBitmap(imageViewReference.get());
-
                         }
-
                     }
-
-
                 } else {
                     Utilities.showALertDialog("You can load maximum of 3 images", getSupportFragmentManager());
                 }
 
             }
         }
+        if (requestCode == 3 && resultCode == RESULT_OK) {
+            int temp = 0;
+            int i = 0;
+            try {
+                List<Integer> deletedPhotos = data.getIntegerArrayListExtra(SAConstants.DELETED_PHOTOS);
+                for (int deletedPhoto : deletedPhotos) {
+                    temp = deletedPhoto;
+                    for (int j = deletedPhoto; j < mImagesList.size() - 1; j++) {
+                        imageHolders.get(j).setImageDrawable(imageHolders.get(j + 1).getDrawable());
+                    }
+                    imageHolders.get(mImagesList.size() - 1).setImageDrawable(getResources().getDrawable(R.drawable.ic_gallery));
+                    filePaths.remove(deletedPhoto);
+                    mImagesList.remove(deletedPhoto);
+                    i++;
+                }
+                L.m(filePaths.size() + "");
+
+            } catch (Exception e) {
+                L.m("path==" + mImagesList.get(temp).getAbsolutePath());
+
+                if (filePaths.contains(mImagesList.get(temp).getAbsolutePath())) {
+                    L.m("contains");
+                } else {
+                    L.m("does not contain");
+
+                }
+                L.m("size" + filePaths.size() + "");
+
+                L.m("i==" + i);
+                e.printStackTrace();
+            }
+
+        }
     }
 
-    private void startImagesUpload(final Set<String> filePaths) {
+    private void startImagesUpload(final List<String> filePaths) {
 
         final LoadingDialog loadingDialog = Utilities.showLoadingDialog(SAConstants.UPLOADING_IMAGES, getSupportFragmentManager());
 

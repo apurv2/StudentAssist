@@ -24,13 +24,13 @@ import com.apurv.studentassist.airport.interfaces.RecyclerTouchInterface;
 import com.apurv.studentassist.internet.Network;
 import com.apurv.studentassist.internet.NetworkInterface;
 import com.apurv.studentassist.internet.StudentAssistBO;
+import com.apurv.studentassist.util.CircleRectView;
 import com.apurv.studentassist.util.ErrorReporting;
 import com.apurv.studentassist.util.L;
 import com.apurv.studentassist.util.SAConstants;
 import com.apurv.studentassist.util.Utilities;
 import com.facebook.AccessToken;
 import com.google.gson.Gson;
-import com.pkmmte.view.CircularImageView;
 
 import java.util.Collections;
 import java.util.List;
@@ -208,7 +208,7 @@ public class AccommodationAddsAdapterLoader extends RecyclerView.Adapter {
         TextView apartmentName;
         TextView noOfRooms;
         TextView costOfLiving;
-        CircularImageView circularImageView;
+        CircleRectView circularImageView;
         ImageView userVisited;
 
 
@@ -219,7 +219,7 @@ public class AccommodationAddsAdapterLoader extends RecyclerView.Adapter {
             apartmentName = (TextView) itemView.findViewById(R.id.large);
             noOfRooms = (TextView) itemView.findViewById(R.id.medium);
             costOfLiving = (TextView) itemView.findViewById(R.id.small);
-            circularImageView = (CircularImageView) itemView.findViewById(R.id.userPhoto3);
+            circularImageView = (CircleRectView) itemView.findViewById(R.id.userPhoto3);
             userVisited = (ImageView) itemView.findViewById(R.id.userVisited);
         }
 

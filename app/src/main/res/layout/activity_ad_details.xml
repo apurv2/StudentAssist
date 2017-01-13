@@ -24,7 +24,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
 
-            <ImageView
+            <com.apurv.studentassist.util.CircleRectView
                 android:id="@+id/adDetailsImageView"
                 android:layout_width="match_parent"
                 android:layout_height="170dp"
@@ -52,12 +52,15 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
+            android:id="@+id/adDetailsLinearLayout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
 
             <android.support.v7.widget.CardView
+                android:id="@+id/ad_details_cardId"
+                android:visibility="invisible"
                 android:layout_width="fill_parent"
                 android:layout_height="245dp"
                 android:layout_gravity="center_horizontal"
@@ -73,7 +76,9 @@
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
+                android:id="@+id/ad_details_contactId"
                 android:layout_width="fill_parent"
+                android:visibility="invisible"
                 android:layout_height="120dp"
                 android:layout_gravity="center_horizontal"
                 android:orientation="vertical"
@@ -88,6 +93,8 @@
 
             <android.support.v7.widget.CardView
                 android:layout_width="fill_parent"
+                android:id="@+id/photosId"
+                android:visibility="invisible"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:orientation="vertical"
@@ -101,6 +108,8 @@
             <android.support.v7.widget.CardView
                 android:layout_width="fill_parent"
                 android:layout_height="245dp"
+                android:id="@+id/notesCardId"
+                android:visibility="invisible"
                 android:layout_gravity="center_horizontal"
                 android:orientation="vertical"
                 android:paddingTop="20dp"

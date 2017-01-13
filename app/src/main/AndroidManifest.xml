@@ -46,6 +46,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"></meta-data>
         </provider>
+
         <service
             android:name=".notifications.receiver.MyGcmListenerService"
             android:exported="false">
@@ -132,7 +133,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".accommodation.activities.AccommodationActivity" />
         </activity>
-        <activity android:name=".accommodation.activities.PhotosViewActivity"></activity>
+        <activity android:name=".accommodation.activities.PhotosViewActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".accommodation.activities.PostAccomodationActivity" />
+        </activity>
     </application>
 
 </manifest>

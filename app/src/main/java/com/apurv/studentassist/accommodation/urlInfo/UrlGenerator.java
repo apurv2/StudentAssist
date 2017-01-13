@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static com.apurv.studentassist.R.id.aptType;
 import static java.sql.DriverManager.println;
 
 /**
@@ -62,16 +63,15 @@ public class UrlGenerator implements UrlInterface {
 
     }
 
-    private String getAccessToken() {
+    @Override
+    public String getAccessToken() {
 
 
         FacebookSdk.sdkInitialize(StudentAssistApplication.getAppContext());
-
         if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
             String fbToken = AccessToken.getCurrentAccessToken().getToken();
             return fbToken;
         }
-
         return "";
 
 

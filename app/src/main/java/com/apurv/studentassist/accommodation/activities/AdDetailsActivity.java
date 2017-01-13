@@ -1,20 +1,35 @@
 package com.apurv.studentassist.accommodation.activities;
 
+import android.animation.LayoutTransition;
+import android.annotation.TargetApi;
+import android.app.SharedElementCallback;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.transition.Slide;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
+import android.transition.TransitionSet;
 import android.util.Base64;
+import android.view.Gravity;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -32,6 +47,7 @@ import com.apurv.studentassist.accommodation.classes.User;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
 import com.apurv.studentassist.internet.Network;
+import com.apurv.studentassist.util.CircleToRectTransition;
 import com.apurv.studentassist.util.ErrorReporting;
 import com.apurv.studentassist.util.L;
 import com.apurv.studentassist.util.ObjectSerializer;
@@ -46,6 +62,9 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static android.R.attr.id;
+import static com.apurv.studentassist.R.id.ad_details_contactId;
 
 //Using Serialization because parcel cannot be stored into shared Preferences
 
@@ -65,6 +84,25 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
 
     @Bind(R.id.adDetails_placeholder1)
     ImageView imageHolder1;
+
+
+    @Bind(R.id.ad_details_contactId)
+    CardView ad_details_contactId;
+
+
+    @Bind(R.id.photosId)
+    CardView photosId;
+
+
+    @Bind(R.id.notesCardId)
+    CardView notesCardId;
+
+    @Bind(R.id.ad_details_cardId)
+    CardView ad_details_cardId;
+
+
+    @Bind(R.id.adDetailsLinearLayout)
+    LinearLayout adDetailsLinearLayout;
 
     @Bind(R.id.adDetails_placeholder2)
     ImageView imageHolder2;
@@ -104,6 +142,10 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ad_details);
         ButterKnife.bind(this);
+
+
+        setupEnterAnimation();
+
 
         imageHolders = new ArrayList<>(Arrays.asList(imageHolder1, imageHolder2, imageHolder3));
         imageLoaders = new ArrayList<>(Arrays.asList(imageLoader1, imageLoader2, imageLoader3));
@@ -182,7 +224,81 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
 
             }
         });
+
+        setupTransition();
     }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void setupEnterAnimation() {
+
+        Transition transition = new CircleToRectTransition();
+        transition.setDuration(1500);
+        getWindow().setSharedElementEnterTransition(transition);
+        getWindow().setSharedElementExitTransition(new CircleToRectTransition().setDuration(1500));
+
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void setupTransition() {
+
+        Transition transition = TransitionInflater.from(this)
+                .inflateTransition(R.transition.changebounds_with_arcmotion);
+        getWindow().setSharedElementEnterTransition(transition);
+        transition.addListener(new Transition.TransitionListener() {
+            @Override
+            public void onTransitionStart(Transition transition) {
+
+
+
+                View[] views = new View[]{ad_details_contactId, ad_details_cardId,  notesCardId};
+
+                int delayBetweenAnimations = 130;
+
+                for (int i = 0; i < views.length; i++) {
+                    final View mAddDetailCardView = views[i];
+
+                    // We calculate the delay for this Animation, each animation starts 100ms
+                    // after the previous one
+                    int delay = i * delayBetweenAnimations;
+
+                    mAddDetailCardView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.bottom_up);
+                            animation.setDuration(300);
+                            mAddDetailCardView.startAnimation(animation);
+                            Utilities.showView(mAddDetailCardView);
+                        }
+                    }, delay);
+                }
+
+
+            }
+
+            @Override
+            public void onTransitionEnd(Transition transition) {
+
+            }
+
+            @Override
+            public void onTransitionCancel(Transition transition) {
+
+            }
+
+            @Override
+            public void onTransitionPause(Transition transition) {
+
+            }
+
+            @Override
+            public void onTransitionResume(Transition transition) {
+
+            }
+        });
+
+
+    }
+
 
     private void loadAccommodationPictures(AccommodationAdd clickedAdd) {
 

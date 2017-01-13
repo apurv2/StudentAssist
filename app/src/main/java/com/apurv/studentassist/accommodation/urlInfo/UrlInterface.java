@@ -42,5 +42,7 @@ public interface UrlInterface {
 
     public String unSubscribeNotifications() throws UnsupportedEncodingException;
 
+    public String getAccessToken();
+
 
 }

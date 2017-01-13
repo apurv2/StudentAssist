@@ -22,8 +22,10 @@ import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.Dialogs.AdvancedSubscriptionAlertDialog;
 import com.apurv.studentassist.accommodation.Interfaces.AccommodationBI;
 import com.apurv.studentassist.accommodation.Interfaces.DialogCallback;
+import com.apurv.studentassist.accommodation.Interfaces.OnLoadMoreListener;
 import com.apurv.studentassist.accommodation.activities.AdDetailsActivity;
 import com.apurv.studentassist.accommodation.adapters.AccommodationAddsAdapter;
+import com.apurv.studentassist.accommodation.adapters.AccommodationAddsAdapterLoader;
 import com.apurv.studentassist.accommodation.business.rules.AccommodationBO;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
@@ -46,12 +48,14 @@ public class AdvancedSearchFragment extends Fragment implements
     Spinner aptTypes, aptNames, sex;
     UrlInterface urlGen = new UrlGenerator();
     private RecyclerView mRecyclerVIew;
-    private AccommodationAddsAdapter mAccommodationAddsAdapter;
+    private AccommodationAddsAdapterLoader mAccommodationAddsAdapter;
     ArrayList<AccommodationAdd> adds = new ArrayList<AccommodationAdd>();
     Bundle bundle;
     boolean reEntryFlag = false;
     String aptNamesVal = "", sexVal = "";
     ArrayList<String> mApartmentNames;
+    String recentUrl = "";
+
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -231,20 +235,68 @@ public class AdvancedSearchFragment extends Fragment implements
 
         try {
 
-
-            mAccommodationAddsAdapter = new AccommodationAddsAdapter(pageView.getContext(), new ArrayList<AccommodationAdd>(), this);
-
             mRecyclerVIew = (RecyclerView) pageView.findViewById(R.id.advSearchRecyclerView);
+            mRecyclerVIew.setLayoutManager(new LinearLayoutManager(pageView.getContext()));
+
+            //old adapter
+           // mAccommodationAddsAdapter = new AccommodationAddsAdapter(pageView.getContext(), new ArrayList<AccommodationAdd>(), this);
+            mAccommodationAddsAdapter = new AccommodationAddsAdapterLoader(pageView.getContext(), new ArrayList<AccommodationAdd>(), this, mRecyclerVIew);
+
             mRecyclerVIew.setAdapter(mAccommodationAddsAdapter);
 
+            mAccommodationAddsAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
+                @Override
+                public void onLoadMore(int position) {
 
-            mRecyclerVIew.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+                    mAccommodationAddsAdapter.add(null);
+
+
+                    new AccommodationBO(UrlGenerator.getPaginationUrl(recentUrl, position), new AccommodationBI() {
+                        @Override
+                        public void onAccommodationAddsReady(ArrayList<AccommodationAdd> advertisements) {
+                            mAccommodationAddsAdapter.pop();
+
+                            L.m("populating pagination");
+                            adds.addAll(advertisements);
+                            addToRecyclerView(advertisements);
+
+                            //   remove progress item
+                            mAccommodationAddsAdapter.setLoaded();
+
+
+                        }
+
+                        //not needed
+                        @Override
+                        public void onApartmentNamesReady(ArrayList<String> apartmentNames) {
+
+                        }
+
+
+                    }, SAConstants.ACCOMMODATION_ADDS);
+
+
+
+                }
+            });
+
+
 
 
         } catch (Exception e) {
             ErrorReporting.logReport(e);
         }
 
+    }
+
+    private void addToRecyclerView(ArrayList<AccommodationAdd> advertisements) {
+
+        try {
+
+            mAccommodationAddsAdapter.addAll(advertisements);
+        } catch (Exception e) {
+            ErrorReporting.logReport(e);
+        }
     }
 
     // Creating adapter for the spinner with strings returned from the server
@@ -332,6 +384,8 @@ public class AdvancedSearchFragment extends Fragment implements
 
 
     private void getFromServer(String url) {
+
+        recentUrl = url;
 
         try {
 

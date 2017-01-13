@@ -27,10 +27,11 @@ import com.apurv.studentassist.accommodation.activities.UserPostsActivity;
 import com.apurv.studentassist.accommodation.adapters.NavigationDrawerAdapter;
 import com.apurv.studentassist.accommodation.classes.NavigationDrawerData;
 import com.apurv.studentassist.accommodation.classes.User;
+import com.apurv.studentassist.util.CircleRectView;
 import com.apurv.studentassist.util.ObjectSerializer;
 import com.apurv.studentassist.util.SAConstants;
 import com.apurv.studentassist.util.Utilities;
-import com.pkmmte.view.CircularImageView;
+
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -133,7 +134,7 @@ public class AccommodationDrawerFragment extends Fragment {
             try {
 
 
-                CircularImageView circularImageView = (CircularImageView) mView.findViewById(R.id.userPhoto);
+                CircleRectView circularImageView = (CircleRectView) mView.findViewById(R.id.userPhoto);
                 circularImageView.setImageBitmap(bitmap);
 
                 TextView name = (TextView) mView.findViewById(R.id.Title);
@@ -141,9 +142,8 @@ public class AccommodationDrawerFragment extends Fragment {
 
                 TextView email = (TextView) mView.findViewById(R.id.subTitle);
                 email.setText("Hope you are doing good!!");
-            }catch (NullPointerException e)
-            {
-                Utilities.showALertDialog("something has gone wrong,Please Reinstall the app",getFragmentManager());
+            } catch (NullPointerException e) {
+                Utilities.showALertDialog("something has gone wrong,Please Reinstall the app", getFragmentManager());
             }
 
         }

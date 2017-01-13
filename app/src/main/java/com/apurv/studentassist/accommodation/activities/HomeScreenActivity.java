@@ -30,6 +30,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomeScreenActivity extends AppCompatActivity {
     // private ActionBarControlMethods ActionBarControl = new ActionBarControlMethods();
@@ -135,17 +137,20 @@ public class HomeScreenActivity extends AppCompatActivity {
      */
     public void courses(View view) {
 
-        new AccommodationBO("http://sassist-9vtjvsmaju.elasticbeanstalk.com/rest/hello/hey/apurv", new PostAccommodationBI() {
-            @Override
-            public void onResponse(String response) {
-                L.m("response ==" + response);
-            }
 
-            @Override
-            public void onPostAddResponse(String response, DialogFragment dialogFragment) {
+        List selectedFilePaths = new ArrayList<String>();
 
-            }
-        });
+        selectedFilePaths.add("/storage/emulated/0/WhatsApp/Media/WhatsApp Images/IMG-20170106-WA0025.jpg");
+        selectedFilePaths.add("/storage/emulated/0/DCIM/Camera/20170111_182037.jpg");
+        selectedFilePaths.add("/storage/emulated/0/WhatsApp/Media/WhatsApp Images/IMG-20170111-WA0002.jpg");
+
+
+        Intent intent = new Intent(this, PhotosViewActivity.class);
+        intent.putStringArrayListExtra(SAConstants.ACCOMMODATION_ADD_PHOTOS, (ArrayList<String>) selectedFilePaths);
+        intent.putExtra(SAConstants.IMAGE_TYPE, SAConstants.LOCAL_IMAGES);
+        intent.putExtra(SAConstants.POSITION, 0);
+        startActivityForResult(intent, 0);
+
 
     }
 
@@ -267,4 +272,9 @@ public class HomeScreenActivity extends AppCompatActivity {
             // permissions this app might request
         }
     }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    L.m(resultCode+"");
+    }
+
 }
