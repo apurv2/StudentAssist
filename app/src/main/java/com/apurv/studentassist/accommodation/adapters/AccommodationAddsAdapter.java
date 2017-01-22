@@ -18,9 +18,9 @@ import com.apurv.studentassist.accommodation.classes.NotificationSettings;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
 import com.apurv.studentassist.airport.interfaces.RecyclerTouchInterface;
-import com.apurv.studentassist.internet.StudentAssistBO;
 import com.apurv.studentassist.internet.Network;
 import com.apurv.studentassist.internet.NetworkInterface;
+import com.apurv.studentassist.internet.StudentAssistBO;
 import com.apurv.studentassist.util.CircleRectView;
 import com.apurv.studentassist.util.ErrorReporting;
 import com.apurv.studentassist.util.L;
@@ -168,13 +168,16 @@ public class AccommodationAddsAdapter extends RecyclerView.Adapter<Accommodation
         public void onClick(View v) {
             if (v != null) {
                 Utilities.showView(v.findViewById(R.id.userVisited));
-                setUserVisitedAdds(mAccommodationAdds.get(getAdapterPosition()).getAddId());
+                setUserVisitedAdds(getAdapterPosition());
                 parentActivity.onTouch(getAdapterPosition(), v.findViewById(R.id.userPhoto3));
             }
         }
     }
 
-    private void setUserVisitedAdds(String addId) {
+    private void setUserVisitedAdds(int position) {
+
+        mAccommodationAdds.get(position).setUserVisitedSw(true);
+        String addId = mAccommodationAdds.get(position).getAddId();
         try {
 
             UrlInterface urlGen = new UrlGenerator();

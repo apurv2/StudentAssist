@@ -4,16 +4,20 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.StyleSpan;
 
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.activities.AccommodationActivity;
 import com.apurv.studentassist.accommodation.activities.AdDetailsActivity;
+import com.apurv.studentassist.accommodation.activities.HomeScreenActivity;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
 import com.apurv.studentassist.util.L;
 import com.apurv.studentassist.util.SAConstants;
@@ -60,12 +64,12 @@ public class MyGcmListenerService extends GcmListenerService {
             userId = data.getString(SAConstants.USER_ID);
             addId = data.getString(SAConstants.ADD_ID);
             notes = data.getString(SAConstants.NOTES);
-            userVisitedSw = data.getBoolean(SAConstants.USER_VISITED_SW);
+            userVisitedSw = true;
 
 
             sendNotification(new AccommodationAdd(firstName, lastName, emailId,
                     phoneNumber, ApartmentName, vacancies, NoOfRooms, lookingFor,
-                    cost, userId, addId, notes, userVisitedSw,new ArrayList<String>()));
+                    cost, userId, addId, notes, userVisitedSw, new ArrayList<String>()));
 
         } else {
             L.m(data.getString("message"));
@@ -75,39 +79,73 @@ public class MyGcmListenerService extends GcmListenerService {
 
     }
 
+    private Spannable makeBold(String notification) {
+
+        int boldStartPos = notification.indexOf("  ");
+
+        Spannable sb = new SpannableString(notification);
+        sb.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, boldStartPos, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        return sb;
+    }
+
     /**
      * @param add
      */
-    private void sendNotification(AccommodationAdd add) {
+    private void sendNotification(AccommodationAdd add) {   // creating intent to launch AdDetails, putting Accommodation Add in a parcel and passing it to intent
 
-        // creating intent to launch AdDetails, putting Accommodation Add in a parcel and passing it to intent
-        Intent details = new Intent(this, AdDetailsActivity.class);
-        details.putExtra(SAConstants.ACCOMMODATION_ADD_PARCELABLE, (Parcelable) add);
-        details.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        //declaring intents
+        Intent resultIntent;
+        Intent backIntent;
 
-        // Building the task stack to add Accommodation Activity as the parent activity
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(AccommodationActivity.class);
-        stackBuilder.addNextIntent(details);
-
-        // Adding the stack to the pending intent
-        PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
+        //getting shared preferences
+        SharedPreferences pref = getApplicationContext().getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
+        SharedPreferences.Editor editor = pref.edit();
+        String storedNotifications = pref.getString(SAConstants.NOTIFICATION_LIST, "");
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
+        NotificationCompat.InboxStyle notificationStyle = new NotificationCompat.InboxStyle();
+        String currentNotification = add.getFirstName() + "  " + add.getApartmentName() + " " + add.getCost() + " $";
+        notificationStyle.addLine(makeBold(currentNotification));
+        currentNotification += SAConstants.COMMA;
+        if (storedNotifications.isEmpty()) {
+
+            resultIntent = new Intent(this, AdDetailsActivity.class);
+            backIntent = new Intent(this, AccommodationActivity.class);
+            resultIntent.putExtra(SAConstants.ACCOMMODATION_ADD_PARCELABLE, (Parcelable) add);
+
+        } else {
+            resultIntent = new Intent(this, AccommodationActivity.class);
+            backIntent = new Intent(this, HomeScreenActivity.class);
+
+            for (String param : storedNotifications.substring(0, storedNotifications.length() - 1).split(",")) {
+                notificationStyle.addLine(makeBold(param));
+            }
+        }
+        backIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        final PendingIntent resultPendingIntent = PendingIntent.getActivities(this, 0, new Intent[]{backIntent, resultIntent}, PendingIntent.FLAG_ONE_SHOT);
+
+
+        storedNotifications += currentNotification;
+        editor.putString(SAConstants.NOTIFICATION_LIST, storedNotifications);
+        editor.commit();
+
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.logo)
+                .setSmallIcon(R.drawable.ic_logo)
                 .setContentTitle(SAConstants.STUDENT_ASSIST)
-                .setContentText(SAConstants.NOTIFICATION_TEXT_APARTMENT)
+                .setStyle(notificationStyle
+                        .setBigContentTitle(SAConstants.STUDENT_ASSIST)
+                        .setSummaryText("We have some vacancies for you"))
+                .setGroup("apartments group")
+                .setGroupSummary(true)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent);
-
+                .setContentIntent(resultPendingIntent);
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        notificationManager.notify(0 /* ID of currentNotification */, notificationBuilder.build());
     }
 }

@@ -14,6 +14,7 @@ import android.os.Looper;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
@@ -32,6 +33,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
@@ -166,10 +168,12 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
         clickedAdd = intent.getExtras().getParcelable(SAConstants.ACCOMMODATION_ADD_PARCELABLE);
         profilePic = intent.getExtras().getParcelable(SAConstants.PROFILE_PIC);
 
+        //Toast.makeText(this, "addId=="+clickedAdd.getAddId(), Toast.LENGTH_SHORT).show();
+
         loadAccommodationPictures(clickedAdd);
 
         populateAccommodationDetails();
-        // updateRecentlyViewed();
+         //updateRecentlyViewed();
 
         //Navigation Icon
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -225,7 +229,7 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
             }
         });
 
-        setupTransition();
+        setupTransition(!clickedAdd.getAddPhotoIds().isEmpty());
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -238,8 +242,8 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
 
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void setupTransition() {
+     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void setupTransition(boolean displayPhotos) {
 
         Transition transition = TransitionInflater.from(this)
                 .inflateTransition(R.transition.changebounds_with_arcmotion);
@@ -248,18 +252,24 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
             @Override
             public void onTransitionStart(Transition transition) {
 
+                List<View> views = new ArrayList<View>();
+                views.add(ad_details_contactId);
+                views.add(ad_details_cardId);
+                views.add(notesCardId);
 
-
-                View[] views = new View[]{ad_details_contactId, ad_details_cardId,  notesCardId};
+                if (displayPhotos) {
+                    views.add(photosId);
+                }
 
                 int delayBetweenAnimations = 130;
 
-                for (int i = 0; i < views.length; i++) {
-                    final View mAddDetailCardView = views[i];
+                int delayCounter = 0;
+                for (View cardView : views) {
+                    final View mAddDetailCardView = cardView;
 
                     // We calculate the delay for this Animation, each animation starts 100ms
                     // after the previous one
-                    int delay = i * delayBetweenAnimations;
+                    int delay = delayCounter++ * delayBetweenAnimations;
 
                     mAddDetailCardView.postDelayed(new Runnable() {
                         @Override
@@ -303,10 +313,9 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
     private void loadAccommodationPictures(AccommodationAdd clickedAdd) {
 
         int counter = 0;
-        L.m("images size===" + clickedAdd.getAddPhotoIds().size());
 
         if (clickedAdd.getAddPhotoIds().isEmpty()) {
-            Utilities.hideView(findViewById(R.id.ad_details_photos));
+            Utilities.hideView(photosId);
         } else {
 
             for (String url : clickedAdd.getAddPhotoIds()) {

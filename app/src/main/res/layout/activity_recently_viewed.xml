@@ -1,9 +1,9 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scrollbars="none">
+    android:orientation="vertical">
+
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -40,12 +40,13 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recentAdsList"
                     android:layout_width="match_parent"
+
                     android:layout_height="match_parent"
                     android:layout_gravity="top|left"
                     android:divider="#00000000"
                     android:dividerHeight="5dp"
                     android:paddingTop="10dp"
-                    android:scrollbars="none">
+                    android:scrollbars="vertical">
 
                 </android.support.v7.widget.RecyclerView>
 
@@ -55,4 +56,4 @@
     </LinearLayout>
 
 
-</RelativeLayout>
+</LinearLayout>

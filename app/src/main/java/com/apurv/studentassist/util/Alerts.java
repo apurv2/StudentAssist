@@ -27,6 +27,8 @@ public class Alerts {
         errors.put(12, "Please grant call permissions and try again!");
         errors.put(13, "Gender Cannot be empty");
         errors.put(14, "Apartment Types cannot be empty");
+        errors.put(15, "Something went wrong, please try again later");
+
 
 
     }

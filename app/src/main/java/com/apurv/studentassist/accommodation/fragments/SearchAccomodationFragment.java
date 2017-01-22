@@ -29,7 +29,6 @@ import com.apurv.studentassist.accommodation.Interfaces.OnLoadMoreListener;
 import com.apurv.studentassist.accommodation.activities.AccommodationActivity;
 import com.apurv.studentassist.accommodation.activities.AdDetailsActivity;
 import com.apurv.studentassist.accommodation.activities.NotificationSettingsActivity;
-import com.apurv.studentassist.accommodation.adapters.AccommodationAddsAdapter;
 import com.apurv.studentassist.accommodation.adapters.AccommodationAddsAdapterLoader;
 import com.apurv.studentassist.accommodation.business.rules.AccommodationBO;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
@@ -93,9 +92,9 @@ public class SearchAccomodationFragment extends Fragment implements
 
         setHasOptionsMenu(true);
 
-
         return pageView;
     }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -115,7 +114,6 @@ public class SearchAccomodationFragment extends Fragment implements
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.ic_subscribe:
-                //notificationAlert();
                 Intent subscriptionIntent = new Intent(getActivity(), NotificationSettingsActivity.class
                 );
                 startActivity(subscriptionIntent);
@@ -194,7 +192,7 @@ public class SearchAccomodationFragment extends Fragment implements
                             addToRecyclerView(advertisements);
 
                             //   remove progress item
-                                mAccommodationAddsAdapter.setLoaded();
+                            mAccommodationAddsAdapter.setLoaded();
 
 
                         }
@@ -207,7 +205,6 @@ public class SearchAccomodationFragment extends Fragment implements
 
 
                     }, SAConstants.ACCOMMODATION_ADDS);
-
 
 
                 }
@@ -360,6 +357,16 @@ public class SearchAccomodationFragment extends Fragment implements
 
     }
 
+    public void refresh() {
+        L.m("refreshing page after posting acc");
+        try {
+            getFromServer(recentUrl, leftSpinner.getSelectedItem().toString(), rightSpinner.getSelectedItem().toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
 
     private void getFromServer(String url, String left, String right) {
 
@@ -446,6 +453,8 @@ public class SearchAccomodationFragment extends Fragment implements
 
 
         Intent details = new Intent(getActivity(), AdDetailsActivity.class);
+        adds.get(position).setUserVisitedSw(true);
+
         details.putExtra(SAConstants.ACCOMMODATION_ADD_PARCELABLE, (Parcelable) adds.get(position));
         ActivityOptionsCompat options = ActivityOptionsCompat.
                 makeSceneTransitionAnimation(getActivity(), (View) view, "profile");
@@ -484,4 +493,15 @@ public class SearchAccomodationFragment extends Fragment implements
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        AccommodationActivity parentActivity = (AccommodationActivity) getActivity();
+        if (parentActivity.postedAccommodation) {
+            parentActivity.postedAccommodation = false;
+            refresh();
+        }
+
+
+    }
 }

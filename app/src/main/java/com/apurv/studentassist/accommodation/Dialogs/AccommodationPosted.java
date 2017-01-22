@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -25,7 +24,7 @@ public class AccommodationPosted extends DialogFragment {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
-
+        setCancelable(false);
         View pageView = inflater.inflate(R.layout.dialog_alert, null);
         builder.setView(pageView);
 
@@ -40,7 +39,7 @@ public class AccommodationPosted extends DialogFragment {
             @Override
             public void onClick(View v) {
                 PostAccomodationActivity parentActivity = (PostAccomodationActivity) getActivity();
-                parentActivity.closeActivity();
+                parentActivity.closeActivity(true);
                 dismiss();
             }
         });
@@ -49,15 +48,4 @@ public class AccommodationPosted extends DialogFragment {
         // Create the AlertDialog object and return it
         return builder.create();
     }
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (getDialog() != null) {
-            getDialog().setCanceledOnTouchOutside(true);
-        }
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
-
 }

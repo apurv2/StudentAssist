@@ -18,22 +18,18 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.adapters.ImageSliderAdapter;
 import com.apurv.studentassist.util.SAConstants;
 import com.apurv.studentassist.util.Utilities;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static com.apurv.studentassist.R.id.applicationBar;
 
 public class PhotosViewActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -43,6 +39,8 @@ public class PhotosViewActivity extends AppCompatActivity implements View.OnClic
     List imageUrls;
     ImageSliderAdapter mImageSliderAdapter;
     private ArrayList<Integer> deletedPhotos;
+    int position;
+    String callingActivity;
 
 
     @Override
@@ -52,16 +50,37 @@ public class PhotosViewActivity extends AppCompatActivity implements View.OnClic
         ButterKnife.bind(this);
         deletedPhotos = new ArrayList<>();
 
-
         Toolbar toolbar;
         toolbar = (Toolbar) findViewById(R.id.applicationBar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        //Navigation Icon
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PhotosViewActivity.super.onBackPressed();
+            }
+        });
+
+        callingActivity = getIntent().getExtras().getString(SAConstants.CALLING_ACTIVITY);
         imageUrls = getIntent().getExtras().getParcelableArrayList(SAConstants.ACCOMMODATION_ADD_PHOTOS);
+        if (savedInstanceState != null) {
+            deletedPhotos = savedInstanceState.getIntegerArrayList(SAConstants.DELETED_PHOTOS);
+            position = savedInstanceState.getInt(SAConstants.POSITION);
+
+            for (int deletedPhoto : deletedPhotos) {
+                imageUrls.remove(deletedPhoto);
+            }
+
+        } else {
+
+            position = Integer.parseInt(String.valueOf(getIntent().getExtras().get(SAConstants.POSITION)));
+        }
+
         String imageType = String.valueOf(getIntent().getExtras().get(SAConstants.IMAGE_TYPE));
-        int position = Integer.parseInt(String.valueOf(getIntent().getExtras().get(SAConstants.POSITION)));
+
 
         init(imageUrls, imageType, position);
 
@@ -205,6 +224,13 @@ public class PhotosViewActivity extends AppCompatActivity implements View.OnClic
 
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.photos_view, menu);
+
+        if (!SAConstants.POST_ACCOMMODATION_ACTIVITY.equals(callingActivity)) {
+
+            menu.findItem(R.id.delete_photo).setVisible(false);
+
+        }
+
         return true;
     }
 
@@ -221,15 +247,22 @@ public class PhotosViewActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void deletePhoto() {
-      //  imageUrls.remove(mPager.getCurrentItem());
-     //   mImageSliderAdapter.removeItem(mPager.getCurrentItem());
+
         deletedPhotos.add(mPager.getCurrentItem());
         mImageSliderAdapter.removeItem(mPager.getCurrentItem());
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putIntegerArrayList(SAConstants.DELETED_PHOTOS, deletedPhotos);
+        outState.putInt(SAConstants.POSITION, position);
+
+    }
+
+
+    @Override
     public void onBackPressed() {
-       // super.onBackPressed();
         Intent resultIntent = new Intent();
         resultIntent.putIntegerArrayListExtra(SAConstants.DELETED_PHOTOS, deletedPhotos);
 
@@ -240,7 +273,6 @@ public class PhotosViewActivity extends AppCompatActivity implements View.OnClic
         } else {
             getParent().setResult(Activity.RESULT_OK, resultIntent);
         }
-
-        finish();
+        PhotosViewActivity.super.onBackPressed();
     }
 }

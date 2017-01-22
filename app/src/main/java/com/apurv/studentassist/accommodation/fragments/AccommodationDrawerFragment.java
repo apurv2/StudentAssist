@@ -20,6 +20,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.activities.NotificationSettingsActivity;
@@ -28,6 +29,7 @@ import com.apurv.studentassist.accommodation.adapters.NavigationDrawerAdapter;
 import com.apurv.studentassist.accommodation.classes.NavigationDrawerData;
 import com.apurv.studentassist.accommodation.classes.User;
 import com.apurv.studentassist.util.CircleRectView;
+import com.apurv.studentassist.util.ErrorReporting;
 import com.apurv.studentassist.util.ObjectSerializer;
 import com.apurv.studentassist.util.SAConstants;
 import com.apurv.studentassist.util.Utilities;
@@ -143,7 +145,8 @@ public class AccommodationDrawerFragment extends Fragment {
                 TextView email = (TextView) mView.findViewById(R.id.subTitle);
                 email.setText("Hope you are doing good!!");
             } catch (NullPointerException e) {
-                Utilities.showALertDialog("something has gone wrong,Please Reinstall the app", getFragmentManager());
+                ErrorReporting.logReport(e);
+                Toast.makeText(getContext(), "something has gone wrong,Please Reinstall the app", Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -153,9 +156,9 @@ public class AccommodationDrawerFragment extends Fragment {
     public List<NavigationDrawerData> getFromServer() {
 
         List<NavigationDrawerData> datas = new ArrayList<>();
-        int[] icons = {R.drawable.ic_telephone, R.drawable.ic_clock, R.drawable.ic_cloud, R.drawable.ic_settings1};
+        int[] icons = {R.drawable.ic_user, R.drawable.ic_clock, R.drawable.ic_action_send, R.drawable.ic_settings1};
         String[] titles = {
-                "User Posts", "Recently Viewed", "Post Accommodation", "Settings"};
+                "User Posts", "Recently Viewed", "Post Accommodation", "Notification Settings"};
 
 
         for (int i = 0; i < icons.length && i < titles.length; i++) {

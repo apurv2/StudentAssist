@@ -1,10 +1,16 @@
 package com.apurv.studentassist.accommodation.activities;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
+import android.os.Parcelable;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,8 +22,7 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.apurv.studentassist.R;
-import com.apurv.studentassist.accommodation.Interfaces.PostAccommodationBI;
-import com.apurv.studentassist.accommodation.business.rules.AccommodationBO;
+import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
 import com.apurv.studentassist.accommodation.classes.User;
 import com.apurv.studentassist.airport.activities.AirportActivity;
 import com.apurv.studentassist.appInfo.dialogs.EmailPhone;
@@ -31,7 +36,6 @@ import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class HomeScreenActivity extends AppCompatActivity {
     // private ActionBarControlMethods ActionBarControl = new ActionBarControlMethods();
@@ -128,6 +132,7 @@ public class HomeScreenActivity extends AppCompatActivity {
      */
     public void accommodation(View view) {
         Intent intent = new Intent(this, AccommodationActivity.class);
+        intent.putExtra(SAConstants.LAUNCHED_FROM, SAConstants.HOME_SCREEN);
         startActivity(intent);
     }
 
@@ -137,23 +142,62 @@ public class HomeScreenActivity extends AppCompatActivity {
      */
     public void courses(View view) {
 
-
-        List selectedFilePaths = new ArrayList<String>();
-
-        selectedFilePaths.add("/storage/emulated/0/WhatsApp/Media/WhatsApp Images/IMG-20170106-WA0025.jpg");
-        selectedFilePaths.add("/storage/emulated/0/DCIM/Camera/20170111_182037.jpg");
-        selectedFilePaths.add("/storage/emulated/0/WhatsApp/Media/WhatsApp Images/IMG-20170111-WA0002.jpg");
+        String firstName, lastName, emailId, phoneNumber, ApartmentName, vacancies, NoOfRooms, lookingFor, cost, userId, addId, notes;
+        boolean userVisitedSw;
 
 
-        Intent intent = new Intent(this, PhotosViewActivity.class);
-        intent.putStringArrayListExtra(SAConstants.ACCOMMODATION_ADD_PHOTOS, (ArrayList<String>) selectedFilePaths);
-        intent.putExtra(SAConstants.IMAGE_TYPE, SAConstants.LOCAL_IMAGES);
-        intent.putExtra(SAConstants.POSITION, 0);
-        startActivityForResult(intent, 0);
+        firstName = SAConstants.FIRST_NAME;
+        lastName = SAConstants.LAST_NAME;
+        emailId = SAConstants.EMAIL_ID;
+        phoneNumber = SAConstants.PHONE_NUMBER;
+        ApartmentName = SAConstants.APARTMENT_NAME;
+        vacancies = SAConstants.VACANCIES;
+        NoOfRooms = SAConstants.NO_OF_ROOMS;
+        lookingFor = SAConstants.GENDER;
+        cost = SAConstants.COST;
+        userId = "1118294135";
+        addId = "5";
+        notes = SAConstants.NOTES;
+        userVisitedSw = false;
 
+
+        sendNotification(new AccommodationAdd(firstName, lastName, emailId,
+                phoneNumber, ApartmentName, vacancies, NoOfRooms, lookingFor,
+                cost, userId, addId, notes, userVisitedSw, new ArrayList<String>()));
 
     }
 
+    /**
+     * @param add
+     */
+    private void sendNotification(AccommodationAdd add) {       // creating intent to launch AdDetails, putting Accommodation Add in a parcel and passing it to intent
+
+        Intent resultIntent = new Intent(this, AdDetailsActivity.class);
+        Intent backIntent = new Intent(this, AccommodationActivity.class);
+        resultIntent.putExtra(SAConstants.ACCOMMODATION_ADD_PARCELABLE, (Parcelable) add);
+        backIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        final PendingIntent resultPendingIntent = PendingIntent.getActivities(
+                this, 0,
+                new Intent[]{backIntent, resultIntent}, PendingIntent.FLAG_ONE_SHOT);
+
+
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.logo)
+                .setContentTitle(SAConstants.STUDENT_ASSIST)
+                .setContentText(SAConstants.NOTIFICATION_TEXT_APARTMENT)
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setContentIntent(resultPendingIntent);
+
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+    }
 
     /**
      * @param view
@@ -274,7 +318,7 @@ public class HomeScreenActivity extends AppCompatActivity {
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    L.m(resultCode+"");
+        L.m(resultCode + "");
     }
 
 }

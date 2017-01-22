@@ -1,7 +1,6 @@
 package com.apurv.studentassist.accommodation.activities;
 
 
-import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -34,8 +33,8 @@ import com.apurv.studentassist.accommodation.classes.NotificationSettings;
 import com.apurv.studentassist.accommodation.classes.StudentAssistApplication;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
-import com.apurv.studentassist.internet.StudentAssistBO;
 import com.apurv.studentassist.internet.NetworkInterface;
+import com.apurv.studentassist.internet.StudentAssistBO;
 import com.apurv.studentassist.util.Alerts;
 import com.apurv.studentassist.util.ErrorReporting;
 import com.apurv.studentassist.util.L;
@@ -46,7 +45,6 @@ import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
 import com.google.gson.Gson;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
-import com.squareup.leakcanary.LeakCanary;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -103,7 +101,15 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
         mToolbar.setTitle(SAConstants.SUBSCRIBE_FOR_NOTIFICATIONS);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        LeakCanary.install((Application) StudentAssistApplication.getAppContext());
+        //LeakCanary.install((Application) StudentAssistApplication.getAppContext());
+
+        //Navigation Icon
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NotificationSettingsActivity.super.onBackPressed();
+            }
+        });
 
         setFAB();
         hideViews();
@@ -120,7 +126,6 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
         } else {
             getNotificationSettings();
         }
-
 
     }
 

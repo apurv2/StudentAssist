@@ -28,7 +28,7 @@ public interface UrlInterface {
             throws UnsupportedEncodingException;
 
 
-    public String createUser(String accessToken, String instanceId);
+    public String createUser(String accessToken, String instanceId,String gcmId);
 
     public String getDeleteAccommodationPostUrl(String addId) throws UnsupportedEncodingException;
 
@@ -41,6 +41,8 @@ public interface UrlInterface {
     public String setUserVisitedAdds() throws UnsupportedEncodingException;
 
     public String unSubscribeNotifications() throws UnsupportedEncodingException;
+
+    public String getUserNotificationsUrl() throws UnsupportedEncodingException;
 
     public String getAccessToken();
 

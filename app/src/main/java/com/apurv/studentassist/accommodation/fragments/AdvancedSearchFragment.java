@@ -3,6 +3,7 @@ package com.apurv.studentassist.accommodation.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,7 +25,7 @@ import com.apurv.studentassist.accommodation.Interfaces.AccommodationBI;
 import com.apurv.studentassist.accommodation.Interfaces.DialogCallback;
 import com.apurv.studentassist.accommodation.Interfaces.OnLoadMoreListener;
 import com.apurv.studentassist.accommodation.activities.AdDetailsActivity;
-import com.apurv.studentassist.accommodation.adapters.AccommodationAddsAdapter;
+import com.apurv.studentassist.accommodation.activities.NotificationSettingsActivity;
 import com.apurv.studentassist.accommodation.adapters.AccommodationAddsAdapterLoader;
 import com.apurv.studentassist.accommodation.business.rules.AccommodationBO;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
@@ -55,7 +56,6 @@ public class AdvancedSearchFragment extends Fragment implements
     String aptNamesVal = "", sexVal = "";
     ArrayList<String> mApartmentNames;
     String recentUrl = "";
-
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -108,7 +108,8 @@ public class AdvancedSearchFragment extends Fragment implements
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.ic_subscribe:
-                notificationAlert();
+                Intent subscriptionIntent = new Intent(getActivity(), NotificationSettingsActivity.class);
+                startActivity(subscriptionIntent);
                 return true;
 
             default:
@@ -239,7 +240,7 @@ public class AdvancedSearchFragment extends Fragment implements
             mRecyclerVIew.setLayoutManager(new LinearLayoutManager(pageView.getContext()));
 
             //old adapter
-           // mAccommodationAddsAdapter = new AccommodationAddsAdapter(pageView.getContext(), new ArrayList<AccommodationAdd>(), this);
+            // mAccommodationAddsAdapter = new AccommodationAddsAdapter(pageView.getContext(), new ArrayList<AccommodationAdd>(), this);
             mAccommodationAddsAdapter = new AccommodationAddsAdapterLoader(pageView.getContext(), new ArrayList<AccommodationAdd>(), this, mRecyclerVIew);
 
             mRecyclerVIew.setAdapter(mAccommodationAddsAdapter);
@@ -276,11 +277,8 @@ public class AdvancedSearchFragment extends Fragment implements
                     }, SAConstants.ACCOMMODATION_ADDS);
 
 
-
                 }
             });
-
-
 
 
         } catch (Exception e) {
@@ -427,8 +425,12 @@ public class AdvancedSearchFragment extends Fragment implements
     public void onTouch(int position, View view) {
         Intent details = new Intent(getActivity(), AdDetailsActivity.class);
         details.putExtra(SAConstants.ACCOMMODATION_ADD_PARCELABLE, (Parcelable) adds.get(position));
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(getActivity(), (View) view, "profile");
+
         details.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivityForResult(details, 1);
+        startActivityForResult(details, 1, options.toBundle());
+
 
     }
 

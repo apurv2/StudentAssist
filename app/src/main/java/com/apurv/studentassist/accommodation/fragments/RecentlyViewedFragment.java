@@ -1,8 +1,9 @@
-package com.apurv.studentassist.accommodation.activities;
+package com.apurv.studentassist.accommodation.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +13,9 @@ import android.view.ViewGroup;
 
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.Interfaces.AccommodationBI;
-import com.apurv.studentassist.accommodation.adapters.AccommodationAddsAdapter;
+import com.apurv.studentassist.accommodation.Interfaces.OnLoadMoreListener;
+import com.apurv.studentassist.accommodation.activities.AdDetailsActivity;
+import com.apurv.studentassist.accommodation.adapters.AccommodationAddsAdapterLoader;
 import com.apurv.studentassist.accommodation.business.rules.AccommodationBO;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
@@ -27,13 +30,16 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecentlyViewed extends Fragment implements RecyclerTouchInterface {
+import static com.facebook.FacebookSdk.getApplicationContext;
+
+public class RecentlyViewedFragment extends Fragment implements RecyclerTouchInterface {
 
     View pageView;
-    private AccommodationAddsAdapter mAccommodationAddsAdapter;
+    private AccommodationAddsAdapterLoader mAccommodationAddsAdapter;
     List<AccommodationAdd> adds = new ArrayList<AccommodationAdd>();
 
     private RecyclerView mRecyclerVIew;
+    String recentUrl = "";
 
 
     @Override
@@ -71,14 +77,13 @@ public class RecentlyViewed extends Fragment implements RecyclerTouchInterface {
 
     private void fetchRecentList() {
 
-        String url = "";
         try {
             UrlInterface urlGen = new UrlGenerator();
-            url = urlGen.getRecentlyViewed();
+            recentUrl = urlGen.getRecentlyViewed();
         } catch (UnsupportedEncodingException e) {
             ErrorReporting.logReport(e);
         }
-        new AccommodationBO(url, new AccommodationBI() {
+        new AccommodationBO(recentUrl, new AccommodationBI() {
             @Override
             public void onAccommodationAddsReady(ArrayList<AccommodationAdd> advertisements) {
 
@@ -106,15 +111,55 @@ public class RecentlyViewed extends Fragment implements RecyclerTouchInterface {
     public void setmRecyclerVIew() {
 
 
-        mAccommodationAddsAdapter = new AccommodationAddsAdapter(pageView.getContext(), new ArrayList<AccommodationAdd>(), this);
-
         mRecyclerVIew = (RecyclerView) pageView.findViewById(R.id.recentAdsList);
-        mRecyclerVIew.setAdapter(mAccommodationAddsAdapter);
-
-
         mRecyclerVIew.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
 
+        mAccommodationAddsAdapter = new AccommodationAddsAdapterLoader(pageView.getContext(), new ArrayList<AccommodationAdd>(), this, mRecyclerVIew);
+        mRecyclerVIew.setAdapter(mAccommodationAddsAdapter);
 
+        mAccommodationAddsAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(int position) {
+
+                mAccommodationAddsAdapter.add(null);
+
+
+                new AccommodationBO(UrlGenerator.getPaginationUrl(recentUrl, position), new AccommodationBI() {
+                    @Override
+                    public void onAccommodationAddsReady(ArrayList<AccommodationAdd> advertisements) {
+                        mAccommodationAddsAdapter.pop();
+
+                        L.m("populating pagination");
+                        adds.addAll(advertisements);
+                        addToRecyclerView(advertisements);
+
+                        //   remove progress item
+                        mAccommodationAddsAdapter.setLoaded();
+                    }
+
+                    //not needed
+                    @Override
+                    public void onApartmentNamesReady(ArrayList<String> apartmentNames) {
+
+                    }
+
+
+                }, SAConstants.ACCOMMODATION_ADDS);
+
+
+            }
+        });
+
+    }
+
+    private void addToRecyclerView(ArrayList<AccommodationAdd> advertisements) {
+
+        try {
+
+            mAccommodationAddsAdapter.addAll(advertisements);
+        } catch (Exception e) {
+            ErrorReporting.logReport(e);
+        }
     }
 
     @Override
@@ -122,9 +167,11 @@ public class RecentlyViewed extends Fragment implements RecyclerTouchInterface {
 
         Intent details = new Intent(getActivity(), AdDetailsActivity.class);
         details.putExtra(SAConstants.ACCOMMODATION_ADD_PARCELABLE, (Parcelable) adds.get(position));
-        details.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivityForResult(details, 1);
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(getActivity(), (View) view, "profile");
 
+        details.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivityForResult(details, 1, options.toBundle());
     }
 
 

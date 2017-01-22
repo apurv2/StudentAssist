@@ -8,12 +8,11 @@ import com.facebook.FacebookSdk;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import static com.apurv.studentassist.R.id.aptType;
-import static java.sql.DriverManager.println;
 
 /**
  * Created by apurv on 6/7/15.
@@ -28,8 +27,8 @@ public class UrlGenerator implements UrlInterface {
     public static final String GET_USER_POSTS = "accommodation/getUserPosts";
     public static final String ADD_NEW_APT = "accommodation/addNewApartment";
     public static final String POST_ACCOMMODATION = "accommodation/createAccommodationAdd";
+    public static final String GET_USER_NOTIFICATIONS = "accommodation/getAccommodationNotifications";
     public static final String GET_NOTIFICATION_SETTINGS = "accommodation/getNotificationSettings";
-    public static final String DELETE_NOTIFICATION_REQUESTS = "accommodation/deleteNotificationSetting";
     public static final String INSERT_NOTIFICATIONS = "accommodation/subscribeNotifications";
     public static final String CREATE_USERS = "accommodation/createUser";
     public static final String DELETE_ACCOMMODATION = "accommodation/deleteAccommodationAdd";
@@ -161,26 +160,8 @@ public class UrlGenerator implements UrlInterface {
     }
 
     @Override
-    public String getPostAccUrl(/*String apartmentName, String noOfRooms,
-                                String noOfVacancies, String lookingFor, String userId, String cost, String notes*/
-    ) throws UnsupportedEncodingException {
-
-
-        String url = "", parameters = "";
-
-
-      /*  parameters = SAConstants.APARTMENT_NAME + "=" + URLEncoder.encode(apartmentName, "UTF-8") + "&"
-                + SAConstants.NO_OF_ROOMS + "=" + URLEncoder.encode(noOfRooms, "UTF-8") + "&"
-                + SAConstants.VACANCIES + "=" + URLEncoder.encode(noOfVacancies, "UTF-8") + "&"
-                + SAConstants.COST + "=" + URLEncoder.encode(cost, "UTF-8") + "&"
-                + SAConstants.GENDER + "=" + URLEncoder.encode(lookingFor, "UTF-8") + "&"
-                + SAConstants.NOTES + "=" + URLEncoder.encode(notes, "UTF-8") + "&"
-                + SAConstants.USER_ID + "=" + URLEncoder.encode(userId, "UTF-8")
-                + "&" + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
-*/
-        url = SAConstants.URL + "/" + POST_ACCOMMODATION;//+ "?" + parameters;
-
-        return url;
+    public String getPostAccUrl() throws UnsupportedEncodingException {
+        return SAConstants.URL + "/" + POST_ACCOMMODATION;//+ "?" + parameters;
     }
 
     @Override
@@ -197,15 +178,15 @@ public class UrlGenerator implements UrlInterface {
 
 
     @Override
-    public String createUser(String accessToken, String instanceId) {
+    public String createUser(String accessToken, String instanceId, String gcmId) {
 
         String url = "", parameters = "";
 
         try {
 
             parameters = SAConstants.INSTANCE_ID + "=" + URLEncoder.encode(instanceId + "", "UTF-8")
+                    + "&" + SAConstants.GCM_ID + "=" + gcmId
                     + "&" + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
-
 
             url = SAConstants.URL + "/" + CREATE_USERS + "?" + parameters;
 
@@ -243,10 +224,7 @@ public class UrlGenerator implements UrlInterface {
 
     @Override
     public String getRecentlyViewed() throws UnsupportedEncodingException {
-
-
         String url = "";
-
 
         url = SAConstants.URL + "/" + RECENTLY_VIEWED + "?"
                 + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
@@ -317,6 +295,13 @@ public class UrlGenerator implements UrlInterface {
 
     }
 
+    @Override
+    public String getUserNotificationsUrl() throws UnsupportedEncodingException {
+
+        String url = SAConstants.URL + "/" + GET_USER_NOTIFICATIONS;
+        return url;
+    }
+
 
     public static String getProfilePictureURL(String id) {
         String url = "https://graph.facebook.com/" + id + "/picture?type=large";
@@ -325,10 +310,18 @@ public class UrlGenerator implements UrlInterface {
     }
 
     public static String getPaginationUrl(String url, int position) {
-        String preUrl = url.split("\\?")[0];
-        String params = url.split("\\?")[1];
 
-        LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) getQueryMap(params);
+        String preUrl;
+        String params;
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        if (url.contains("?")) {
+            preUrl = url.split("\\?")[0];
+            params = url.split("\\?")[1];
+            map = (LinkedHashMap<String, String>) getQueryMap(params);
+
+        } else {
+            preUrl = url + "?";
+        }
 
         if (map.containsKey(SAConstants.POSITION)) {
 

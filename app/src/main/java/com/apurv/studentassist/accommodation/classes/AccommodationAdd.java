@@ -98,6 +98,10 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
     }
 
 
+    public void setUserVisitedSw(boolean userVisitedSw) {
+        this.userVisitedSw = userVisitedSw;
+    }
+
     public boolean getUserVisitedSw() {
         return userVisitedSw;
     }

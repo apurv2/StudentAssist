@@ -7,7 +7,6 @@ package com.apurv.studentassist.notifications.receiver;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.widget.Toast;
 
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.classes.StudentAssistApplication;
@@ -18,7 +17,6 @@ import com.apurv.studentassist.notifications.interfaces.NotificationBI;
 import com.apurv.studentassist.util.ErrorReporting;
 import com.apurv.studentassist.util.L;
 import com.apurv.studentassist.util.SAConstants;
-import com.facebook.AccessToken;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 
@@ -42,6 +40,7 @@ public class RegistrationIntentService extends IntentService {
             uploadUserDetails(token, instanceID.getId());
 
         } catch (Exception e) {
+            ErrorReporting.logReport(e);
         }
     }
 
@@ -59,21 +58,12 @@ public class RegistrationIntentService extends IntentService {
         editor.commit();
 
 
-        String fbToken = "";
-
-
-        if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
-
-            fbToken = AccessToken.getCurrentAccessToken().getToken();
-        } else {
-            Toast.makeText(StudentAssistApplication.getAppContext(), "not registered", Toast.LENGTH_LONG).show();
-        }
-
-
         UrlInterface urlGen = new UrlGenerator();
+        String fbToken = urlGen.getAccessToken();
+
         try {
 
-            String url = urlGen.createUser(fbToken, instanceId);
+            String url = urlGen.createUser(fbToken, instanceId, registrationId);
 
             new NotificationBO(new NotificationBI() {
                 @Override

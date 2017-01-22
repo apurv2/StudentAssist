@@ -35,11 +35,11 @@ public class SAConstants {
 
     public static final String APARTMENT_NAME = "apartmentName";
 
-    public static final String URL = "http://awss.mppzteuums.us-east-1.elasticbeanstalk.com/rest";
+    //public static final String URL = "http://awss.mppzteuums.us-east-1.elasticbeanstalk.com/rest";
 
-   // public static final String URL = "http://10.0.2.2:8080/StudentAssistWebapp/rest";
+    public static final String URL = "http://10.0.2.2:8080/StudentAssistWebapp/rest";
 
-    public static final String pageTitles[] = {"Easy Search", "Advanced Search", "Recently Viewed"};
+    public static final String pageTitles[] = {"Easy Search", "Advanced Search", "Recently Viewed", "Notifications"};
 
     public static final String ACCOMMODATION_ADDS = "AccommodationAdds";
 
@@ -250,7 +250,23 @@ public class SAConstants {
 
     public static final String IMAGE_FILE_PATHS = "imageFilePaths";
 
-    public static final String GETTING_NOTIFICATION_SETTINGS ="Getting Notification Settings" ;
+    public static final String GETTING_NOTIFICATION_SETTINGS = "Getting Notification Settings";
 
     public static final String DELETED_PHOTOS = "deleted photos";
+
+    public static final String CALLING_ACTIVITY = "calling activity";
+
+    public static final String POST_ACCOMMODATION_ACTIVITY = "post accommodation activity";
+
+    public static final String CANCELLABLE_FALSE = "cancellable false";
+
+    public static final String TRUE = "true";
+
+    public static final String LAUNCHED_FROM = "launched from";
+
+    public static final String HOME_SCREEN = "home Screen";
+
+    public static final String NOTIFICATION_LIST = "notification list";
+
+    public static final String COMMA = ",";
 }

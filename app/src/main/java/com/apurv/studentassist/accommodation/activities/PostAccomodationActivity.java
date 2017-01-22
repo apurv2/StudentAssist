@@ -2,6 +2,7 @@ package com.apurv.studentassist.accommodation.activities;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,6 +32,7 @@ import android.transition.TransitionInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -74,10 +76,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -178,6 +178,26 @@ public class PostAccomodationActivity extends AppCompatActivity implements
         toolbar.setTitle(SAConstants.POST_ACCOMMODATION);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Activity activity = (Activity) this;
+
+        //Navigation Icon
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                GUIUtils.animateRevealHide(activity, mRlContainer, R.color.colorAccent, mFab.getWidth() / 2,
+                        new OnRevealAnimationListener() {
+                            @Override
+                            public void onRevealHide() {
+                                closeActivity(false);
+                            }
+
+                            @Override
+                            public void onRevealShow() {
+
+                            }
+                        });
+            }
+        });
 
 
         //set spinners
@@ -408,6 +428,7 @@ public class PostAccomodationActivity extends AppCompatActivity implements
             intent.putStringArrayListExtra(SAConstants.ACCOMMODATION_ADD_PHOTOS, (ArrayList<String>) selectedFilePaths);
             intent.putExtra(SAConstants.IMAGE_TYPE, SAConstants.LOCAL_IMAGES);
             intent.putExtra(SAConstants.POSITION, position);
+            intent.putExtra(SAConstants.CALLING_ACTIVITY, SAConstants.POST_ACCOMMODATION_ACTIVITY);
             startActivityForResult(intent, 3);
 
 
@@ -516,34 +537,19 @@ public class PostAccomodationActivity extends AppCompatActivity implements
             }
         }
         if (requestCode == 3 && resultCode == RESULT_OK) {
-            int temp = 0;
-            int i = 0;
             try {
                 List<Integer> deletedPhotos = data.getIntegerArrayListExtra(SAConstants.DELETED_PHOTOS);
                 for (int deletedPhoto : deletedPhotos) {
-                    temp = deletedPhoto;
                     for (int j = deletedPhoto; j < mImagesList.size() - 1; j++) {
                         imageHolders.get(j).setImageDrawable(imageHolders.get(j + 1).getDrawable());
                     }
                     imageHolders.get(mImagesList.size() - 1).setImageDrawable(getResources().getDrawable(R.drawable.ic_gallery));
                     filePaths.remove(deletedPhoto);
                     mImagesList.remove(deletedPhoto);
-                    i++;
                 }
                 L.m(filePaths.size() + "");
 
             } catch (Exception e) {
-                L.m("path==" + mImagesList.get(temp).getAbsolutePath());
-
-                if (filePaths.contains(mImagesList.get(temp).getAbsolutePath())) {
-                    L.m("contains");
-                } else {
-                    L.m("does not contain");
-
-                }
-                L.m("size" + filePaths.size() + "");
-
-                L.m("i==" + i);
                 e.printStackTrace();
             }
 
@@ -652,7 +658,6 @@ public class PostAccomodationActivity extends AppCompatActivity implements
 
             @Override
             public void onTransitionResume(Transition transition) {
-
             }
         });
     }
@@ -696,7 +701,7 @@ public class PostAccomodationActivity extends AppCompatActivity implements
                 new OnRevealAnimationListener() {
                     @Override
                     public void onRevealHide() {
-                        backPressed();
+                        closeActivity(false);
                     }
 
                     @Override
@@ -706,10 +711,6 @@ public class PostAccomodationActivity extends AppCompatActivity implements
                 });
     }
 
-
-    private void backPressed() {
-        super.onBackPressed();
-    }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void setupExitAnimation() {
@@ -722,6 +723,10 @@ public class PostAccomodationActivity extends AppCompatActivity implements
     public void postVacancy(List cloudinaryUrls, final LoadingDialog loadingDialog) {
 
         try {
+
+            View view = this.getCurrentFocus();
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
             String noOfVacancies = noOfVacanciesSpinner.getSelectedItem().toString();
             String lookingFor = occupantSexSpinner.getSelectedItem().toString();
@@ -1012,14 +1017,11 @@ public class PostAccomodationActivity extends AppCompatActivity implements
         String cost = Field.getText().toString();
 
         if (cost.equals(null) || cost.equals("")) {
-
             errorQueue.add(Alerts.errors.get(5));
-
             return false;
 
 
         } else if (Integer.parseInt(cost) <= 0) {
-
             errorQueue.add(Alerts.errors.get(4) + " " + cost + ".");
             return false;
         }
@@ -1040,17 +1042,26 @@ public class PostAccomodationActivity extends AppCompatActivity implements
             AccommodationPosted alert = new AccommodationPosted();
             alert.setArguments(b);
             alert.show(getSupportFragmentManager(), "");
+        } else {
+            Bundle b = new Bundle();
+            b.putString(SAConstants.ALERT_TEXT, Alerts.errors.get(15));
+
+            AccommodationPosted alert = new AccommodationPosted();
+            alert.setArguments(b);
+            alert.show(getSupportFragmentManager(), "");
         }
     }
 
 
     // callback method from AlertDialogDismiss.java
     // This closes this activity after the accommodation add has been posted
-    public void closeActivity() {
+    public void closeActivity(boolean result) {
 
-        Intent returnIntent = new Intent();
-        setResult(1000, returnIntent);
-        finish();
+        if (result) {
+            Intent returnIntent = new Intent();
+            setResult(2, returnIntent);
+        }
+
         PostAccomodationActivity.super.onBackPressed();
 
     }

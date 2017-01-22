@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +14,8 @@ import android.view.View;
 
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.Interfaces.AccommodationBI;
-import com.apurv.studentassist.accommodation.adapters.AccommodationAddsAdapter;
+import com.apurv.studentassist.accommodation.Interfaces.OnLoadMoreListener;
+import com.apurv.studentassist.accommodation.adapters.AccommodationAddsAdapterLoader;
 import com.apurv.studentassist.accommodation.business.rules.AccommodationBO;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
 import com.apurv.studentassist.accommodation.classes.User;
@@ -32,10 +34,11 @@ import java.util.List;
 public class UserPostsActivity extends AppCompatActivity implements RecyclerTouchInterface {
 
 
-    private AccommodationAddsAdapter mAccommodationAddsAdapter;
+    private AccommodationAddsAdapterLoader mAccommodationAddsAdapter;
     List<AccommodationAdd> advs = new ArrayList<AccommodationAdd>();
     List<AccommodationAdd> adds = new ArrayList<AccommodationAdd>();
     UrlInterface urlGen = new UrlGenerator();
+    String recentUrl = "";
 
 
     private RecyclerView mRecyclerVIew;
@@ -54,6 +57,14 @@ public class UserPostsActivity extends AppCompatActivity implements RecyclerTouc
         toolbar.setTitle(SAConstants.USER_POSTS);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        //Navigation Icon
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UserPostsActivity.super.onBackPressed();
+            }
+        });
 
 
         pageView = findViewById(R.id.rootLayoutYourPosts);
@@ -100,12 +111,13 @@ public class UserPostsActivity extends AppCompatActivity implements RecyclerTouc
 
             if (user != null) {
 
-                String url = urlGen.getUserPosts(user.getUserId());
-
-                L.m("url==" + url);
+                recentUrl = urlGen.getUserPosts(user.getUserId());
 
 
-                new AccommodationBO(url, new AccommodationBI() {
+                L.m("url==" + recentUrl);
+
+
+                new AccommodationBO(recentUrl, new AccommodationBI() {
                     @Override
                     public void onAccommodationAddsReady(ArrayList<AccommodationAdd> advertisements) {
 
@@ -136,24 +148,73 @@ public class UserPostsActivity extends AppCompatActivity implements RecyclerTouc
     public void setmRecyclerVIew() {
 
 
-        mAccommodationAddsAdapter = new AccommodationAddsAdapter(pageView.getContext(), new ArrayList<AccommodationAdd>(), this);
+        //  mAccommodationAddsAdapter = new AccommodationAddsAdapter(pageView.getContext(), new ArrayList<AccommodationAdd>(), this);
 
-        mRecyclerVIew = (RecyclerView) pageView.findViewById(R.id.recentAdsList);
+
+        mRecyclerVIew = (RecyclerView) findViewById(R.id.recentAdsList);
+        mRecyclerVIew.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
+        mAccommodationAddsAdapter = new AccommodationAddsAdapterLoader(pageView.getContext(), new ArrayList<AccommodationAdd>(), this, mRecyclerVIew);
         mRecyclerVIew.setAdapter(mAccommodationAddsAdapter);
 
 
-        mRecyclerVIew.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        mAccommodationAddsAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(int position) {
+
+                mAccommodationAddsAdapter.add(null);
 
 
+                new AccommodationBO(UrlGenerator.getPaginationUrl(recentUrl, position), new AccommodationBI() {
+                    @Override
+                    public void onAccommodationAddsReady(ArrayList<AccommodationAdd> advertisements) {
+                        mAccommodationAddsAdapter.pop();
+
+                        L.m("populating pagination");
+                        adds.addAll(advertisements);
+                        addToRecyclerView(advertisements);
+
+                        //   remove progress item
+                        mAccommodationAddsAdapter.setLoaded();
+                    }
+
+                    //not needed
+                    @Override
+                    public void onApartmentNamesReady(ArrayList<String> apartmentNames) {
+
+                    }
+
+
+                }, SAConstants.ACCOMMODATION_ADDS);
+
+
+            }
+        });
+
+
+    }
+
+    private void addToRecyclerView(ArrayList<AccommodationAdd> advertisements) {
+
+        try {
+
+            mAccommodationAddsAdapter.addAll(advertisements);
+        } catch (Exception e) {
+            ErrorReporting.logReport(e);
+        }
     }
 
     @Override
     public void onTouch(int position, View view) {
 
-        Intent details = new Intent(getApplicationContext(), AdDetailsActivity.class);
+
+        Intent details = new Intent(this, AdDetailsActivity.class);
         details.putExtra(SAConstants.ACCOMMODATION_ADD_PARCELABLE, (Parcelable) adds.get(position));
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(this, (View) view, "profile");
+
         details.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivityForResult(details, 1);
+        startActivityForResult(details, 1, options.toBundle());
 
     }
 

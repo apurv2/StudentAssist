@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -18,20 +17,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.apurv.studentassist.R;
-import com.apurv.studentassist.accommodation.Dialogs.AlertDialogL;
 import com.apurv.studentassist.accommodation.Interfaces.AccommodationActivityToFragmentInterface;
 import com.apurv.studentassist.accommodation.Interfaces.AccommodationBI;
 import com.apurv.studentassist.accommodation.business.rules.AccommodationBO;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
 import com.apurv.studentassist.accommodation.fragments.AccommodationDrawerFragment;
 import com.apurv.studentassist.accommodation.fragments.AdvancedSearchFragment;
+import com.apurv.studentassist.accommodation.fragments.NotificationsContainerFragment;
+import com.apurv.studentassist.accommodation.fragments.RecentlyViewedFragment;
 import com.apurv.studentassist.accommodation.fragments.SearchAccomodationFragment;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
-import com.apurv.studentassist.util.Alerts;
+import com.apurv.studentassist.util.L;
 import com.apurv.studentassist.util.SAConstants;
 import com.apurv.studentassist.util.interfaces.EmptyInterface;
-import com.apurv.studentassist.util.interfaces.LodingDialogInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,21 +40,24 @@ import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
 
+import static android.R.attr.data;
+
 //import com.squareup.leakcanary.LeakCanary;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class AccommodationActivity extends AppCompatActivity implements
-        MaterialTabListener, LodingDialogInterface, EmptyInterface {
+        MaterialTabListener, EmptyInterface {
 
 
     private MaterialTabHost mTabs;
     private ViewPager mViewPager;
+    MyViewPagerAdapter myViewPagerAdapter;
     public Map<String, String[]> spinnerInformation;
+    public boolean postedAccommodation = false;
 
     // Need this to link with the Snackbar
     private CoordinatorLayout mCoordinator;
     //Need this to set the title of the app bar
-    private CollapsingToolbarLayout mCollapsingToolbarLayout;
     private AppBarLayout appBarLayout;
     public Toolbar toolbar;
     String[] aptNamesArray;
@@ -78,6 +80,7 @@ public class AccommodationActivity extends AppCompatActivity implements
             reEntryFlag = true;
         }
 
+        L.m("on create called apugaduuuu");
 
         mCoordinator = (CoordinatorLayout) findViewById(R.id.root_coordinator);
         appBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
@@ -102,10 +105,9 @@ public class AccommodationActivity extends AppCompatActivity implements
         mTabs = (MaterialTabHost) findViewById(R.id.tabs);
         mViewPager = (ViewPager) findViewById(R.id.pager);
 
-
-        mViewPager.setAdapter(new MyViewPagerAdapter(getSupportFragmentManager()));
+        myViewPagerAdapter = new MyViewPagerAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(myViewPagerAdapter);
         mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-
 
             @Override
             public void onPageSelected(int position) {
@@ -141,8 +143,28 @@ public class AccommodationActivity extends AppCompatActivity implements
             }
         });
 
+
+        if (!SAConstants.HOME_SCREEN.equals(getIntent().getStringExtra(SAConstants.LAUNCHED_FROM))) {
+            mViewPager.setCurrentItem(3);
+            toolbar.setTitle(SAConstants.pageTitles[3].toString());
+
+
+            if (!SAConstants.HOME_SCREEN.equals(getIntent().getStringExtra(SAConstants.LAUNCHED_FROM))) {
+            }
+        }
+
+
     }// end of on create
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        //used to refresh simple search adds after posting accommodation add from PostAccommodationActivity
+        if (requestCode == 1 && resultCode == 2) {
+            postedAccommodation = true;
+
+        }
+    }
 
     public void getApartmentNames(final AccommodationActivityToFragmentInterface aInterface) {
         UrlInterface urlInterface = new UrlGenerator();
@@ -187,7 +209,7 @@ public class AccommodationActivity extends AppCompatActivity implements
 
     class MyViewPagerAdapter extends FragmentStatePagerAdapter {
 
-        int tabImageArray[] = {R.drawable.ic_simple_search, R.drawable.ic_advanced_search, R.drawable.ic_recents};
+        int tabImageArray[] = {R.drawable.ic_simple_search, R.drawable.ic_advanced_search, R.drawable.ic_recents, R.drawable.icon_plane};
         String[] tabStringArray = SAConstants.pageTitles;
 
 
@@ -222,7 +244,12 @@ public class AccommodationActivity extends AppCompatActivity implements
 
 
                 } else {
-                    return new RecentlyViewed();
+                    if (position == 2) {
+
+                        return new RecentlyViewedFragment();
+                    } else {
+                        return new NotificationsContainerFragment();
+                    }
                 }
 
 
@@ -237,7 +264,7 @@ public class AccommodationActivity extends AppCompatActivity implements
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
     }
 
@@ -256,38 +283,6 @@ public class AccommodationActivity extends AppCompatActivity implements
 
     @Override
     public void onTabUnselected(MaterialTab materialTab) {
-
-    }
-
-    @Override
-    public void onResume() {  // After a pause OR at startup
-        super.onResume();
-        //Refresh your stuff here
-    }
-
-
-    //Display dialog response about notification subscription status
-    @Override
-    public void onResponse(String response) {
-
-        String alertText = "";
-
-        if (response.equals(SAConstants.SUCCESS)) {
-            alertText = Alerts.alerts.get(0);
-        } else if (response.equals(SAConstants.ALREADY_SUBSCRIBED)) {
-            alertText = Alerts.alerts.get(1062);
-        } else {
-            alertText = Alerts.errors.get(6);
-        }
-
-
-        Bundle bundle = new Bundle();
-        bundle.putString(SAConstants.ALERT_TEXT, alertText);
-
-        AlertDialogL deleteOption = new AlertDialogL();
-        deleteOption.setArguments(bundle);
-        deleteOption.show(getSupportFragmentManager(), "");
-
 
     }
 

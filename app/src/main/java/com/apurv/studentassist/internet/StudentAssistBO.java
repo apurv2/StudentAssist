@@ -12,6 +12,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.apurv.studentassist.accommodation.Dialogs.LoadingDialog;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
 import com.apurv.studentassist.accommodation.classes.StudentAssistApplication;
+import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.util.L;
 import com.apurv.studentassist.util.SAConstants;
 import com.facebook.AccessToken;
@@ -33,6 +34,10 @@ public class StudentAssistBO {
 
         L.m("url==" + url);
         L.m("volley request");
+
+        Map<String, String> mHeaders = new ArrayMap<String, String>();
+        UrlGenerator urlGenerator = new UrlGenerator();
+        mHeaders.put(SAConstants.ACCESS_TOKEN, urlGenerator.getAccessToken());
 
         this.networkInterface = networkInterface;
         RequestQueue requestQueue = Network.getNetworkInstnace().getRequestQueue();
@@ -57,7 +62,12 @@ public class StudentAssistBO {
 
 
             }
-        });
+        }) {
+            public Map<String, String> getHeaders() {
+                return mHeaders;
+            }
+
+        };
 
         requestQueue.add(request);
 
@@ -67,6 +77,11 @@ public class StudentAssistBO {
 
         L.m("url==" + url);
         L.m("volley request");
+
+        Map<String, String> mHeaders = new ArrayMap<String, String>();
+        UrlGenerator urlGenerator = new UrlGenerator();
+        mHeaders.put(SAConstants.ACCESS_TOKEN, urlGenerator.getAccessToken());
+
 
         RequestQueue requestQueue = Network.getNetworkInstnace().getRequestQueue();
         StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -90,7 +105,12 @@ public class StudentAssistBO {
 
 
             }
-        });
+        }) {
+            public Map<String, String> getHeaders() {
+                return mHeaders;
+            }
+
+        };
 
         requestQueue.add(request);
 
@@ -102,13 +122,10 @@ public class StudentAssistBO {
 
         RequestQueue requestQueue = Network.getNetworkInstnace().getRequestQueue();
         Map<String, String> mHeaders = new ArrayMap<String, String>();
-
         FacebookSdk.sdkInitialize(StudentAssistApplication.getAppContext());
 
-        if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
-            String fbToken = AccessToken.getCurrentAccessToken().getToken();
-            mHeaders.put(SAConstants.ACCESS_TOKEN, fbToken);
-        }
+        UrlGenerator urlGenerator = new UrlGenerator();
+        mHeaders.put(SAConstants.ACCESS_TOKEN, urlGenerator.getAccessToken());
 
 
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
