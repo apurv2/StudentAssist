@@ -212,8 +212,8 @@ public class PostAccomodationActivity extends AppCompatActivity implements
 
                     if (filePaths.isEmpty()) {
                         postVacancy(Collections.emptyList(),
-                                Utilities.showLoadingDialog(SAConstants.UPLOADING_IMAGES, getSupportFragmentManager()));
-                        ;
+                                Utilities.showLoadingDialog(SAConstants.POSTING_ACCOMMODAION, getSupportFragmentManager()));
+
                     } else {
                         startImagesUpload(filePaths);
                     }
@@ -725,7 +725,7 @@ public class PostAccomodationActivity extends AppCompatActivity implements
         try {
 
             View view = this.getCurrentFocus();
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
             String noOfVacancies = noOfVacanciesSpinner.getSelectedItem().toString();
