@@ -34,7 +34,6 @@ public class NotificationSettings implements Parcelable {
         apartmentType = in.createStringArrayList();
         gcmId = in.readString();
         deviceId = in.readString();
-        accessToken = in.readString();
     }
 
     public static final Creator<NotificationSettings> CREATOR = new Creator<NotificationSettings>() {
@@ -59,12 +58,6 @@ public class NotificationSettings implements Parcelable {
         this.deviceId = deviceId;
     }
 
-
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
-    private String accessToken;
 
     public NotificationSettings() {
     }
@@ -103,7 +96,6 @@ public class NotificationSettings implements Parcelable {
         dest.writeStringList(apartmentType);
         dest.writeString(gcmId);
         dest.writeString(deviceId);
-        dest.writeString(accessToken);
     }
 }
 

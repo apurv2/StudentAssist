@@ -2,6 +2,7 @@ package com.apurv.studentassist.accommodation.business.rules;
 
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.apurv.studentassist.accommodation.Dialogs.LoadingDialog;
 import com.apurv.studentassist.accommodation.Interfaces.AccommodationBI;
 import com.apurv.studentassist.accommodation.Interfaces.NotificationsBI;
@@ -11,8 +12,8 @@ import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
 import com.apurv.studentassist.accommodation.classes.ApartmentNamesWithType;
 import com.apurv.studentassist.accommodation.classes.RecentListChecker;
 import com.apurv.studentassist.accommodation.classes.StudentAssistApplication;
-import com.apurv.studentassist.internet.StudentAssistBO;
 import com.apurv.studentassist.internet.NetworkInterface;
+import com.apurv.studentassist.internet.StudentAssistBO;
 import com.apurv.studentassist.util.ErrorReporting;
 import com.apurv.studentassist.util.L;
 import com.apurv.studentassist.util.SAConstants;
@@ -50,7 +51,7 @@ public class AccommodationBO {
 
         if (queryType.equals(SAConstants.ACCOMMODATION_ADDS)) {
 
-            studentAssistBO.volleyGetRequest(url, new NetworkInterface() {
+            studentAssistBO.volleyRequest(url, new NetworkInterface() {
                 @Override
                 public void onResponseUpdate(String jsonResponse) {
 
@@ -75,14 +76,14 @@ public class AccommodationBO {
                 }
 
 
-            });
+            }, null, Request.Method.GET);
 
 
         } else if (queryType.equals(SAConstants.APARTMENT_NAMES)) {
 
             final ArrayList<String> apartmentNames = new ArrayList<String>();
 
-            studentAssistBO.volleyGetRequest(url, new NetworkInterface() {
+            studentAssistBO.volleyRequest(url, new NetworkInterface() {
                 @Override
                 public void onResponseUpdate(String jsonResponse) {
 
@@ -106,7 +107,7 @@ public class AccommodationBO {
                 }
 
 
-            });
+            }, null, Request.Method.GET);
 
 
         }
@@ -120,7 +121,7 @@ public class AccommodationBO {
         this.postAccommodationBI = postaccommodationBI;
 
 
-        studentAssistBO.volleyGetRequest(url, new NetworkInterface() {
+        studentAssistBO.volleyRequest(url, new NetworkInterface() {
             @Override
             public void onResponseUpdate(String jsonResponse) {
 
@@ -129,55 +130,13 @@ public class AccommodationBO {
                 }
 
             }
-        });
+        }, null, Request.Method.POST);
 
     }
-
-    public AccommodationBO(String url, final RecentListInterface recentListInterface) {
-
-        studentAssistBO.volleyGetRequest(url, new NetworkInterface() {
-            @Override
-            public void onResponseUpdate(String jsonResponse) {
-
-
-                try {
-
-                    List<RecentListChecker> recentList = new ArrayList<RecentListChecker>();
-
-
-                    JSONArray jArray = new JSONArray(jsonResponse);
-
-                    L.m("json response ==" + jsonResponse);
-
-                    if (jArray != null) {
-                        for (int i = jArray.length() - 1; i >= 0; i--) {
-                            JSONObject json_data = jArray.getJSONObject(i);
-
-                            String addId = json_data.getString(SAConstants.ADD_ID);
-                            recentList.add(new RecentListChecker(addId));
-                        }
-
-                        recentListInterface.recentlyVisitedAdvertisements(recentList);
-
-                    }
-
-
-                } catch (Exception e) {
-                    ErrorReporting.logReport(e);
-                    recentListInterface.recentlyVisitedAdvertisements(new ArrayList());
-                }
-
-
-            }
-        });
-
-
-    }
-
 
     public void getApartmentNamesWithType(String url, final NotificationsBI notificationsBI) {
 
-        studentAssistBO.volleyGetRequest(url, new NetworkInterface() {
+        studentAssistBO.volleyRequest(url, new NetworkInterface() {
             @Override
             public void onResponseUpdate(String jsonResponse) {
 
@@ -214,7 +173,7 @@ public class AccommodationBO {
 
 
             }
-        });
+        }, null, Request.Method.GET);
 
     }
 
@@ -223,13 +182,11 @@ public class AccommodationBO {
     public AccommodationBO(String url, final LoadingDialog dialog) {
 
 
-        studentAssistBO.volleyGetRequest(url, new NetworkInterface() {
+        studentAssistBO.volleyRequest(url, new NetworkInterface() {
             @Override
             public void onResponseUpdate(String jsonResponse) {
 
                 if (jsonResponse.equals(SAConstants.SUCCESS)) {
-
-
                     dialog.lodingDialogInterface.onResponse(jsonResponse);
                     dialog.dismiss();
 
@@ -238,7 +195,7 @@ public class AccommodationBO {
                 }
 
             }
-        });
+        }, null, Request.Method.DELETE);
 
     }
 

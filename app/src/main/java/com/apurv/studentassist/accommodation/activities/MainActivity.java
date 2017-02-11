@@ -48,8 +48,6 @@ public class MainActivity extends Activity {
 
 
         if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
-
-
             Intent HomeScreenIntent = new Intent(this, HomeScreenActivity.class);
             startActivity(HomeScreenIntent);
             finish();

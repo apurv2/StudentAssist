@@ -4,21 +4,17 @@ import android.support.v4.util.ArrayMap;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.apurv.studentassist.accommodation.Dialogs.LoadingDialog;
-import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
 import com.apurv.studentassist.accommodation.classes.StudentAssistApplication;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.util.L;
 import com.apurv.studentassist.util.SAConstants;
-import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,96 +23,13 @@ import java.util.Map;
  */
 public class StudentAssistBO {
 
-    private List<AccommodationAdd> advertisements;
-    NetworkInterface networkInterface;
 
-    public void volleyGetRequest(String url, final NetworkInterface networkInterface) {
-
-        L.m("url==" + url);
-        L.m("volley request");
-
-        Map<String, String> mHeaders = new ArrayMap<String, String>();
-        UrlGenerator urlGenerator = new UrlGenerator();
-        mHeaders.put(SAConstants.ACCESS_TOKEN, urlGenerator.getAccessToken());
-
-        this.networkInterface = networkInterface;
-        RequestQueue requestQueue = Network.getNetworkInstnace().getRequestQueue();
-        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-
-
-            @Override
-            public void onResponse(String response) {
-
-                L.m("response==" + response);
-                networkInterface.onResponseUpdate(response);
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                networkInterface.onResponseUpdate("Failure");
-                L.m(error.toString());
-
-
-                Toast.makeText(StudentAssistApplication.getAppContext(), SAConstants.VOLLEY_ERROR, Toast.LENGTH_LONG).show();
-
-
-            }
-        }) {
-            public Map<String, String> getHeaders() {
-                return mHeaders;
-            }
-
-        };
-
-        requestQueue.add(request);
-
-    }
-
-    public void volleyGetRequestLoadingDialog(String url, final LoadingDialog loadingDialog) {
-
-        L.m("url==" + url);
-        L.m("volley request");
-
-        Map<String, String> mHeaders = new ArrayMap<String, String>();
-        UrlGenerator urlGenerator = new UrlGenerator();
-        mHeaders.put(SAConstants.ACCESS_TOKEN, urlGenerator.getAccessToken());
-
-
-        RequestQueue requestQueue = Network.getNetworkInstnace().getRequestQueue();
-        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-
-
-            @Override
-            public void onResponse(String response) {
-
-                L.m("response==" + response);
-                loadingDialog.lodingDialogInterface.onResponse(response);
-                loadingDialog.dismiss();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                loadingDialog.dismiss();
-                loadingDialog.lodingDialogInterface.onResponse(SAConstants.FAILURE);
-
-                L.m(error.toString());
-                Toast.makeText(StudentAssistApplication.getAppContext(), SAConstants.VOLLEY_ERROR, Toast.LENGTH_LONG).show();
-
-
-            }
-        }) {
-            public Map<String, String> getHeaders() {
-                return mHeaders;
-            }
-
-        };
-
-        requestQueue.add(request);
-
-    }
-
-    public void volleyPostRequestWithLoadingDialog(String url, final LoadingDialog dialog, final String body) {
+    /**
+     * @param url
+     * @param dialog
+     * @param body
+     */
+    public void volleyRequestWithLoadingDialog(String url, final LoadingDialog dialog, final String body, int method) {
         L.m("POST url==" + url);
         L.m("POST BODY==" + body);
 
@@ -128,7 +41,7 @@ public class StudentAssistBO {
         mHeaders.put(SAConstants.ACCESS_TOKEN, urlGenerator.getAccessToken());
 
 
-        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+        StringRequest request = new StringRequest(method, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -168,22 +81,17 @@ public class StudentAssistBO {
      * @param networkInterface
      * @param body
      */
-    public void volleyPostRequest(String url, final NetworkInterface networkInterface, final String body) {
+    public void volleyRequest(String url, final NetworkInterface networkInterface, final String body, int method) {
         L.m("POST url==" + url);
         L.m("POST BODY==" + body);
 
         RequestQueue requestQueue = Network.getNetworkInstnace().getRequestQueue();
         Map<String, String> mHeaders = new ArrayMap<String, String>();
 
-        FacebookSdk.sdkInitialize(StudentAssistApplication.getAppContext());
+        UrlGenerator urlGenerator = new UrlGenerator();
+        mHeaders.put(SAConstants.ACCESS_TOKEN, urlGenerator.getAccessToken());
 
-        if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
-            String fbToken = AccessToken.getCurrentAccessToken().getToken();
-            mHeaders.put(SAConstants.ACCESS_TOKEN, fbToken);
-        }
-
-
-        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+        StringRequest request = new StringRequest(method, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 

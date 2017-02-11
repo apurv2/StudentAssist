@@ -43,6 +43,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
+import com.android.volley.Request;
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.Dialogs.AccommodationPosted;
 import com.apurv.studentassist.accommodation.Dialogs.AlertDialogL;
@@ -744,10 +745,10 @@ public class PostAccomodationActivity extends AppCompatActivity implements
                     cost, lookingFor, notes, cloudinaryUrls);
 
             Gson gson = new Gson();
-            String postAccommodationJson = gson.toJson(mAccommodationAdd);
+            String postBody = gson.toJson(mAccommodationAdd);
 
             StudentAssistBO manager = new StudentAssistBO();
-            manager.volleyPostRequestWithLoadingDialog(urlGen.getPostAccUrl(), loadingDialog, postAccommodationJson);
+            manager.volleyRequestWithLoadingDialog(urlGen.getPostAccUrl(), loadingDialog, postBody, Request.Method.POST);
 
         } catch (Exception e) {
             ErrorReporting.logReport(e);

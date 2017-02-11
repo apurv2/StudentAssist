@@ -23,6 +23,7 @@ import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.Dialogs.AlertDialogL;
 import com.apurv.studentassist.accommodation.Dialogs.LoadingDialog;
@@ -162,10 +163,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
                         try {
 
-                            Gson gson = new Gson();
-                            String mUnsubscribeJson = gson.toJson(new UnsubscribeNotifications(urlgen.getAccessToken()));
-
-                            manager.volleyPostRequest(urlgen.unSubscribeNotifications(), new NetworkInterface() {
+                            manager.volleyRequest(urlgen.unSubscribeNotifications(), new NetworkInterface() {
                                 @Override
                                 public void onResponseUpdate(String jsonResponse) {
 
@@ -205,7 +203,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
                                     }
 
                                 }
-                            }, mUnsubscribeJson);
+                            }, "", Request.Method.DELETE);
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -239,22 +237,6 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
                 }
             }
 
-        }
-    }
-
-    private class UnsubscribeNotifications {
-        String access_token;
-
-        UnsubscribeNotifications(String access_token) {
-            this.access_token = access_token;
-        }
-
-        public String getAccess_token() {
-            return access_token;
-        }
-
-        public void setAccess_token(String access_token) {
-            this.access_token = access_token;
         }
     }
 
@@ -389,14 +371,6 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
             } else {
                 NotificationSettings settings = new NotificationSettings();
-
-                if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
-
-                    String fbToken = AccessToken.getCurrentAccessToken().getToken();
-                    settings.setAccessToken(fbToken);
-                }
-
-
                 for (String mApartmentName : mApartmentNamesSet) {
                     settings.getApartmentName().add(mApartmentName);
                 }
@@ -431,7 +405,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
                 final LoadingDialog loadingDialog = Utilities.showLoadingDialog(SAConstants.POSTING_REQUEST, getSupportFragmentManager());
 
 
-                manager.volleyPostRequestWithLoadingDialog(urlgen.getSubscribeNotificationsUrl(), loadingDialog, postParams);
+                manager.volleyRequestWithLoadingDialog(urlgen.getSubscribeNotificationsUrl(), loadingDialog, postParams,Request.Method.PUT);
             }
 
         } catch (Exception e) {
@@ -607,7 +581,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
 
                 StudentAssistBO studentAssistBO = new StudentAssistBO();
-                studentAssistBO.volleyGetRequestLoadingDialog(url, loadingDialog);
+                studentAssistBO.volleyRequestWithLoadingDialog(url, loadingDialog, null, Request.Method.GET);
 
             } catch (Exception e) {
                 ErrorReporting.logReport(e);

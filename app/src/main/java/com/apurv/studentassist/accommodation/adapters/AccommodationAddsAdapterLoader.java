@@ -12,12 +12,12 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.Interfaces.OnLoadMoreListener;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
-import com.apurv.studentassist.accommodation.classes.NotificationSettings;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
 import com.apurv.studentassist.airport.interfaces.RecyclerTouchInterface;
@@ -29,7 +29,6 @@ import com.apurv.studentassist.util.ErrorReporting;
 import com.apurv.studentassist.util.L;
 import com.apurv.studentassist.util.SAConstants;
 import com.apurv.studentassist.util.Utilities;
-import com.facebook.AccessToken;
 import com.google.gson.Gson;
 
 import java.util.Collections;
@@ -80,12 +79,12 @@ public class AccommodationAddsAdapterLoader extends RecyclerView.Adapter {
 
                 totalItemCount = linearLayoutManager.getItemCount();
                 lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                if (!loading && totalItemCount == lastVisibleItem + 1 && totalItemCount >=visibleThreshold) {
+                if (!loading && totalItemCount == lastVisibleItem + 1 && totalItemCount >= visibleThreshold) {
                     // End has been reached Do something
                     if (onLoadMoreListener != null) {
                         onLoadMoreListener.onLoadMore(totalItemCount);
                     }
-                           loading = true;
+                    loading = true;
                 }
             }
         });
@@ -240,28 +239,19 @@ public class AccommodationAddsAdapterLoader extends RecyclerView.Adapter {
             String url = urlGen.setUserVisitedAdds();
             StudentAssistBO dbManager = new StudentAssistBO();
 
-            NotificationSettings settings = new NotificationSettings();
+            Gson gson = new Gson();
+            String body = gson.toJson(new UserVisitedAdds(addId));
 
-            if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
+            L.m("body==" + body);
 
-                String fbToken = AccessToken.getCurrentAccessToken().getToken();
+            dbManager.volleyRequest(url, new NetworkInterface() {
+                @Override
+                public void onResponseUpdate(String jsonResponse) {
 
-                UserVisitedAdds userVisitedAdds = new UserVisitedAdds(addId, fbToken);
-                Gson gson = new Gson();
-                String body = gson.toJson(userVisitedAdds);
+                    L.m("response from setUserVisitedAdds==" + jsonResponse);
 
-                L.m("body==" + body);
-
-                dbManager.volleyPostRequest(url, new NetworkInterface() {
-                    @Override
-                    public void onResponseUpdate(String jsonResponse) {
-
-                        L.m("response from setUserVisitedAdds==" + jsonResponse);
-
-                    }
-                }, body);
-            }
-
+                }
+            }, body, Request.Method.PUT);
 
         } catch (Exception e) {
             ErrorReporting.logReport(e);
@@ -271,13 +261,12 @@ public class AccommodationAddsAdapterLoader extends RecyclerView.Adapter {
     private class UserVisitedAdds {
 
         String addId;
-        String access_token;
 
-        public UserVisitedAdds(String addId, String token) {
+        public UserVisitedAdds(String addId) {
             this.addId = addId;
-            this.access_token = token;
         }
     }
+
 
     public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
         this.onLoadMoreListener = onLoadMoreListener;

@@ -8,17 +8,19 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import com.android.volley.Request;
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.classes.StudentAssistApplication;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
-import com.apurv.studentassist.notifications.business.NotificationBO;
-import com.apurv.studentassist.notifications.interfaces.NotificationBI;
+import com.apurv.studentassist.internet.NetworkInterface;
+import com.apurv.studentassist.internet.StudentAssistBO;
 import com.apurv.studentassist.util.ErrorReporting;
 import com.apurv.studentassist.util.L;
 import com.apurv.studentassist.util.SAConstants;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
+import com.google.gson.Gson;
 
 public class RegistrationIntentService extends IntentService {
 
@@ -63,21 +65,49 @@ public class RegistrationIntentService extends IntentService {
 
         try {
 
-            String url = urlGen.createUser(fbToken, instanceId, registrationId);
+            String url = urlGen.createUser();
+            Gson gson = new Gson();
+            String createUserBody = gson.toJson(new CreateUser(fbToken, instanceId, registrationId));
 
-            new NotificationBO(new NotificationBI() {
+            StudentAssistBO studentAssistBO = new StudentAssistBO();
+            studentAssistBO.volleyRequest(url, new NetworkInterface() {
                 @Override
-                public void onResponse(String response) {
+                public void onResponseUpdate(String jsonResponse) {
 
                     L.m("successfully created user");
                 }
-            }, url);
-
+            }, createUserBody, Request.Method.PUT);
 
         } catch (Exception e) {
             ErrorReporting.logReport(e);
         }
 
+    }
+
+    private class CreateUser {
+        String instanceId;
+        String registrationId;
+
+        public CreateUser(String fbToken, String instanceId, String registrationId) {
+            this.instanceId = instanceId;
+            this.registrationId = registrationId;
+        }
+
+        public String getInstanceId() {
+            return instanceId;
+        }
+
+        public void setInstanceId(String instanceId) {
+            this.instanceId = instanceId;
+        }
+
+        public String getRegistrationId() {
+            return registrationId;
+        }
+
+        public void setRegistrationId(String registrationId) {
+            this.registrationId = registrationId;
+        }
     }
 
 

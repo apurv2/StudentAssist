@@ -8,8 +8,6 @@ import com.facebook.FacebookSdk;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -178,25 +176,14 @@ public class UrlGenerator implements UrlInterface {
 
 
     @Override
-    public String createUser(String accessToken, String instanceId, String gcmId) {
-
-        String url = "", parameters = "";
-
+    public String createUser() {
         try {
-
-            parameters = SAConstants.INSTANCE_ID + "=" + URLEncoder.encode(instanceId + "", "UTF-8")
-                    + "&" + SAConstants.GCM_ID + "=" + gcmId
-                    + "&" + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
-
-            url = SAConstants.URL + "/" + CREATE_USERS + "?" + parameters;
+            return SAConstants.URL + "/" + CREATE_USERS;
 
         } catch (Exception e) {
             ErrorReporting.logReport(e);
             return "";
         }
-
-
-        return url;
     }
 
 

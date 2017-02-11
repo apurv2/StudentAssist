@@ -482,8 +482,6 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
         UrlInterface urlGen = new UrlGenerator();
         String addId = clickedAdd.getAddId();
 
-        final AdDetailsActivity adDetailsActivity = this;
-
         try {
 
             final LoadingDialog loadingDialog = Utilities.showLoadingDialog(SAConstants.DELETING_POST, getSupportFragmentManager());
