@@ -78,7 +78,7 @@ public class UrlGenerator implements UrlInterface {
     @Override
     public String getUniversitieListUrl() {
 
-        return GET_UNIVERSITY_NAMES;
+        return SAConstants.URL+ "/" +GET_UNIVERSITY_NAMES;
 
     }
 
