@@ -3,25 +3,27 @@ apply plugin: 'me.tatarka.retrolambda'
 
 buildscript {
     repositories {
-        maven { url 'https://maven.fabric.io/public' }
+        //maven { url 'https://maven.fabric.io/public' }
     }
 
     dependencies {
         // The Fabric Gradle plugin uses an open ended version to react
         // quickly to Android tooling updates
-        classpath 'io.fabric.tools:gradle:1.+'
+        //classpath 'io.fabric.tools:gradle:1.+'
     }
 }
 
 
-apply plugin: 'io.fabric'
+/*apply plugin: 'io.fabric'*/
 
 repositories {
+/*
     maven { url 'https://maven.fabric.io/public' }
+*/
 }
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         applicationId "com.apurv.studentassist"
@@ -78,9 +80,9 @@ dependencies {
         compile group: 'com.squareup.leakcanary', name: 'leakcanary-android', version: '1.3.1'
 
 
-        compile('com.crashlytics.sdk.android:crashlytics:2.6.2@aar') {
+       /* compile('com.crashlytics.sdk.android:crashlytics:2.6.2@aar') {
             transitive = true;
-        }
+        }*/
     }
 
     apply plugin: 'com.google.gms.google-services'

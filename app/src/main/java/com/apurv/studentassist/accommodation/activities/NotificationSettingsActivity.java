@@ -1,6 +1,7 @@
 package com.apurv.studentassist.accommodation.activities;
 
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -91,6 +92,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
     @Bind(R.id.dormsCheckbox)
     CheckBox mDormsCheckbox;
 
+    ValueAnimator anim;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +113,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
                 NotificationSettingsActivity.super.onBackPressed();
             }
         });
+
 
         setFAB();
         hideViews();
@@ -206,7 +209,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
                             }, "", Request.Method.DELETE);
 
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            ErrorReporting.logReport(e);
                         }
 
 
@@ -283,6 +286,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
                     switch (UrlGenerator.getApartmentTypeCodeMap().get(aptTypeCheckboxValue)) {
                         case SAConstants.ON:
+
                             Utilities.showView(findViewById(R.id.onCampus));
                             break;
                         case SAConstants.OFF:
@@ -405,7 +409,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
                 final LoadingDialog loadingDialog = Utilities.showLoadingDialog(SAConstants.POSTING_REQUEST, getSupportFragmentManager());
 
 
-                manager.volleyRequestWithLoadingDialog(urlgen.getSubscribeNotificationsUrl(), loadingDialog, postParams,Request.Method.PUT);
+                manager.volleyRequestWithLoadingDialog(urlgen.getSubscribeNotificationsUrl(), loadingDialog, postParams, Request.Method.PUT);
             }
 
         } catch (Exception e) {

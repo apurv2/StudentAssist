@@ -9,14 +9,14 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
+//import com.crashlytics.android.Crashlytics;
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import io.fabric.sdk.android.Fabric;
+//import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends Activity {
 
@@ -25,7 +25,7 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
-        Fabric.with(this, new Crashlytics());
+      //  Fabric.with(this, new Crashlytics());
 
         PackageInfo info;
         try {

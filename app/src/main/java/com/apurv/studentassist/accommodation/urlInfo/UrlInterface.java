@@ -46,5 +46,7 @@ public interface UrlInterface {
 
     public String getAccessToken();
 
+    public String getUniversitieListUrl();
+
 
 }

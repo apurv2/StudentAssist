@@ -7,10 +7,8 @@ import com.apurv.studentassist.accommodation.Dialogs.LoadingDialog;
 import com.apurv.studentassist.accommodation.Interfaces.AccommodationBI;
 import com.apurv.studentassist.accommodation.Interfaces.NotificationsBI;
 import com.apurv.studentassist.accommodation.Interfaces.PostAccommodationBI;
-import com.apurv.studentassist.accommodation.Interfaces.RecentListInterface;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
 import com.apurv.studentassist.accommodation.classes.ApartmentNamesWithType;
-import com.apurv.studentassist.accommodation.classes.RecentListChecker;
 import com.apurv.studentassist.accommodation.classes.StudentAssistApplication;
 import com.apurv.studentassist.internet.NetworkInterface;
 import com.apurv.studentassist.internet.StudentAssistBO;
@@ -60,8 +58,7 @@ public class AccommodationBO {
 
 
                         Gson gson = new Gson();
-                        ArrayList<AccommodationAdd> advertisements = gson.fromJson(jsonResponse, new TypeToken<List<AccommodationAdd>>() {
-                        }.getType());
+                        ArrayList<AccommodationAdd> advertisements = gson.fromJson(jsonResponse, new TypeToken<List<AccommodationAdd>>() {}.getType());
 
                         accommodationBI.onAccommodationAddsReady(advertisements);
 

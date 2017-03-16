@@ -35,7 +35,7 @@ public class SAConstants {
 
     public static final String APARTMENT_NAME = "apartmentName";
 
-  //  public static final String URL = "http://awss.mppzteuums.us-east-1.elasticbeanstalk.com/rest";
+   // public static final String URL = "http://studentassist.2mfu7mmben.us-east-1.elasticbeanstalk.com/rest";
 
     public static final String URL = "http://10.0.2.2:8080/StudentAssistWebapp/rest";
 

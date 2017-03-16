@@ -10,6 +10,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.apurv.studentassist.R;
+import com.apurv.studentassist.accommodation.Dialogs.UniversitiesListDialog;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
 import com.apurv.studentassist.accommodation.classes.User;
 import com.apurv.studentassist.airport.activities.AirportActivity;
@@ -79,6 +81,12 @@ public class HomeScreenActivity extends AppCompatActivity {
             this.startService(intent);
 
         }
+
+
+        DialogFragment universitiesListDialog = new UniversitiesListDialog();
+        universitiesListDialog.show(getSupportFragmentManager(), "");
+
+
 
 
     }

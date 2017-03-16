@@ -37,6 +37,7 @@ public class UrlGenerator implements UrlInterface {
     public static final String GET_APARTMENTNAMES_WITH_TYPE = "accommodation/getAllApartmentsWithType";
     public static final String SET_USER_VISITED_ADDS = "accommodation/setUserVisitedAdds";
     public static final String UNSUBSCRIBE_NOTIFICATIONS = "accommodation/unSubscribeNotifications";
+    public static final String GET_UNIVERSITY_NAMES = "accommodation/test";
 
 
     private static final Map<String, String> apartmentTypeCodeMap;
@@ -71,6 +72,13 @@ public class UrlGenerator implements UrlInterface {
         }
         return "";
 
+
+    }
+
+    @Override
+    public String getUniversitieListUrl() {
+
+        return GET_UNIVERSITY_NAMES;
 
     }
 
