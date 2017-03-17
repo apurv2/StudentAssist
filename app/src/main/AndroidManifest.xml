@@ -23,6 +23,7 @@
     <application
         android:name=".accommodation.classes.StudentAssistApplication"
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@drawable/ic_logo"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
@@ -67,13 +68,7 @@
 
         <activity
             android:name=".accommodation.activities.MainActivity"
-            android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:label="@string/app_name" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -92,7 +87,13 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name=".accommodation.activities.HomeScreenActivity"
-            android:label="@string/title_activity_home_screen" />
+            android:label="@string/title_activity_home_screen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
         <activity
             android:name=".airport.activities.AirportActivity"
             android:label="@string/title_activity_airport"
@@ -138,6 +139,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".accommodation.activities.PostAccomodationActivity" />
         </activity>
+
+        <activity android:name=".accommodation.activities.UniversitiesListActivity" />
     </application>
 
 </manifest>

@@ -2,6 +2,7 @@ package com.apurv.studentassist.accommodation.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +14,16 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.classes.University;
+import com.apurv.studentassist.airport.interfaces.RecyclerTouchInterface;
 import com.apurv.studentassist.internet.Network;
+import com.apurv.studentassist.util.Utilities;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static com.apurv.studentassist.util.Utilities.fadeIn;
+import static com.apurv.studentassist.util.Utilities.fadeOut;
 
 /**
  * Created by akamalapuri on 3/15/2017.
@@ -29,10 +36,18 @@ public class UniversitiesListAdapter extends RecyclerView.Adapter {
 
     List<University> mUniversities = Collections.emptyList();
 
+    List<Integer> selectedUniversityIds = new ArrayList<>();
+    FloatingActionButton fab;
+    RecyclerTouchInterface parentActivity;
+
     private ImageLoader mImageLoader;
     private Network network;
-    public UniversitiesListAdapter(Context context, List<University> data) {
 
+
+    public UniversitiesListAdapter(Context context, List<University> data, RecyclerTouchInterface parentActivity, FloatingActionButton fab) {
+
+        this.fab = fab;
+        this.parentActivity = parentActivity;
         inflater = LayoutInflater.from(context);
         this.mUniversities = data;
         network = Network.getNetworkInstnace();
@@ -61,8 +76,8 @@ public class UniversitiesListAdapter extends RecyclerView.Adapter {
 
             ((UniversitiesViewHolder) mUniversityRow).universityName.setText(mUniversity.getUniversityName() + " (" + mUniversity.getEstdYear() + ")");
             ((UniversitiesViewHolder) mUniversityRow).UniversityAddress.setText(mUniversity.getLocation());
-            ((UniversitiesViewHolder) mUniversityRow).noOfListings.setText(""+mUniversity.getNoOfListings());
-            ((UniversitiesViewHolder) mUniversityRow).noOfUsers.setText(""+mUniversity.getNoOfUsers());
+            ((UniversitiesViewHolder) mUniversityRow).noOfListings.setText("" + mUniversity.getNoOfListings());
+            ((UniversitiesViewHolder) mUniversityRow).noOfUsers.setText("" + mUniversity.getNoOfUsers());
 
             loadImages(((UniversitiesViewHolder) mUniversityRow), mUniversity.getUrls().get(0), position);
         }
@@ -132,6 +147,7 @@ public class UniversitiesListAdapter extends RecyclerView.Adapter {
         TextView noOfListings;
         TextView noOfUsers;
         ImageView universityPhoto;
+        ImageView selectedPhoto;
 
 
         public UniversitiesViewHolder(View itemView) {
@@ -143,11 +159,26 @@ public class UniversitiesListAdapter extends RecyclerView.Adapter {
             noOfListings = (TextView) itemView.findViewById(R.id.noOfListings);
             noOfUsers = (TextView) itemView.findViewById(R.id.noOfUsers);
             universityPhoto = (ImageView) itemView.findViewById(R.id.universityPhoto);
+            selectedPhoto = (ImageView) itemView.findViewById(R.id.selectedPhoto);
+
+
+           /* ViewGroup vg = (ViewGroup) itemView;
+            LayoutTransition lt = new LayoutTransition();
+            lt.setDuration(1000);
+            vg.setLayoutTransition(lt);*/
+
+
+            //selectedPhoto.setAnimation(animation);
+
+
         }
 
         @Override
         public void onClick(View v) {
             if (v != null) {
+                parentActivity.onTouch(getAdapterPosition(), v);
+                View roundTick = v.findViewById(R.id.selectedPhoto);
+                Utilities.toggleViewWithAnimation(roundTick, fadeIn, fadeOut);
 
             }
         }

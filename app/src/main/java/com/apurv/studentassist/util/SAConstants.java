@@ -35,9 +35,9 @@ public class SAConstants {
 
     public static final String APARTMENT_NAME = "apartmentName";
 
-   // public static final String URL = "http://studentassist.2mfu7mmben.us-east-1.elasticbeanstalk.com/rest";
+    public static final String URL = "http://studentassist.2mfu7mmben.us-east-1.elasticbeanstalk.com/rest";
 
-    public static final String URL = "http://10.0.2.2:8080/StudentAssistWebapp/rest";
+   // public static final String URL = "http://10.0.2.2:8080/StudentAssistWebapp/rest";
 
     public static final String pageTitles[] = {"Easy Search", "Advanced Search", "Recently Viewed", "Notifications"};
 
@@ -92,6 +92,8 @@ public class SAConstants {
 
     public static final String ACCOMMODATION_ADD_PARCELABLE = "accommodationAddParcelable";
 
+    public static final String UNIVERSITY_IDS = "universityIds";
+
     public static final String RECENTS = "recents";
 
     public static final String STATE_CHANGED = "onStateChanged";
@@ -109,6 +111,8 @@ public class SAConstants {
     public static final String SUCCESS = "success";
 
     public static final String POST_ACCOMMODATION = "Post Your Accommodation";
+
+    public static final String SELECT_UNIVERSITIES = "Select Universities";
 
     public static final String SUBSCRIBE_FOR_NOTIFICATIONS = "Subscribe For Notifications";
 

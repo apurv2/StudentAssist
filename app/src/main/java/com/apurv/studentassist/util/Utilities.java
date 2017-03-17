@@ -5,6 +5,10 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
 
 import com.apurv.studentassist.accommodation.Dialogs.AlertDialogL;
 import com.apurv.studentassist.accommodation.Dialogs.LoadingDialog;
@@ -15,6 +19,22 @@ import java.io.File;
  * Created by apurv on 6/8/15.
  */
 public class Utilities {
+
+
+    public static Animation fadeIn;
+    public static Animation fadeOut;
+
+    static {
+        fadeIn = new AlphaAnimation(0, 1);
+        fadeIn.setInterpolator(new DecelerateInterpolator()); //add this
+        fadeIn.setDuration(200);
+
+        fadeOut = new AlphaAnimation(1, 0);
+        fadeOut.setInterpolator(new AccelerateInterpolator()); //and this
+        fadeOut.setDuration(100);
+
+
+    }
 
 
     public static void showView(View viewGroup, int viewId) {
@@ -28,7 +48,51 @@ public class Utilities {
 
         viewGroup.findViewById(viewId).setVisibility(View.GONE);
 
+    }
 
+    public static void toggleView(View view) {
+
+        if (view.getVisibility() == View.VISIBLE) {
+
+            hideView(view);
+        } else {
+            showView(view);
+        }
+    }
+
+
+    public static boolean toggleViewWithAnimation(View view, Animation fadeIn, Animation fadeOut) {
+
+        if (view.getVisibility() == View.VISIBLE) {
+
+            view.startAnimation(fadeOut);
+            hideView(view);
+            return false;
+
+
+        } else {
+            view.startAnimation(fadeIn);
+            showView(view);
+            return true;
+
+        }
+    }
+
+    public static void fadeOutView(View view, Animation fadeOut) {
+
+        if (view.getVisibility() == View.VISIBLE) {
+
+            view.startAnimation(fadeOut);
+            hideView(view);
+        }
+    }
+
+    public static void fadeInView(View view, Animation fadeIn) {
+
+        if (view.getVisibility() != View.VISIBLE) {
+            view.startAnimation(fadeIn);
+            showView(view);
+        }
     }
 
     public static void hideView(View view) {

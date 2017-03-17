@@ -17,6 +17,7 @@ import android.util.Log;
 
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.classes.User;
+import com.apurv.studentassist.util.L;
 import com.apurv.studentassist.util.ObjectSerializer;
 import com.apurv.studentassist.util.SAConstants;
 import com.apurv.studentassist.util.Utilities;
@@ -50,7 +51,7 @@ public class FacebookLogin extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_main);
 
-
+        L.m("came to fb login class");
         try {
             PackageInfo info = getPackageManager().getPackageInfo(
                     "com.apurv.studentassist",
@@ -65,51 +66,56 @@ public class FacebookLogin extends AppCompatActivity {
         }
 
 
+        Toolbar toolbar;
+        toolbar = (Toolbar) findViewById(R.id.applicationBar);
+        toolbar.setTitle("Welcome");
+        setSupportActionBar(toolbar);
 
-            Toolbar toolbar;
-            toolbar = (Toolbar) findViewById(R.id.applicationBar);
-            toolbar.setTitle("Welcome");
-            setSupportActionBar(toolbar);
-
-            callbackManager = CallbackManager.Factory.create();
-            loginButton = (LoginButton) findViewById(R.id.login_button);
+        callbackManager = CallbackManager.Factory.create();
+        loginButton = (LoginButton) findViewById(R.id.login_button);
 
 
-            loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-                @Override
-                public void onSuccess(LoginResult loginResult) {
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
 
-                    Utilities.hideView(loginButton);
-                    login();
-                }
+                Utilities.hideView(loginButton);
+                login();
+            }
 
-                @Override
-                public void onCancel() {
-                    // App code
-                }
+            @Override
+            public void onCancel() {
+                // App code
+            }
 
-                @Override
-                public void onError(FacebookException exception) {
-                    // App code
-                }
-            });
+            @Override
+            public void onError(FacebookException exception) {
+                // App code
+            }
+        });
 
-            if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
+        if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
+
+          /*  Intent universitiesIntent = new Intent(this, UniversitiesListActivity.class);
+            startActivity(universitiesIntent);
+            finish();*/
+            L.m("3");
+
                 Intent homeScreenIntent = new Intent(this, HomeScreenActivity.class);
                 homeScreenIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
                         | Intent.FLAG_ACTIVITY_CLEAR_TASK
                         | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(homeScreenIntent);
-            }
-
-
         }
 
-        @Override
-        public void onActivityResult ( int requestCode, int resultCode, Intent data){
-            super.onActivityResult(requestCode, resultCode, data);
-            callbackManager.onActivityResult(requestCode, resultCode, data);
-        }
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
 
     private void login() {
         GraphRequest request = GraphRequest.newMeRequest(
