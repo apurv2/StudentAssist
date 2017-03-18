@@ -18,12 +18,8 @@ import com.apurv.studentassist.airport.interfaces.RecyclerTouchInterface;
 import com.apurv.studentassist.internet.Network;
 import com.apurv.studentassist.util.Utilities;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static com.apurv.studentassist.util.Utilities.fadeIn;
-import static com.apurv.studentassist.util.Utilities.fadeOut;
 
 /**
  * Created by akamalapuri on 3/15/2017.
@@ -36,7 +32,6 @@ public class UniversitiesListAdapter extends RecyclerView.Adapter {
 
     List<University> mUniversities = Collections.emptyList();
 
-    List<Integer> selectedUniversityIds = new ArrayList<>();
     FloatingActionButton fab;
     RecyclerTouchInterface parentActivity;
 
@@ -105,6 +100,11 @@ public class UniversitiesListAdapter extends RecyclerView.Adapter {
 
     }
 
+    public void updateList(List<University> list) {
+        mUniversities = list;
+        notifyDataSetChanged();
+    }
+
     public void add(University university) {
         mUniversities.add(university);
         notifyItemInserted(mUniversities.size());
@@ -160,25 +160,15 @@ public class UniversitiesListAdapter extends RecyclerView.Adapter {
             noOfUsers = (TextView) itemView.findViewById(R.id.noOfUsers);
             universityPhoto = (ImageView) itemView.findViewById(R.id.universityPhoto);
             selectedPhoto = (ImageView) itemView.findViewById(R.id.selectedPhoto);
-
-
-           /* ViewGroup vg = (ViewGroup) itemView;
-            LayoutTransition lt = new LayoutTransition();
-            lt.setDuration(1000);
-            vg.setLayoutTransition(lt);*/
-
-
-            //selectedPhoto.setAnimation(animation);
-
-
         }
 
         @Override
         public void onClick(View v) {
             if (v != null) {
-                parentActivity.onTouch(getAdapterPosition(), v);
+
+                parentActivity.onTouch(mUniversities.get(getAdapterPosition()).getUniversityId(), v);
                 View roundTick = v.findViewById(R.id.selectedPhoto);
-                Utilities.toggleViewWithAnimation(roundTick, fadeIn, fadeOut);
+                Utilities.toggleViewWithAnimation(roundTick);
 
             }
         }

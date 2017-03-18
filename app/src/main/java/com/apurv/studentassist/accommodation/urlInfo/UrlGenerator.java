@@ -37,7 +37,8 @@ public class UrlGenerator implements UrlInterface {
     public static final String GET_APARTMENTNAMES_WITH_TYPE = "accommodation/getAllApartmentsWithType";
     public static final String SET_USER_VISITED_ADDS = "accommodation/setUserVisitedAdds";
     public static final String UNSUBSCRIBE_NOTIFICATIONS = "accommodation/unSubscribeNotifications";
-    public static final String GET_UNIVERSITY_NAMES = "accommodation/test";
+    public static final String GET_UNIVERSITY_NAMES = "accommodation/getAllUniversitiesList";
+    public static final String GET_UNIVERSITY_DETAILS_FOR_USER = "accommodation/getUniversityDetailsForUser";
 
 
     private static final Map<String, String> apartmentTypeCodeMap;
@@ -78,7 +79,13 @@ public class UrlGenerator implements UrlInterface {
     @Override
     public String getUniversitieListUrl() {
 
-        return SAConstants.URL+ "/" +GET_UNIVERSITY_NAMES;
+        return SAConstants.URL + "/" + GET_UNIVERSITY_NAMES;
+
+    }
+
+    @Override
+    public String getUniversityDetailsForUser() {
+        return SAConstants.URL + "/" + GET_UNIVERSITY_DETAILS_FOR_USER;
 
     }
 
@@ -88,13 +95,11 @@ public class UrlGenerator implements UrlInterface {
 
         String url = "";
         if (aptType.equals(SAConstants.ALL)) {
-            url = SAConstants.URL + "/" + GET_ALL_APARTMENT_NAMES
-                    + "?" + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
+            url = SAConstants.URL + "/" + GET_ALL_APARTMENT_NAMES;
         } else {
 
             url = SAConstants.URL + "/" + GET_APARTMENT_NAMES + "?" +
-                    SAConstants.APARTMENT_TYPE + "=" + apartmentTypeCodeMap.get(aptType)
-                    + "&" + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
+                    SAConstants.APARTMENT_TYPE + "=" + apartmentTypeCodeMap.get(aptType);
         }
 
 

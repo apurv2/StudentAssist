@@ -91,6 +91,8 @@ public class StudentAssistBO {
         UrlGenerator urlGenerator = new UrlGenerator();
         mHeaders.put(SAConstants.ACCESS_TOKEN, urlGenerator.getAccessToken());
 
+        L.m("access Token =="+urlGenerator.getAccessToken());
+
         StringRequest request = new StringRequest(method, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

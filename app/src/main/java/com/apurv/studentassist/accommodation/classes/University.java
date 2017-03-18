@@ -101,4 +101,8 @@ public class University {
         this.estdYear = estdYear;
     }
 
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
 }

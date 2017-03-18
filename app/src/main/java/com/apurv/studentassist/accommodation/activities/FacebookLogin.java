@@ -21,6 +21,7 @@ import com.apurv.studentassist.util.L;
 import com.apurv.studentassist.util.ObjectSerializer;
 import com.apurv.studentassist.util.SAConstants;
 import com.apurv.studentassist.util.Utilities;
+import com.apurv.studentassist.util.XTrustProvider;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -50,6 +51,9 @@ public class FacebookLogin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_main);
+
+        XTrustProvider.install();
+
 
         L.m("came to fb login class");
         try {

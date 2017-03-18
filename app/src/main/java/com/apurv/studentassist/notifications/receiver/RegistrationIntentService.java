@@ -22,9 +22,14 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RegistrationIntentService extends IntentService {
 
     private static final String TAG = "RegIntentService";
+    ArrayList selectedUniversityIds;
+
 
     public RegistrationIntentService() {
         super(TAG);
@@ -34,6 +39,9 @@ public class RegistrationIntentService extends IntentService {
     protected void onHandleIntent(Intent intent) {
 
         try {
+
+
+            selectedUniversityIds = intent.getExtras().getParcelableArrayList(SAConstants.UNIVERSITY_IDS);
 
             InstanceID instanceID = InstanceID.getInstance(this);
 
@@ -58,16 +66,12 @@ public class RegistrationIntentService extends IntentService {
         editor.putString(SAConstants.GCM_ID, registrationId);
         editor.putString(SAConstants.INSTANCE_ID, instanceId);
         editor.commit();
-
-
         UrlInterface urlGen = new UrlGenerator();
-        String fbToken = urlGen.getAccessToken();
-
         try {
 
             String url = urlGen.createUser();
             Gson gson = new Gson();
-            String createUserBody = gson.toJson(new CreateUser(fbToken, instanceId, registrationId));
+            String createUserBody = gson.toJson(new CreateUser(instanceId, registrationId, selectedUniversityIds));
 
             StudentAssistBO studentAssistBO = new StudentAssistBO();
             studentAssistBO.volleyRequest(url, new NetworkInterface() {
@@ -87,27 +91,14 @@ public class RegistrationIntentService extends IntentService {
     private class CreateUser {
         String instanceId;
         String registrationId;
+        List selectedUniversityIds;
 
-        public CreateUser(String fbToken, String instanceId, String registrationId) {
+        public CreateUser(String instanceId, String registrationId, List selectedUniversityIds) {
             this.instanceId = instanceId;
             this.registrationId = registrationId;
+            this.selectedUniversityIds = selectedUniversityIds;
         }
 
-        public String getInstanceId() {
-            return instanceId;
-        }
-
-        public void setInstanceId(String instanceId) {
-            this.instanceId = instanceId;
-        }
-
-        public String getRegistrationId() {
-            return registrationId;
-        }
-
-        public void setRegistrationId(String registrationId) {
-            this.registrationId = registrationId;
-        }
     }
 
 

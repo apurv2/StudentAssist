@@ -48,5 +48,8 @@ public interface UrlInterface {
 
     public String getUniversitieListUrl();
 
+    public String getUniversityDetailsForUser();
+
+
 
 }

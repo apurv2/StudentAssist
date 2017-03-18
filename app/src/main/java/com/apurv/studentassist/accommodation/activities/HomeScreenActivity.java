@@ -24,12 +24,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
+import com.android.volley.Request;
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
+import com.apurv.studentassist.accommodation.classes.University;
 import com.apurv.studentassist.accommodation.classes.User;
+import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
+import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
 import com.apurv.studentassist.airport.activities.AirportActivity;
 import com.apurv.studentassist.appInfo.dialogs.EmailPhone;
+import com.apurv.studentassist.internet.NetworkInterface;
+import com.apurv.studentassist.internet.StudentAssistBO;
 import com.apurv.studentassist.notifications.receiver.RegistrationIntentService;
+import com.apurv.studentassist.util.ErrorReporting;
 import com.apurv.studentassist.util.L;
 import com.apurv.studentassist.util.ObjectSerializer;
 import com.apurv.studentassist.util.SAConstants;
@@ -39,10 +46,13 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.List;
 
 public class HomeScreenActivity extends AppCompatActivity {
     // private ActionBarControlMethods ActionBarControl = new ActionBarControlMethods();
@@ -50,6 +60,7 @@ public class HomeScreenActivity extends AppCompatActivity {
     ListView drawerList;
     DrawerLayout drawerLayout;
     public CallbackManager callbackManager;
+    ArrayList selectedUniversityIds = new ArrayList();
 
     SharedPreferences studentAssistSharedPreference;
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
@@ -89,30 +100,65 @@ public class HomeScreenActivity extends AppCompatActivity {
 
         if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
 
-            if (true) {
 
-                Intent universitiesIntent = new Intent(this, UniversitiesListActivity.class);
-                startActivity(universitiesIntent);
-                finish();
-            }
+            Intent intent = this.getIntent();
+
+            // coming from University Screen -> new user
+            if (intent.getExtras() != null && intent.getExtras().getParcelableArrayList(SAConstants.UNIVERSITY_IDS) != null) {
+                L.m("came here 2");
 
 
-            if (savedInstanceState != null) {
-                if (!savedInstanceState.getBoolean(SAConstants.DIALOG)) {
-                    checkUserDetails();
-                }
+                selectedUniversityIds = intent.getExtras().getParcelableArrayList(SAConstants.UNIVERSITY_IDS);
+                // Could be existing user -> to confirm lets call DB to check if the user has Univs saved in DB, if not then call UnivActiviy.
             } else {
-                checkUserDetails();
+
+                L.m("came here 1");
+
+                StudentAssistBO studentAssistBo = new StudentAssistBO();
+                UrlInterface urlgen = new UrlGenerator();
+                final HomeScreenActivity thisActivity = this;
+
+                studentAssistBo.volleyRequest(urlgen.getUniversityDetailsForUser(), new NetworkInterface() {
+                    @Override
+                    public void onResponseUpdate(String jsonResponse) {
+
+                        L.m("json reponse" + jsonResponse);
+
+
+                        try {
+                            Gson gson = new Gson();
+                            List<University> universitiesList = gson.fromJson(jsonResponse, new TypeToken<List<University>>() {
+                            }.getType());
+
+                            // New User, ask him to choose universities
+                            if (universitiesList.isEmpty()) {
+                                Intent universitiesIntent = new Intent(thisActivity, UniversitiesListActivity.class);
+                                startActivity(universitiesIntent);
+                                finish();
+                            } else {
+                                for (University univ : universitiesList) {
+                                    selectedUniversityIds.add(univ.getUniversityId());
+                                }
+
+                                checkUserDetails();
+
+                            }
+
+
+                        } catch (Exception e) {
+                            ErrorReporting.logReport(e);
+                        }
+                    }
+
+
+                }, null, Request.Method.GET);
+
+
             }
 
-
-            L.m("valid token");
         } else {
 
-          /*  L.m("invalid token");
-            DialogFragment facebookLoginDialog = new FacebookLoginDialog();
-            facebookLoginDialog.show(getSupportFragmentManager(), "");*/
-
+            //User not loggedin
             Intent FacebookLoginIntent = new Intent(this, FacebookLogin.class);
             startActivity(FacebookLoginIntent);
             finish();
@@ -129,6 +175,8 @@ public class HomeScreenActivity extends AppCompatActivity {
 
             // Start IntentService to register this application with GCM.
             Intent intent = new Intent(this, RegistrationIntentService.class);
+            intent.putParcelableArrayListExtra(SAConstants.UNIVERSITY_IDS, selectedUniversityIds);
+
             this.startService(intent);
 
         }
@@ -194,28 +242,46 @@ public class HomeScreenActivity extends AppCompatActivity {
      */
     public void courses(View view) {
 
-        String firstName, lastName, emailId, phoneNumber, ApartmentName, vacancies, NoOfRooms, lookingFor, cost, userId, addId, notes;
-        boolean userVisitedSw;
+
+        StudentAssistBO studentAssistBo = new StudentAssistBO();
+        UrlInterface urlgen = new UrlGenerator();
+        final HomeScreenActivity thisActivity = this;
+
+        studentAssistBo.volleyRequest(urlgen.getUniversityDetailsForUser(), new NetworkInterface() {
+            @Override
+            public void onResponseUpdate(String jsonResponse) {
+
+                L.m("json reponse" + jsonResponse);
 
 
-        firstName = SAConstants.FIRST_NAME;
-        lastName = SAConstants.LAST_NAME;
-        emailId = SAConstants.EMAIL_ID;
-        phoneNumber = SAConstants.PHONE_NUMBER;
-        ApartmentName = SAConstants.APARTMENT_NAME;
-        vacancies = SAConstants.VACANCIES;
-        NoOfRooms = SAConstants.NO_OF_ROOMS;
-        lookingFor = SAConstants.GENDER;
-        cost = SAConstants.COST;
-        userId = "1118294135";
-        addId = "5";
-        notes = SAConstants.NOTES;
-        userVisitedSw = false;
+                try {
+                    Gson gson = new Gson();
+                    List<University> universitiesList = gson.fromJson(jsonResponse, new TypeToken<List<University>>() {
+                    }.getType());
+
+                    // New User, ask him to choose universities
+                    if (universitiesList.isEmpty()) {
+                        Intent universitiesIntent = new Intent(thisActivity, UniversitiesListActivity.class);
+                        startActivity(universitiesIntent);
+                        finish();
+                    } else {
+                        for (University univ : universitiesList) {
+                            selectedUniversityIds.add(univ.getUniversityId());
+                        }
+
+                        checkUserDetails();
+
+                    }
 
 
-        sendNotification(new AccommodationAdd(firstName, lastName, emailId,
-                phoneNumber, ApartmentName, vacancies, NoOfRooms, lookingFor,
-                cost, userId, addId, notes, userVisitedSw, new ArrayList<String>()));
+                } catch (Exception e) {
+                    ErrorReporting.logReport(e);
+                }
+            }
+
+
+        }, null, Request.Method.GET);
+
 
     }
 

@@ -1,19 +1,28 @@
 package com.apurv.studentassist.util;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 
+import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.Dialogs.AlertDialogL;
 import com.apurv.studentassist.accommodation.Dialogs.LoadingDialog;
 
 import java.io.File;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by apurv on 6/8/15.
@@ -23,6 +32,9 @@ public class Utilities {
 
     public static Animation fadeIn;
     public static Animation fadeOut;
+    public static Animation slideUp;
+    public static Animation slideDown;
+
 
     static {
         fadeIn = new AlphaAnimation(0, 1);
@@ -32,6 +44,12 @@ public class Utilities {
         fadeOut = new AlphaAnimation(1, 0);
         fadeOut.setInterpolator(new AccelerateInterpolator()); //and this
         fadeOut.setDuration(100);
+
+        slideUp = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.bottom_up);
+        slideUp.setDuration(100);
+
+        slideDown = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_out_bottom);
+        slideDown.setDuration(100);
 
 
     }
@@ -60,25 +78,71 @@ public class Utilities {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public static void revealShow(View view) {
 
-    public static boolean toggleViewWithAnimation(View view, Animation fadeIn, Animation fadeOut) {
+        if (view.getVisibility() != View.VISIBLE) {
+
+
+            // get the center for the clipping circle
+            int cx = view.getWidth() / 2;
+            int cy = view.getHeight() / 2;
+
+            // get the final radius for the clipping circle
+            float finalRadius = (float) Math.hypot(cx, cy);
+
+            // create the animator for this view (the start radius is zero)
+            Animator anim = ViewAnimationUtils.createCircularReveal(view, cx, cy, 0, finalRadius);
+
+            // make the view visible and start the animation
+            view.setVisibility(View.VISIBLE);
+            anim.start();
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public static void revealHide(View view) {
 
         if (view.getVisibility() == View.VISIBLE) {
 
-            view.startAnimation(fadeOut);
-            hideView(view);
-            return false;
+            // previously visible view
+
+            // get the center for the clipping circle
+            int cx = view.getWidth() / 2;
+            int cy = view.getHeight() / 2;
+
+            // get the initial radius for the clipping circle
+            float initialRadius = (float) Math.hypot(cx, cy);
+
+            // create the animation (the final radius is zero)
+            Animator anim =
+                    ViewAnimationUtils.createCircularReveal(view, cx, cy, initialRadius, 0);
+
+            // make the view invisible when the animation is done
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    view.setVisibility(View.INVISIBLE);
+                }
+            });
+
+// start the animation
+            anim.start();
+        }
+    }
 
 
+    public static void toggleViewWithAnimation(View view) {
+
+        if (view.getVisibility() == View.VISIBLE) {
+            revealHide(view);
         } else {
-            view.startAnimation(fadeIn);
-            showView(view);
-            return true;
-
+            revealShow(view);
         }
     }
 
-    public static void fadeOutView(View view, Animation fadeOut) {
+    public static void hideViewUsingAnimation(View view, Animation fadeOut) {
 
         if (view.getVisibility() == View.VISIBLE) {
 
@@ -87,7 +151,7 @@ public class Utilities {
         }
     }
 
-    public static void fadeInView(View view, Animation fadeIn) {
+    public static void showViewUsingAnimation(View view, Animation fadeIn) {
 
         if (view.getVisibility() != View.VISIBLE) {
             view.startAnimation(fadeIn);
@@ -189,3 +253,4 @@ public class Utilities {
 
 
 }
+

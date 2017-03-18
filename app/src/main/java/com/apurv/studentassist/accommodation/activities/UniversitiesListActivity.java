@@ -8,6 +8,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.android.volley.Request;
 import com.apurv.studentassist.R;
@@ -25,15 +27,16 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
-import static com.apurv.studentassist.util.Utilities.fadeIn;
-import static com.apurv.studentassist.util.Utilities.fadeOut;
+import static com.apurv.studentassist.R.id.universitiesList;
+import static com.apurv.studentassist.util.Utilities.slideDown;
+import static com.apurv.studentassist.util.Utilities.slideUp;
 
 /**
  * Created by akamalapuri on 3/15/2017.
@@ -44,11 +47,21 @@ public class UniversitiesListActivity extends AppCompatActivity implements Recyc
 
     private RecyclerView mRecyclerVIew;
     UniversitiesListAdapter universitiesListAdapter;
-    private List<University> universityList;
+    private List<University> universityList = new ArrayList<>();
     ArrayList selectedUniversityIds = new ArrayList<>();
+    ArrayList selectedUniversityNames = new ArrayList<>();
+    List displayUnivList = new ArrayList<>();
+
 
     @Bind(R.id.sendUniversities)
     FloatingActionButton sendUniversities;
+
+    @Bind(R.id.searchForUniv)
+    EditText searchForUnivTextView;
+
+
+    @Bind(R.id.bottomBar)
+    Button bottomBar;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,8 +76,8 @@ public class UniversitiesListActivity extends AppCompatActivity implements Recyc
         setSupportActionBar(toolbar);
         setmRecyclerVIew();
 
-        //  geFromServer();
-        List abc = new ArrayList<University>();
+        getFromServer();
+       /* List abc = new ArrayList<University>();
 
 
         abc.add(new University(1, "UT Arlington", "description",
@@ -75,15 +88,15 @@ public class UniversitiesListActivity extends AppCompatActivity implements Recyc
                         "https://thumbs.dreamstime.com/x/san-diego-state-university-bell-tower-6140195.jpg "),
                 2, "Buffalo, New York", 1929, 30));
 
+        universityList.addAll(abc);
         populateRecyclerView(abc);
-
+*/
+        //searchForUnivTextView.setOnQueryTextListener(this);
 
     }
 
     @OnClick(R.id.sendUniversities)
     void submitButton(View view) {
-
-        //selectedUniversityIds
 
         Intent homeScreenIntent = new Intent(this, HomeScreenActivity.class);
 
@@ -98,7 +111,33 @@ public class UniversitiesListActivity extends AppCompatActivity implements Recyc
 
     }
 
-    private void geFromServer() {
+    @OnTextChanged(value = R.id.searchForUniv,
+            callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
+    void afterEmailInput(CharSequence text) {
+        try {
+            displayUnivList.clear();
+            String queryText = text.toString();
+
+            if (queryText.equals("")) {
+
+                populateRecyclerView(universityList);
+
+            } else {
+
+                for (University univ : universityList) {
+                    if (univ.getUniversityName().matches("(?i).*" + queryText + ".*")) {
+                        displayUnivList.add(univ);
+                    }
+                }
+                populateRecyclerView(displayUnivList);
+           }
+        } catch (Exception e) {
+            ErrorReporting.logReport(e);
+        }
+
+    }
+
+    private void getFromServer() {
 
 
         StudentAssistBO studentAssistBo = new StudentAssistBO();
@@ -113,6 +152,7 @@ public class UniversitiesListActivity extends AppCompatActivity implements Recyc
                     List<University> universitiesList = gson.fromJson(jsonResponse, new TypeToken<List<University>>() {
                     }.getType());
 
+                    universityList = universitiesList;
                     populateRecyclerView(universitiesList);
                 } catch (Exception e) {
                     ErrorReporting.logReport(e);
@@ -128,9 +168,8 @@ public class UniversitiesListActivity extends AppCompatActivity implements Recyc
 
         try {
 
-            universitiesListAdapter.clear();
-            universitiesListAdapter.addAll(universitiesList);
-            universityList = universitiesList;
+            //universitiesListAdapter.clear();
+            universitiesListAdapter.updateList(universitiesList);
 
 
         } catch (Exception e) {
@@ -142,7 +181,7 @@ public class UniversitiesListActivity extends AppCompatActivity implements Recyc
     public void setmRecyclerVIew() {
 
         try {
-            mRecyclerVIew = (RecyclerView) findViewById(R.id.universitiesList);
+            mRecyclerVIew = (RecyclerView) findViewById(universitiesList);
             mRecyclerVIew.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
 
@@ -158,24 +197,42 @@ public class UniversitiesListActivity extends AppCompatActivity implements Recyc
     /**
      * RecyclerView on touch event
      *
-     * @param position
+     * @param clickedUniversityId
      * @param view
      */
     @Override
-    public void onTouch(int position, View view) {
+    public void onTouch(int clickedUniversityId, View view) {
 
-        if (selectedUniversityIds.contains(universityList.get(position).getUniversityId())) {
-            selectedUniversityIds.remove(new Integer(universityList.get(position).getUniversityId()));
-        } else {
-            selectedUniversityIds.add(universityList.get(position).getUniversityId());
+        //Code to get clicked Position in Recycler view and get the actual position in the original
+        //list to send to server.
+        int clickedPosition = 0;
+        for (University univ : universityList) {
+            if (univ.getUniversityId() == clickedUniversityId) {
+                break;
+            }
+            clickedPosition++;
         }
+
+
+        if (selectedUniversityIds.contains(universityList.get(clickedPosition).getUniversityId())) {
+            selectedUniversityIds.remove(new Integer(universityList.get(clickedPosition).getUniversityId()));
+            selectedUniversityNames.remove(universityList.get(clickedPosition).getUniversityName());
+        } else {
+            selectedUniversityIds.add(universityList.get(clickedPosition).getUniversityId());
+            selectedUniversityNames.add(universityList.get(clickedPosition).getUniversityName());
+        }
+
+        String selectedUnivsText = android.text.TextUtils.join(",", selectedUniversityNames);
+        bottomBar.setText(selectedUnivsText);
+
 
         if (selectedUniversityIds.isEmpty()) {
-            Utilities.fadeOutView(sendUniversities, fadeOut);
+            Utilities.hideViewUsingAnimation(bottomBar, slideDown);
+            Utilities.revealHide(sendUniversities);
         } else {
-            Utilities.fadeInView(sendUniversities, fadeIn);
+            Utilities.showViewUsingAnimation(bottomBar, slideUp);
+            Utilities.revealShow(sendUniversities);
         }
-
-
     }
+
 }
