@@ -74,7 +74,7 @@ public class UniversitiesListAdapter extends RecyclerView.Adapter {
             ((UniversitiesViewHolder) mUniversityRow).noOfListings.setText("" + mUniversity.getNoOfListings());
             ((UniversitiesViewHolder) mUniversityRow).noOfUsers.setText("" + mUniversity.getNoOfUsers());
 
-            loadImages(((UniversitiesViewHolder) mUniversityRow), mUniversity.getUrls().get(0), position);
+            loadImages(((UniversitiesViewHolder) mUniversityRow), mUniversity.getUrls(), position);
         }
     }
 

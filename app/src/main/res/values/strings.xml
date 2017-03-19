@@ -177,6 +177,7 @@
     <string name="off_campus">Off-Campus</string>
     <string name="dorms">Dorms</string>
     <string name="type_university_name">University Name</string>
+    <string name="university_settings">University Settings</string>
 
 
 </resources>

@@ -32,7 +32,6 @@ import com.apurv.studentassist.accommodation.classes.User;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
 import com.apurv.studentassist.airport.activities.AirportActivity;
-import com.apurv.studentassist.appInfo.dialogs.EmailPhone;
 import com.apurv.studentassist.internet.NetworkInterface;
 import com.apurv.studentassist.internet.StudentAssistBO;
 import com.apurv.studentassist.notifications.receiver.RegistrationIntentService;
@@ -98,6 +97,7 @@ public class HomeScreenActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+
         if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
 
 
@@ -109,49 +109,37 @@ public class HomeScreenActivity extends AppCompatActivity {
 
 
                 selectedUniversityIds = intent.getExtras().getParcelableArrayList(SAConstants.UNIVERSITY_IDS);
-                // Could be existing user -> to confirm lets call DB to check if the user has Univs saved in DB, if not then call UnivActiviy.
+
+                checkUserDetails();
+
+
+                // Could be existing user -> to confirm lets check the Shared prefs for list of univs,
+                // if that is also empty, then call DB to check if the user has Univs saved in DB, if not then call UniversityActivity
             } else {
 
                 L.m("came here 1");
 
-                StudentAssistBO studentAssistBo = new StudentAssistBO();
-                UrlInterface urlgen = new UrlGenerator();
-                final HomeScreenActivity thisActivity = this;
+                SharedPreferences sharedPreferences = getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
+                byte[] universitiesListBytes = Base64.decode(sharedPreferences.getString(SAConstants.UNIVERSITIES_LIST, ""), Base64.DEFAULT);
 
-                studentAssistBo.volleyRequest(urlgen.getUniversityDetailsForUser(), new NetworkInterface() {
-                    @Override
-                    public void onResponseUpdate(String jsonResponse) {
-
-                        L.m("json reponse" + jsonResponse);
+                //checking to make sure prefs are not null, if they are null then call the DB to confirm new User in the else block
+                if (universitiesListBytes != null && universitiesListBytes.length > 0) {
+                    List univListFromSharedPrefs = (ArrayList<University>) ObjectSerializer.deserialize(universitiesListBytes);
 
 
-                        try {
-                            Gson gson = new Gson();
-                            List<University> universitiesList = gson.fromJson(jsonResponse, new TypeToken<List<University>>() {
-                            }.getType());
-
-                            // New User, ask him to choose universities
-                            if (universitiesList.isEmpty()) {
-                                Intent universitiesIntent = new Intent(thisActivity, UniversitiesListActivity.class);
-                                startActivity(universitiesIntent);
-                                finish();
-                            } else {
-                                for (University univ : universitiesList) {
-                                    selectedUniversityIds.add(univ.getUniversityId());
-                                }
-
-                                checkUserDetails();
-
-                            }
+                    //shared prefs are empty, so call the DB to confirm that the user is a new user
+                    if (!univListFromSharedPrefs.isEmpty()) {
 
 
-                        } catch (Exception e) {
-                            ErrorReporting.logReport(e);
-                        }
+                        checkUserUniversityList();
+
+                    } else {
+
+
                     }
-
-
-                }, null, Request.Method.GET);
+                } else {
+                    checkUserUniversityList();
+                }
 
 
             }
@@ -180,6 +168,58 @@ public class HomeScreenActivity extends AppCompatActivity {
             this.startService(intent);
 
         }
+
+    }
+
+
+    private void checkUserUniversityList() {
+        SharedPreferences sharedPreferences = getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
+
+
+        StudentAssistBO studentAssistBo = new StudentAssistBO();
+        UrlInterface urlgen = new UrlGenerator();
+        final HomeScreenActivity thisActivity = this;
+
+        studentAssistBo.volleyRequest(urlgen.getUniversityDetailsForUser(), new NetworkInterface() {
+            @Override
+            public void onResponseUpdate(String jsonResponse) {
+
+                L.m("json reponse" + jsonResponse);
+
+
+                try {
+                    Gson gson = new Gson();
+                    List<University> universitiesList = gson.fromJson(jsonResponse, new TypeToken<List<University>>() {
+                    }.getType());
+
+                    // New User, ask him to choose universities
+                    if (universitiesList.isEmpty()) {
+                        Intent universitiesIntent = new Intent(thisActivity, UniversitiesListActivity.class);
+                        startActivity(universitiesIntent);
+                        finish();
+                    } else {
+                        for (University univ : universitiesList) {
+                            selectedUniversityIds.add(univ.getUniversityId());
+                        }
+
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString(SAConstants.UNIVERSITIES_LIST, Base64.encodeToString(ObjectSerializer.serialize(universitiesList), Base64.DEFAULT));
+                        editor.commit();
+
+
+                        checkUserDetails();
+
+                    }
+
+
+                } catch (Exception e) {
+                    ErrorReporting.logReport(e);
+                }
+            }
+
+
+        }, null, Request.Method.GET);
+
 
     }
 
@@ -371,32 +411,21 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     private void settings() {
 
-        SharedPreferences sharedPreferences = getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
-        byte[] userInformationBytes = Base64.decode(sharedPreferences.getString(SAConstants.USER, ""), Base64.DEFAULT);
-        User user = (User) ObjectSerializer.deserialize(userInformationBytes);
-
-
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(SAConstants.FETCH, true);
-        bundle.putString(SAConstants.EMAIL_ID, user.getEmail());
-        bundle.putString(SAConstants.PHONE_NUMBER, user.getPhoneNo());
-
-        EmailPhone emailPhone = new EmailPhone();
-        emailPhone.setArguments(bundle);
-        emailPhone.show(getSupportFragmentManager(), "");
+        Intent universitiesIntent = new Intent(this, UniversitiesListActivity.class);
+        startActivity(universitiesIntent);
+        finish();
     }
 
     private void logout() {
 
         SharedPreferences sharedPreferences = getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
+        editor.clear().commit();
 
 
         LoginManager.getInstance().logOut();
         Intent FacebookLoginIntent = new Intent(this, FacebookLogin.class);
         startActivity(FacebookLoginIntent);
-        finish();
 
 
     }

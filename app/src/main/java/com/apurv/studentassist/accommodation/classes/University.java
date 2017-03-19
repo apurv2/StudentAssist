@@ -1,7 +1,5 @@
 package com.apurv.studentassist.accommodation.classes;
 
-import java.util.List;
-
 /**
  * Created by akamalapuri on 3/15/2017.
  */
@@ -15,7 +13,7 @@ public class University {
 
     private String description;
 
-    private List<String> urls;
+    private String urls;
 
     private int noOfUsers;
 
@@ -25,7 +23,7 @@ public class University {
 
     private int noOfListings;
 
-    public University(int universityId, String universityName, String description, List<String> urls, int noOfUsers,
+    public University(int universityId, String universityName, String description, String urls, int noOfUsers,
                       String location, int estdYear, int noOfListings) {
         this.universityId = universityId;
         this.universityName = universityName;
@@ -69,13 +67,6 @@ public class University {
         this.description = description;
     }
 
-    public List<String> getUrls() {
-        return urls;
-    }
-
-    public void setUrls(List<String> urls) {
-        this.urls = urls;
-    }
 
     public int getNoOfUsers() {
         return noOfUsers;
@@ -105,4 +96,11 @@ public class University {
         return super.clone();
     }
 
+    public String getUrls() {
+        return urls;
+    }
+
+    public void setUrls(String urls) {
+        this.urls = urls;
+    }
 }
