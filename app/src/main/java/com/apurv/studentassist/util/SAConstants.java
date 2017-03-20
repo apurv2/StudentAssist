@@ -36,12 +36,11 @@ public class SAConstants {
     public static final String APARTMENT_NAME = "apartmentName";
 
 
+    //  public static final String URL = "http://awsenv.czbki664xm.us-west-2.elasticbeanstalk.com/rest";
 
-  //  public static final String URL = "http://awsenv.czbki664xm.us-west-2.elasticbeanstalk.com/rest";
+    //public static final String URL = "http://studentassist.2mfu7mmben.us-east-1.elasticbeanstalk.com/rest";
 
-    public static final String URL = "http://studentassist.2mfu7mmben.us-east-1.elasticbeanstalk.com/rest";
-
-   // public static final String URL = "http://10.0.2.2:8080/StudentAssistWebapp/rest";
+     public static final String URL = "http://10.0.2.2:8080/StudentAssistWebapp/rest";
 
     public static final String pageTitles[] = {"Easy Search", "Advanced Search", "Recently Viewed", "Notifications"};
 
@@ -58,6 +57,8 @@ public class SAConstants {
     public static final String USER = "user";
 
     public static final String UNIVERSITIES_LIST = "universities_list";
+
+    public static final String UNIVERSITIES_IN_DB = "universities_in_db";
 
     // Graph User Json Feed
     public static final String G_FIRST_NAME = "first_name";
@@ -180,6 +181,8 @@ public class SAConstants {
 
     public static final String POSTING_REQUEST = "Posting Request";
 
+    public static final String SETTING_THINGS_UP = "Setting things up...";
+
     public static final String UPLOADING_IMAGES = "Uploading Images..";
 
     public static final String POSTING_ACCOMMODAION = "Posting your Accommodation";
@@ -279,4 +282,6 @@ public class SAConstants {
     public static final String NOTIFICATION_LIST = "notification list";
 
     public static final String COMMA = ",";
+
+    public static final String YES = "YES";
 }

@@ -26,6 +26,7 @@ import android.widget.ListView;
 
 import com.android.volley.Request;
 import com.apurv.studentassist.R;
+import com.apurv.studentassist.accommodation.Dialogs.LoadingDialog;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
 import com.apurv.studentassist.accommodation.classes.University;
 import com.apurv.studentassist.accommodation.classes.User;
@@ -39,6 +40,8 @@ import com.apurv.studentassist.util.ErrorReporting;
 import com.apurv.studentassist.util.L;
 import com.apurv.studentassist.util.ObjectSerializer;
 import com.apurv.studentassist.util.SAConstants;
+import com.apurv.studentassist.util.Utilities;
+import com.apurv.studentassist.util.interfaces.LodingDialogInterface;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
@@ -53,7 +56,7 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeScreenActivity extends AppCompatActivity {
+public class HomeScreenActivity extends AppCompatActivity implements LodingDialogInterface {
     // private ActionBarControlMethods ActionBarControl = new ActionBarControlMethods();
 
     ListView drawerList;
@@ -75,70 +78,45 @@ public class HomeScreenActivity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_home_screen);
 
+        SharedPreferences sharedPreferences = getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        Intent intent = this.getIntent();
+
+
+        //initializing toolbar
         Toolbar toolbar;
         toolbar = (Toolbar) findViewById(R.id.applicationBar);
         toolbar.setTitle(SAConstants.welcome);
         setSupportActionBar(toolbar);
 
 
-        //for FB SDK
-        callbackManager = CallbackManager.Factory.create();
-
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo(
-                    "com.apurv.studentassist",
-                    PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        initializeFbSdk();
 
 
+        //check if the user has logged in, else display login page
         if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
-
-
-            Intent intent = this.getIntent();
 
             // coming from University Screen -> new user
             if (intent.getExtras() != null && intent.getExtras().getParcelableArrayList(SAConstants.UNIVERSITY_IDS) != null) {
-                L.m("came here 2");
-
 
                 selectedUniversityIds = intent.getExtras().getParcelableArrayList(SAConstants.UNIVERSITY_IDS);
 
+                editor.putString(SAConstants.UNIVERSITIES_IN_DB, SAConstants.YES);
+                editor.commit();
                 checkUserDetails();
 
 
                 // Could be existing user -> to confirm lets check the Shared prefs for list of univs,
-                // if that is also empty, then call DB to check if the user has Univs saved in DB, if not then call UniversityActivity
             } else {
 
-                L.m("came here 1");
-
-                SharedPreferences sharedPreferences = getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
-                byte[] universitiesListBytes = Base64.decode(sharedPreferences.getString(SAConstants.UNIVERSITIES_LIST, ""), Base64.DEFAULT);
-
-                //checking to make sure prefs are not null, if they are null then call the DB to confirm new User in the else block
-                if (universitiesListBytes != null && universitiesListBytes.length > 0) {
-                    List univListFromSharedPrefs = (ArrayList<University>) ObjectSerializer.deserialize(universitiesListBytes);
-
-
-                    //shared prefs are empty, so call the DB to confirm that the user is a new user
-                    if (!univListFromSharedPrefs.isEmpty()) {
-
-
-                        checkUserUniversityList();
-
-                    } else {
-
-
-                    }
+                //check if the user has previous shared prefs for univ list in DB
+                if (SAConstants.YES.equals(sharedPreferences.getString(SAConstants.UNIVERSITIES_IN_DB, ""))) {
+                    checkUserDetails();
                 } else {
-                    checkUserUniversityList();
+
+                    //nothing in sharedPreferences so need to call DB
+                    checkIfUserHasUnivsInDb();
                 }
 
 
@@ -157,6 +135,36 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     }
 
+    private void checkIfUserHasUnivsInDb() {
+
+
+        StudentAssistBO studentAssistBo = new StudentAssistBO();
+        UrlInterface urlgen = new UrlGenerator();
+        LoadingDialog loadingDialog = Utilities.showLoadingDialog(SAConstants.SETTING_THINGS_UP, getSupportFragmentManager());
+        studentAssistBo.volleyRequestWithLoadingDialog(urlgen.getUniversityDetailsForUser(), loadingDialog, null, Request.Method.GET);
+
+
+    }
+
+    private void initializeFbSdk() {
+        //for FB SDK
+        callbackManager = CallbackManager.Factory.create();
+
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(
+                    "com.apurv.studentassist",
+                    PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     private void checkUserDetails() {
         if (checkPlayServices()) {
@@ -168,58 +176,6 @@ public class HomeScreenActivity extends AppCompatActivity {
             this.startService(intent);
 
         }
-
-    }
-
-
-    private void checkUserUniversityList() {
-        SharedPreferences sharedPreferences = getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
-
-
-        StudentAssistBO studentAssistBo = new StudentAssistBO();
-        UrlInterface urlgen = new UrlGenerator();
-        final HomeScreenActivity thisActivity = this;
-
-        studentAssistBo.volleyRequest(urlgen.getUniversityDetailsForUser(), new NetworkInterface() {
-            @Override
-            public void onResponseUpdate(String jsonResponse) {
-
-                L.m("json reponse" + jsonResponse);
-
-
-                try {
-                    Gson gson = new Gson();
-                    List<University> universitiesList = gson.fromJson(jsonResponse, new TypeToken<List<University>>() {
-                    }.getType());
-
-                    // New User, ask him to choose universities
-                    if (universitiesList.isEmpty()) {
-                        Intent universitiesIntent = new Intent(thisActivity, UniversitiesListActivity.class);
-                        startActivity(universitiesIntent);
-                        finish();
-                    } else {
-                        for (University univ : universitiesList) {
-                            selectedUniversityIds.add(univ.getUniversityId());
-                        }
-
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString(SAConstants.UNIVERSITIES_LIST, Base64.encodeToString(ObjectSerializer.serialize(universitiesList), Base64.DEFAULT));
-                        editor.commit();
-
-
-                        checkUserDetails();
-
-                    }
-
-
-                } catch (Exception e) {
-                    ErrorReporting.logReport(e);
-                }
-            }
-
-
-        }, null, Request.Method.GET);
-
 
     }
 
@@ -468,4 +424,35 @@ public class HomeScreenActivity extends AppCompatActivity {
         L.m(resultCode + "");
     }
 
+    //called after the loading dialog is dismissed
+    @Override
+    public void onResponse(String jsonResponse) {
+
+        try {
+            Gson gson = new Gson();
+            List<University> universitiesList = gson.fromJson(jsonResponse, new TypeToken<List<University>>() {
+            }.getType());
+
+            // New User, ask him to choose universities
+            if (universitiesList.isEmpty()) {
+                Intent universitiesIntent = new Intent(this, UniversitiesListActivity.class);
+                startActivity(universitiesIntent);
+                finish();
+            } else {
+
+                SharedPreferences sharedPreferences = getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString(SAConstants.UNIVERSITIES_IN_DB, SAConstants.YES);
+                editor.commit();
+                checkUserDetails();
+
+                checkUserDetails();
+
+            }
+        } catch (Exception e) {
+            ErrorReporting.logReport(e);
+        }
+
+
+    }
 }
