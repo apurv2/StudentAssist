@@ -40,7 +40,10 @@ public class SAConstants {
 
     //public static final String URL = "http://studentassist.2mfu7mmben.us-east-1.elasticbeanstalk.com/rest";
 
-     public static final String URL = "http://10.0.2.2:8080/StudentAssistWebapp/rest";
+    //public static final String URL = "http://10.0.2.2:8080/StudentAssistWebapp/rest";
+
+    public static final String URL = "http://apurv-appugadu.rhcloud.com/rest";
+
 
     public static final String pageTitles[] = {"Easy Search", "Advanced Search", "Recently Viewed", "Notifications"};
 

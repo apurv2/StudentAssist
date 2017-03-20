@@ -26,6 +26,7 @@ import android.widget.ListView;
 
 import com.android.volley.Request;
 import com.apurv.studentassist.R;
+import com.apurv.studentassist.accommodation.Dialogs.AlertDialogL;
 import com.apurv.studentassist.accommodation.Dialogs.LoadingDialog;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
 import com.apurv.studentassist.accommodation.classes.University;
@@ -451,6 +452,14 @@ public class HomeScreenActivity extends AppCompatActivity implements LodingDialo
             }
         } catch (Exception e) {
             ErrorReporting.logReport(e);
+
+            Bundle b = new Bundle();
+            b.putString(SAConstants.ALERT_TEXT, "Something went wrong. Please try again later");
+            AlertDialogL alertDialogL = new AlertDialogL();
+            alertDialogL.setArguments(b);
+            alertDialogL.show(getSupportFragmentManager(), "");
+
+
         }
 
 
