@@ -8,6 +8,7 @@ import android.os.Parcelable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,13 +20,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 
 import com.apurv.studentassist.R;
-import com.apurv.studentassist.accommodation.Dialogs.SimpleSubscriptionAlertDialog;
 import com.apurv.studentassist.accommodation.Interfaces.AccommodationActivityToFragmentInterface;
 import com.apurv.studentassist.accommodation.Interfaces.AccommodationBI;
-import com.apurv.studentassist.accommodation.Interfaces.OnLoadMoreListener;
 import com.apurv.studentassist.accommodation.activities.AccommodationActivity;
 import com.apurv.studentassist.accommodation.activities.AdDetailsActivity;
 import com.apurv.studentassist.accommodation.activities.NotificationSettingsActivity;
@@ -42,6 +43,7 @@ import com.apurv.studentassist.util.Utilities;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class SearchAccomodationFragment extends Fragment implements
@@ -51,8 +53,17 @@ public class SearchAccomodationFragment extends Fragment implements
     private View pageView;
     Spinner leftSpinner, rightSpinner;
     UrlInterface urlGen = new UrlGenerator();
-    private RecyclerView mRecyclerVIew;
-    private AccommodationAddsAdapterLoader mAccommodationAddsAdapter;
+
+
+    List<AccommodationAddsAdapterLoader> accommodationAddAdaptersList;
+    List<CardView> cardViewsList = new ArrayList<>();
+    List<LinearLayout> loaderList = new ArrayList();
+
+    private AccommodationAddsAdapterLoader mAccommodationAddsAdapter1;
+    private AccommodationAddsAdapterLoader mAccommodationAddsAdapter2;
+    private AccommodationAddsAdapterLoader mAccommodationAddsAdapter3;
+    private AccommodationAddsAdapterLoader mAccommodationAddsAdapter4;
+
     ArrayList<AccommodationAdd> adds = new ArrayList<AccommodationAdd>();
     String historyLeftSpinner = "", historyRightSpinner = "";
     String leftSpinnerSameVal = "", rightSpinnerSameVal = "";
@@ -87,8 +98,9 @@ public class SearchAccomodationFragment extends Fragment implements
 
 
         // Initialize and set Spinners
+        setmRecyclerView();
         setSpinners();
-        setmRecyclerVIew();
+
 
         setHasOptionsMenu(true);
 
@@ -125,26 +137,6 @@ public class SearchAccomodationFragment extends Fragment implements
         }
     }
 
-    /**
-     * Alert the user about subscription
-     */
-    private void notificationAlert() {
-
-        Bundle bundle = new Bundle();
-
-        String left = leftSpinner.getSelectedItem().toString();
-        String right = rightSpinner.getSelectedItem().toString();
-
-
-        bundle.putString(SAConstants.ALERT_TEXT, left + " : " + right);
-        SimpleSubscriptionAlertDialog subscriptionAlert = new SimpleSubscriptionAlertDialog();
-        subscriptionAlert.setArguments(bundle);
-        subscriptionAlert.setTargetFragment(this, 0);
-        subscriptionAlert.show(getActivity().getSupportFragmentManager(), "");
-
-
-    }
-
 
     public void setSpinners() {
         // data from local
@@ -162,20 +154,58 @@ public class SearchAccomodationFragment extends Fragment implements
     }
 
 
-    public void setmRecyclerVIew() {
+    public void setmRecyclerView() {
 
         try {
-            mRecyclerVIew = (RecyclerView) pageView.findViewById(R.id.addslist);
-            mRecyclerVIew.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
-
-            //old adapter
-            //  mAccommodationAddsAdapter = new AccommodationAddsAdapter(pageView.getContext(), new ArrayList<AccommodationAdd>(), this);
 
 
-            mAccommodationAddsAdapter = new AccommodationAddsAdapterLoader(pageView.getContext(), new ArrayList<AccommodationAdd>(), this, mRecyclerVIew);
-            mRecyclerVIew.setAdapter(mAccommodationAddsAdapter);
+            RecyclerView mRecyclerVIew1;
+            RecyclerView mRecyclerVIew2;
+            RecyclerView mRecyclerVIew3;
+            RecyclerView mRecyclerVIew4;
 
-            mAccommodationAddsAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
+            mRecyclerVIew1 = (RecyclerView) pageView.findViewById(R.id.addslist1);
+            mRecyclerVIew2 = (RecyclerView) pageView.findViewById(R.id.addslist2);
+            mRecyclerVIew3 = (RecyclerView) pageView.findViewById(R.id.addslist3);
+            mRecyclerVIew4 = (RecyclerView) pageView.findViewById(R.id.addslist4);
+
+            mRecyclerVIew1.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+            mRecyclerVIew2.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+            mRecyclerVIew3.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+            mRecyclerVIew4.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+
+
+            mAccommodationAddsAdapter1 = new AccommodationAddsAdapterLoader(pageView.getContext(), new ArrayList<AccommodationAdd>(), this, mRecyclerVIew1);
+            mAccommodationAddsAdapter2 = new AccommodationAddsAdapterLoader(pageView.getContext(), new ArrayList<AccommodationAdd>(), this, mRecyclerVIew2);
+            mAccommodationAddsAdapter3 = new AccommodationAddsAdapterLoader(pageView.getContext(), new ArrayList<AccommodationAdd>(), this, mRecyclerVIew3);
+            mAccommodationAddsAdapter4 = new AccommodationAddsAdapterLoader(pageView.getContext(), new ArrayList<AccommodationAdd>(), this, mRecyclerVIew4);
+
+
+            mRecyclerVIew1.setAdapter(mAccommodationAddsAdapter1);
+            mRecyclerVIew2.setAdapter(mAccommodationAddsAdapter2);
+            mRecyclerVIew3.setAdapter(mAccommodationAddsAdapter3);
+            mRecyclerVIew4.setAdapter(mAccommodationAddsAdapter4);
+
+            accommodationAddAdaptersList = new ArrayList();
+            accommodationAddAdaptersList.add(mAccommodationAddsAdapter1);
+            accommodationAddAdaptersList.add(mAccommodationAddsAdapter2);
+            accommodationAddAdaptersList.add(mAccommodationAddsAdapter3);
+            accommodationAddAdaptersList.add(mAccommodationAddsAdapter4);
+
+            cardViewsList.add((CardView) pageView.findViewById(R.id.cardView1));
+            cardViewsList.add((CardView) pageView.findViewById(R.id.cardView2));
+            cardViewsList.add((CardView) pageView.findViewById(R.id.cardView3));
+            cardViewsList.add((CardView) pageView.findViewById(R.id.cardView4));
+
+            loaderList.add((LinearLayout) pageView.findViewById(R.id.loadingPanel1));
+            loaderList.add((LinearLayout) pageView.findViewById(R.id.loadingPanel2));
+            loaderList.add((LinearLayout) pageView.findViewById(R.id.loadingPanel3));
+            loaderList.add((LinearLayout) pageView.findViewById(R.id.loadingPanel4));
+
+
+
+
+           /* mAccommodationAddsAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
                 @Override
                 public void onLoadMore(int position) {
 
@@ -185,6 +215,8 @@ public class SearchAccomodationFragment extends Fragment implements
                     new AccommodationBO(UrlGenerator.getPaginationUrl(recentUrl, position), new AccommodationBI() {
                         @Override
                         public void onAccommodationAddsReady(ArrayList<AccommodationAdd> advertisements) {
+
+                            processAccommodationAdds(advertisements);
                             mAccommodationAddsAdapter.pop();
 
                             L.m("populating pagination");
@@ -208,7 +240,7 @@ public class SearchAccomodationFragment extends Fragment implements
 
 
                 }
-            });
+            });*/
 
 
         } catch (Exception e) {
@@ -216,6 +248,32 @@ public class SearchAccomodationFragment extends Fragment implements
         }
 
     }
+
+
+    private void processAccommodationAdds(List<AccommodationAdd> advertisements) {
+
+        Collections.sort(advertisements, AccommodationAdd.getComparatorByUnivId());
+
+        int counter = 0;
+        List<List<AccommodationAdd>> accommodationAddsLists = new ArrayList<>();
+        List<AccommodationAdd> tempList = new ArrayList<>();
+
+        for (AccommodationAdd accAdd : advertisements) {
+
+            if (counter > 0 && accAdd.getUniversityId() != advertisements.get(counter - 1).getUniversityId()) {
+                accommodationAddsLists.add(tempList);
+                tempList = new ArrayList<>();
+            }
+            if (counter == advertisements.size() - 1) {
+                accommodationAddsLists.add(tempList);
+            }
+            tempList.add(accAdd);
+            counter++;
+        }
+        populateRecyclerView(accommodationAddsLists);
+
+    }
+
 
     // Creating adapter for the spinner with strings returned from the server
     public ArrayAdapter<String> createArrayAdapter(List<String> List) {
@@ -317,7 +375,7 @@ public class SearchAccomodationFragment extends Fragment implements
                         if (adds.size() < 1) {
                             getFromServer(accommodationAddsUrl, leftSpinner.getSelectedItem().toString(), rightSpinnerValue);
                         } else {
-                            populateRecyclerView(adds);
+                            processAccommodationAdds(adds);
 
                         }
                     }
@@ -337,7 +395,7 @@ public class SearchAccomodationFragment extends Fragment implements
 
                     accommodationAddsUrl = urlGen.getSearchAccommodationAdds(leftSpinner.getSelectedItem().toString(), rightSpinnerValue);
                     if (reEntryFlag) {
-                        populateRecyclerView(adds);
+                        processAccommodationAdds(adds);
 
                     } else {
                         getFromServer(accommodationAddsUrl, leftSpinner.getSelectedItem().toString(), rightSpinnerValue);
@@ -379,14 +437,14 @@ public class SearchAccomodationFragment extends Fragment implements
                 historyLeftSpinner = left;
                 historyRightSpinner = right;
 
-                Utilities.showView(pageView, R.id.loadingPanel);
+                //Utilities.showView(pageView, R.id.loadingPanel);
 
 
                 if (false) {
                     reEntryFlag = false;
 
                     L.m("populating from bundle view");
-                    populateRecyclerView(bundle.<AccommodationAdd>getParcelableArrayList(SAConstants.STATE_CHANGED));
+                    processAccommodationAdds(bundle.<AccommodationAdd>getParcelableArrayList(SAConstants.STATE_CHANGED));
 
                 } else {
 
@@ -400,7 +458,7 @@ public class SearchAccomodationFragment extends Fragment implements
 
                             adds.clear();
                             adds.addAll(advertisements);
-                            populateRecyclerView(advertisements);
+                            processAccommodationAdds(advertisements);
 
                         }
 
@@ -422,14 +480,54 @@ public class SearchAccomodationFragment extends Fragment implements
         }
     }
 
-    private void populateRecyclerView(ArrayList<AccommodationAdd> advertisements) {
+    private void populateRecyclerView(List<List<AccommodationAdd>> accommodationAddsList) {
 
         try {
+            L.m(accommodationAddsList + "");
+
+            int listSize = accommodationAddsList.size();
+            LinearLayout firstChild = (LinearLayout) pageView.findViewById(R.id.childLayout);
+            ScrollView sv = (ScrollView) pageView.findViewById(R.id.scrollView);
 
 
-            Utilities.hideView(pageView, R.id.loadingPanel);
+           /* if (listSize == 1 && sv!=null) {
+                ViewGroup parentLayout = ((ViewGroup) sv.getParent());
+
+                sv.removeView(firstChild); //Removing cardView from scrollview
+                parentLayout.addView(firstChild); // adding that removed view to scrollView's parent
+                parentLayout.removeView(sv);
+
+            } else if (listSize > 1) {
+                ScrollView scroll = new ScrollView(pageView.getContext());
+                scroll.setId(R.id.scrollView);
+                scroll.setLayoutParams(new ScrollView.LayoutParams(ScrollView.LayoutParams.MATCH_PARENT,
+                        ScrollView.LayoutParams.MATCH_PARENT));
+
+                ((ViewGroup) firstChild.getParent()).removeView(firstChild);
+                scroll.addView(firstChild);
+            }*/
+
+
+            for (int i = 0; i < accommodationAddAdaptersList.size(); i++) {
+
+
+                if (i < listSize) {
+                    accommodationAddAdaptersList.get(i).clear();
+                    accommodationAddAdaptersList.get(i).addAll(accommodationAddsList.get(i));
+                    Utilities.hideView(loaderList.get(i));
+
+                    //shows card views from 1 to length of adapterslist
+                    if (i > 0) {
+                        Utilities.showView(cardViewsList.get(i));
+                    }
+                }
+            }
+
+
+
+          /*  Utilities.hideView(pageView, R.id.loadingPanel);
             mAccommodationAddsAdapter.clear();
-            mAccommodationAddsAdapter.addAll(advertisements);
+            mAccommodationAddsAdapter.addAll(advertisements);*/
 
 
         } catch (Exception e) {
@@ -437,7 +535,9 @@ public class SearchAccomodationFragment extends Fragment implements
         }
     }
 
-    private void addToRecyclerView(ArrayList<AccommodationAdd> advertisements) {
+    //commented out temporarily
+    //used to add results after pagination
+   /* private void addToRecyclerView(ArrayList<AccommodationAdd> advertisements) {
 
         try {
 
@@ -446,7 +546,7 @@ public class SearchAccomodationFragment extends Fragment implements
             ErrorReporting.logReport(e);
         }
     }
-
+*/
 
     @Override
     public void onTouch(int position, View view) {
@@ -505,3 +605,4 @@ public class SearchAccomodationFragment extends Fragment implements
 
     }
 }
+

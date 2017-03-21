@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class AccommodationAdd implements java.io.Serializable, Parcelable {
@@ -20,10 +21,11 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
     private String userId;
     private String addId;
     private String notes;
+    private String universityName;
+    private String universityId;
     private List<String> addPhotoIds = new ArrayList<String>();
 
     private boolean userVisitedSw;
-
 
     protected AccommodationAdd(Parcel in) {
         firstName = in.readString();
@@ -38,9 +40,18 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
         userId = in.readString();
         addId = in.readString();
         notes = in.readString();
+        universityName = in.readString();
+        universityId = in.readString();
         addPhotoIds = in.createStringArrayList();
         userVisitedSw = in.readByte() != 0;
     }
+
+
+    public static Comparator<AccommodationAdd> getComparatorByUnivId() {
+        Comparator<AccommodationAdd> comp = (accommodationAdd, t1) -> accommodationAdd.universityId.compareTo(t1.universityId);
+        return comp;
+    }
+
 
     public static final Creator<AccommodationAdd> CREATOR = new Creator<AccommodationAdd>() {
         @Override
@@ -84,7 +95,7 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
     }
 
     public AccommodationAdd(String apartmentName, String noOfRooms, String vacancies, String cost,
-                            String gender, String notes,List<String> apartmentPictureId) {
+                            String gender, String notes, List<String> apartmentPictureId) {
 
 
         this.apartmentName = apartmentName;
@@ -97,6 +108,21 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
 
     }
 
+    public String getUniversityName() {
+        return universityName;
+    }
+
+    public void setUniversityName(String universityName) {
+        this.universityName = universityName;
+    }
+
+    public String getUniversityId() {
+        return universityId;
+    }
+
+    public void setUniversityId(String universityId) {
+        this.universityId = universityId;
+    }
 
     public void setUserVisitedSw(boolean userVisitedSw) {
         this.userVisitedSw = userVisitedSw;
@@ -189,27 +215,28 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
         return userId;
     }
 
-
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(firstName);
-        dest.writeString(lastName);
-        dest.writeString(emailId);
-        dest.writeString(phoneNumber);
-        dest.writeString(apartmentName);
-        dest.writeString(vacancies);
-        dest.writeString(gender);
-        dest.writeString(noOfRooms);
-        dest.writeString(cost);
-        dest.writeString(userId);
-        dest.writeString(addId);
-        dest.writeString(notes);
-        dest.writeStringList(addPhotoIds);
-        dest.writeByte((byte) (userVisitedSw ? 1 : 0));
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(firstName);
+        parcel.writeString(lastName);
+        parcel.writeString(emailId);
+        parcel.writeString(phoneNumber);
+        parcel.writeString(apartmentName);
+        parcel.writeString(vacancies);
+        parcel.writeString(gender);
+        parcel.writeString(noOfRooms);
+        parcel.writeString(cost);
+        parcel.writeString(userId);
+        parcel.writeString(addId);
+        parcel.writeString(notes);
+        parcel.writeString(universityName);
+        parcel.writeString(universityId);
+        parcel.writeStringList(addPhotoIds);
+        parcel.writeByte((byte) (userVisitedSw ? 1 : 0));
     }
 }
