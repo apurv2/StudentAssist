@@ -168,7 +168,7 @@ public class UniversitiesListAdapter extends RecyclerView.Adapter {
 
                 parentActivity.onTouch(mUniversities.get(getAdapterPosition()).getUniversityId(), v);
                 View roundTick = v.findViewById(R.id.selectedPhoto);
-                Utilities.toggleViewWithAnimation(roundTick);
+                Utilities.toggleViewWithRevealAnimation(roundTick);
 
             }
         }

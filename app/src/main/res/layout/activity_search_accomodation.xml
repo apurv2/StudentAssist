@@ -20,43 +20,47 @@
             android:layout_height="wrap_content" />
 
         <Spinner
-            android:id="@+id/value_spinner"
+            android:id="@+id/rightSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
     </LinearLayout>
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <LinearLayout
             android:id="@+id/childLayout"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
             android:orientation="vertical">
 
             <android.support.v7.widget.CardView
                 android:id="@+id/cardView1"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
                 android:orientation="vertical"
                 card_view:cardCornerRadius="6dp"
                 card_view:cardElevation="10dp"
                 card_view:cardUseCompatPadding="true">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
                     <FrameLayout
+                        android:id="@+id/header1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
                         <ImageView
+                            android:id="@+id/imageView1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_us_dollar_256" />
@@ -89,7 +93,7 @@
                         <android.support.v7.widget.RecyclerView
                             android:id="@+id/addslist1"
                             android:layout_width="match_parent"
-                            android:layout_height="300dp"
+                            android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
                             android:divider="#00000000"
                             android:dividerHeight="5dp"
@@ -104,8 +108,8 @@
             <android.support.v7.widget.CardView
                 android:id="@+id/cardView2"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:orientation="vertical"
                 android:visibility="gone"
                 card_view:cardCornerRadius="6dp"
@@ -118,10 +122,12 @@
                     android:orientation="vertical">
 
                     <FrameLayout
+                        android:id="@+id/header2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
                         <ImageView
+                            android:id="@+id/imageView2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_us_dollar_256" />
@@ -154,7 +160,7 @@
                         <android.support.v7.widget.RecyclerView
                             android:id="@+id/addslist2"
                             android:layout_width="match_parent"
-                            android:layout_height="300dp"
+                            android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
                             android:divider="#00000000"
                             android:dividerHeight="5dp"
@@ -169,8 +175,9 @@
             <android.support.v7.widget.CardView
                 android:id="@+id/cardView3"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
                 android:orientation="vertical"
                 android:visibility="gone"
                 card_view:cardCornerRadius="6dp"
@@ -183,10 +190,12 @@
                     android:orientation="vertical">
 
                     <FrameLayout
+                        android:id="@+id/header3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
                         <ImageView
+                            android:id="@+id/imageView3"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_us_dollar_256" />
@@ -219,7 +228,7 @@
                         <android.support.v7.widget.RecyclerView
                             android:id="@+id/addslist3"
                             android:layout_width="match_parent"
-                            android:layout_height="300dp"
+                            android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
                             android:divider="#00000000"
                             android:dividerHeight="5dp"
@@ -234,8 +243,9 @@
             <android.support.v7.widget.CardView
                 android:id="@+id/cardView4"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
                 android:orientation="vertical"
                 android:visibility="gone"
                 card_view:cardCornerRadius="6dp"
@@ -248,10 +258,12 @@
                     android:orientation="vertical">
 
                     <FrameLayout
+                        android:id="@+id/header4"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
                         <ImageView
+                            android:id="@+id/imageView4"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_us_dollar_256" />
@@ -284,7 +296,7 @@
                         <android.support.v7.widget.RecyclerView
                             android:id="@+id/addslist4"
                             android:layout_width="match_parent"
-                            android:layout_height="300dp"
+                            android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
                             android:divider="#00000000"
                             android:dividerHeight="5dp"
@@ -298,5 +310,5 @@
 
 
         </LinearLayout>
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 </LinearLayout>

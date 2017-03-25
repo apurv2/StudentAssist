@@ -6,7 +6,7 @@
         android:showAsAction="always"
         android:title="@string/parameter" />
     <item
-        android:id="@+id/value_spinner"
+        android:id="@+id/rightSpinner"
         android:actionViewClass="android.widget.Spinner"
         android:showAsAction="always"
         android:title="@string/value" />

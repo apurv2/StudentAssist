@@ -25,6 +25,7 @@
 
     <dimen name="advanced_subscription_alert_height">320dp</dimen>
     <dimen name="advanced_subscription_alert_width">350dp</dimen>
+    <dimen name="RecyclerviewHeight">300dp</dimen>
 
 
 </resources>

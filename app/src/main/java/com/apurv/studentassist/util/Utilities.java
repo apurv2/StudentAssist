@@ -15,10 +15,15 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ImageView;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.Dialogs.AlertDialogL;
 import com.apurv.studentassist.accommodation.Dialogs.LoadingDialog;
+import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
+import com.apurv.studentassist.internet.Network;
 
 import java.io.File;
 
@@ -133,12 +138,24 @@ public class Utilities {
     }
 
 
-    public static void toggleViewWithAnimation(View view) {
+    public static void toggleViewWithRevealAnimation(View view) {
 
         if (view.getVisibility() == View.VISIBLE) {
             revealHide(view);
         } else {
             revealShow(view);
+        }
+    }
+
+
+    public static void toggleViewWithAnimation(View view, Animation anim1, Animation anim2) {
+
+        if (view.getVisibility() == View.VISIBLE) {
+            view.startAnimation(anim1);
+            hideView(view);
+        } else {
+            view.startAnimation(anim2);
+            showView(view);
         }
     }
 
@@ -249,6 +266,35 @@ public class Utilities {
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+    }
+
+
+    public static void loadImages(String url, ImageView imageView) {
+
+        Network network;
+
+        network = Network.getNetworkInstnace();
+        ImageLoader mImageLoader = network.getmImageLoader();
+
+        mImageLoader.get(UrlGenerator.getProfilePictureURL(url), new ImageLoader.ImageListener() {
+            @Override
+            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+
+
+                Bitmap photo = response.getBitmap();
+                if (photo != null) {
+
+                    imageView.setImageBitmap(photo);
+                }
+
+            }
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
     }
 
 

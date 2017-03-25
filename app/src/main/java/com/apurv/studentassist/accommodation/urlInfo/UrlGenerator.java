@@ -118,7 +118,7 @@ public class UrlGenerator implements UrlInterface {
 
 
         parameters = SAConstants.LEFT_SPINNER + "=" + leftSpinnerCodeMap.get(leftSpinner) + "&" +
-                SAConstants.RIGHT_SPINNER + "=" + URLEncoder.encode(queryparam, "UTF-8") + "&" + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
+                SAConstants.RIGHT_SPINNER + "=" + URLEncoder.encode(queryparam, "UTF-8");
 
         url = SAConstants.URL + "/" + GET_ACCOMMODATION_ADDS + "?" + parameters;
 
