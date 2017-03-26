@@ -16,13 +16,13 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.Dialogs.AlertDialogL;
 import com.apurv.studentassist.accommodation.Dialogs.LoadingDialog;
-import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.internet.Network;
 
 import java.io.File;
@@ -268,23 +268,28 @@ public class Utilities {
         return BitmapFactory.decodeFile(file.getAbsolutePath(), options);
     }
 
-
-    public static void loadImages(String url, ImageView imageView) {
+    /**
+     * @param url
+     * @param imageView
+     * @param textView - optional
+     */
+    public static void loadImages(String url, ImageView imageView, TextView textView) {
 
         Network network;
 
         network = Network.getNetworkInstnace();
         ImageLoader mImageLoader = network.getmImageLoader();
 
-        mImageLoader.get(UrlGenerator.getProfilePictureURL(url), new ImageLoader.ImageListener() {
+        mImageLoader.get(url, new ImageLoader.ImageListener() {
             @Override
             public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
 
 
                 Bitmap photo = response.getBitmap();
-                if (photo != null) {
+                if (photo != null && imageView != null) {
 
                     imageView.setImageBitmap(photo);
+                    Utilities.showView(textView);
                 }
 
             }

@@ -435,7 +435,7 @@ public class HomeScreenActivity extends AppCompatActivity implements LodingDialo
             }.getType());
 
             // New User, ask him to choose universities
-            if (!universitiesList.isEmpty()) {
+            if (universitiesList.isEmpty()) {
                 Intent universitiesIntent = new Intent(this, UniversitiesListActivity.class);
                 startActivity(universitiesIntent);
                 finish();

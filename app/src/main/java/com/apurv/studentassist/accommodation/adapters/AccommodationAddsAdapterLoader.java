@@ -267,6 +267,9 @@ public class AccommodationAddsAdapterLoader extends RecyclerView.Adapter {
         }
     }
 
+    public boolean isEmpty() {
+        return mAccommodationAdds.isEmpty();
+    }
 
     public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
         this.onLoadMoreListener = onLoadMoreListener;

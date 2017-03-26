@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.Interfaces.AccommodationActivityToFragmentInterface;
@@ -55,10 +56,11 @@ public class SearchAccomodationFragment extends Fragment implements
     UrlInterface urlGen = new UrlGenerator();
 
     List<List<AccommodationAdd>> accommodationAddsListGolbal = new ArrayList();
-    List<AccommodationAddsAdapterLoader> accommodationAddAdaptersList;
+    List<AccommodationAddsAdapterLoader> accommodationAddAdaptersList = new ArrayList();
     List<CardView> cardViewsList = new ArrayList<>();
     List<LinearLayout> loaderList = new ArrayList();
     List<ImageView> imageViewsList = new ArrayList();
+    List<TextView> textViewList = new ArrayList();
     List<RecyclerView> recyclerViews = new ArrayList<>();
 
     private AccommodationAddsAdapterLoader mAccommodationAddsAdapter1;
@@ -73,6 +75,18 @@ public class SearchAccomodationFragment extends Fragment implements
 
     Bundle bundle;
     boolean reEntryFlag = false;
+
+    @Bind(R.id.universityName1)
+    TextView universityName1;
+
+    @Bind(R.id.universityName2)
+    TextView universityName2;
+
+    @Bind(R.id.universityName3)
+    TextView universityName3;
+
+    @Bind(R.id.universityName4)
+    TextView universityName4;
 
     @Bind(R.id.imageView1)
     ImageView imageView1;
@@ -195,21 +209,29 @@ public class SearchAccomodationFragment extends Fragment implements
 
 
     private void setLists() {
+        cardViewsList.clear();
         cardViewsList.add(cardView1);
         cardViewsList.add(cardView2);
         cardViewsList.add(cardView3);
         cardViewsList.add(cardView4);
 
+        loaderList.clear();
         loaderList.add(loadingPanel1);
         loaderList.add(loadingPanel2);
         loaderList.add(loadingPanel3);
         loaderList.add(loadingPanel4);
 
-
+        imageViewsList.clear();
         imageViewsList.add(imageView1);
         imageViewsList.add(imageView2);
         imageViewsList.add(imageView3);
         imageViewsList.add(imageView4);
+
+        textViewList.clear();
+        textViewList.add(universityName1);
+        textViewList.add(universityName2);
+        textViewList.add(universityName3);
+        textViewList.add(universityName4);
 
     }
 
@@ -255,6 +277,7 @@ public class SearchAccomodationFragment extends Fragment implements
 
         try {
 
+
             mRecyclerVIew1.setNestedScrollingEnabled(false);
             mRecyclerVIew2.setNestedScrollingEnabled(false);
             mRecyclerVIew3.setNestedScrollingEnabled(false);
@@ -277,18 +300,17 @@ public class SearchAccomodationFragment extends Fragment implements
             mRecyclerVIew3.setAdapter(mAccommodationAddsAdapter3);
             mRecyclerVIew4.setAdapter(mAccommodationAddsAdapter4);
 
+            recyclerViews.clear();
             recyclerViews.add(mRecyclerVIew1);
             recyclerViews.add(mRecyclerVIew2);
             recyclerViews.add(mRecyclerVIew3);
             recyclerViews.add(mRecyclerVIew4);
 
-
-            accommodationAddAdaptersList = new ArrayList();
+            accommodationAddAdaptersList.clear();
             accommodationAddAdaptersList.add(mAccommodationAddsAdapter1);
             accommodationAddAdaptersList.add(mAccommodationAddsAdapter2);
             accommodationAddAdaptersList.add(mAccommodationAddsAdapter3);
             accommodationAddAdaptersList.add(mAccommodationAddsAdapter4);
-
 
 
 
@@ -340,26 +362,32 @@ public class SearchAccomodationFragment extends Fragment implements
 
     private void processAccommodationAdds(List<AccommodationAdd> advertisements) {
 
-        Collections.sort(advertisements, AccommodationAdd.getComparatorByUnivId());
+        if (!(leftSpinner.getSelectedItem().toString().equals(historyLeftSpinner) && rightSpinner.getSelectedItem().toString().equals(historyRightSpinner))) {
 
-        int counter = 0;
-        List<List<AccommodationAdd>> accommodationAddsLists = new ArrayList<>();
-        List<AccommodationAdd> tempList = new ArrayList<>();
+            historyLeftSpinner = leftSpinner.getSelectedItem().toString();
+            historyRightSpinner = rightSpinner.getSelectedItem().toString();
 
-        for (AccommodationAdd accAdd : advertisements) {
+            Collections.sort(advertisements, AccommodationAdd.getComparatorByUnivId());
 
-            if (counter > 0 && accAdd.getUniversityId() != advertisements.get(counter - 1).getUniversityId()) {
-                accommodationAddsLists.add(tempList);
-                tempList = new ArrayList<>();
+            int counter = 0;
+            List<List<AccommodationAdd>> accommodationAddsLists = new ArrayList<>();
+            List<AccommodationAdd> tempList = new ArrayList<>();
+
+            for (AccommodationAdd accAdd : advertisements) {
+
+                if (counter > 0 && accAdd.getUniversityId() != advertisements.get(counter - 1).getUniversityId()) {
+                    accommodationAddsLists.add(tempList);
+                    tempList = new ArrayList<>();
+                }
+                if (counter == advertisements.size() - 1) {
+                    accommodationAddsLists.add(tempList);
+                }
+                tempList.add(accAdd);
+                counter++;
             }
-            if (counter == advertisements.size() - 1) {
-                accommodationAddsLists.add(tempList);
-            }
-            tempList.add(accAdd);
-            counter++;
+            populateRecyclerView(accommodationAddsLists);
+
         }
-        populateRecyclerView(accommodationAddsLists);
-
     }
 
 
@@ -482,7 +510,7 @@ public class SearchAccomodationFragment extends Fragment implements
                     rightSpinnerSameVal = rightSpinnerValue;
 
                     accommodationAddsUrl = urlGen.getSearchAccommodationAdds(leftSpinner.getSelectedItem().toString(), rightSpinnerValue);
-                    if (reEntryFlag) {
+                    if (reEntryFlag && !adds.isEmpty()) {
                         processAccommodationAdds(adds);
 
                     } else {
@@ -522,43 +550,30 @@ public class SearchAccomodationFragment extends Fragment implements
 
             // Checking if the server call happens only once for the same parameters. It does not however store the previous history.
             if (!(left.equals(historyLeftSpinner) && right.equals(historyRightSpinner))) {
-                historyLeftSpinner = left;
-                historyRightSpinner = right;
+
 
                 //Utilities.showView(pageView, R.id.loadingPanel);
 
+                L.m("search accommodation fragment requresting simple search addds");
+                new AccommodationBO(url, new AccommodationBI() {
+                    @Override
+                    public void onAccommodationAddsReady(ArrayList<AccommodationAdd> advertisements) {
 
-                if (false) {
-                    reEntryFlag = false;
+                        L.m("populating from remote server");
+                        adds.clear();
+                        adds.addAll(advertisements);
+                        processAccommodationAdds(advertisements);
 
-                    L.m("populating from bundle view");
-                    processAccommodationAdds(bundle.<AccommodationAdd>getParcelableArrayList(SAConstants.STATE_CHANGED));
+                    }
 
-                } else {
+                    //not needed
+                    @Override
+                    public void onApartmentNamesReady(ArrayList<String> apartmentNames) {
 
-                    L.m("search accommodation fragment requresting simple search addds");
-                    new AccommodationBO(url, new AccommodationBI() {
-                        @Override
-                        public void onAccommodationAddsReady(ArrayList<AccommodationAdd> advertisements) {
-
-                            L.m("populating from remote server");
-                            reEntryFlag = false;
-
-                            adds.clear();
-                            adds.addAll(advertisements);
-                            processAccommodationAdds(advertisements);
-
-                        }
-
-                        //not needed
-                        @Override
-                        public void onApartmentNamesReady(ArrayList<String> apartmentNames) {
-
-                        }
+                    }
 
 
-                    }, SAConstants.ACCOMMODATION_ADDS);
-                }
+                }, SAConstants.ACCOMMODATION_ADDS);
 
             }
 
@@ -578,33 +593,32 @@ public class SearchAccomodationFragment extends Fragment implements
 
             for (int i = 0; i < accommodationAddAdaptersList.size(); i++) {
                 if (i < listSize) {
-                    accommodationAddAdaptersList.get(i).clear();
-                    accommodationAddAdaptersList.get(i).addAll(accommodationAddsList.get(i));
+
+                    if (!reEntryFlag || accommodationAddAdaptersList.get(i).isEmpty()) {
+                        accommodationAddAdaptersList.get(i).clear();
+                        accommodationAddAdaptersList.get(i).addAll(accommodationAddsList.get(i));
+
+                    }
+
                     Utilities.hideView(loaderList.get(i));
 
-                    //shows card views from 1 to length of adapterslist
-                    if (i > 0) {
 
-                        //Utilities.loadImages(accommodationAddsList.get(i).get(0).getu imageViewsList.get(i));
+                    //shows card views to length of adapterslist
+                    Utilities.showView(cardViewsList.get(i));
+                    Utilities.loadImages("https://upload.wikimedia.org/wikipedia/commons/0/0f/Shaffer_Art_Building%2C_Syracuse_University.JPG", imageViewsList.get(i), textViewList.get(i));
 
-                        Utilities.showView(cardViewsList.get(i));
-                    }
+
                 } else {
 
-                    L.m("hiding view=="+i+"id==="+cardViewsList.get(i).getId());
+                    L.m("hiding view==" + i + "id===" + cardViewsList.get(i).getId());
                     Utilities.hideView(cardViewsList.get(i));
                 }
 
             }
-
-
-
-
-
           /*  Utilities.hideView(pageView, R.id.loadingPanel);
             mAccommodationAddsAdapter.clear();
             mAccommodationAddsAdapter.addAll(advertisements);*/
-
+            reEntryFlag = false;
 
         } catch (Exception e) {
             ErrorReporting.logReport(e);

@@ -61,16 +61,23 @@
 
                         <ImageView
                             android:id="@+id/imageView1"
-                            android:layout_width="match_parent"
+                            android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/ic_us_dollar_256" />
+                            android:adjustViewBounds="true"
+                            android:scaleType="fitCenter" />
 
                         <TextView
-                            android:id="@+id/universityName"
-                            android:layout_width="wrap_content"
+                            android:id="@+id/universityName1"
+                            android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom|left"
-                            android:text="university Name" />
+                            android:background="@drawable/gradient"
+                            android:paddingBottom="5dp"
+                            android:paddingLeft="10dp"
+                            android:text="University Of Texas At Arlington"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:textColor="@color/buttonColourWhite"
+                            android:visibility="gone" />
                     </FrameLayout>
 
                     <FrameLayout
@@ -128,16 +135,24 @@
 
                         <ImageView
                             android:id="@+id/imageView2"
-                            android:layout_width="match_parent"
+                            android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
+                            android:adjustViewBounds="true"
+                            android:scaleType="fitCenter"
                             android:src="@drawable/ic_us_dollar_256" />
 
                         <TextView
                             android:id="@+id/universityName2"
-                            android:layout_width="wrap_content"
+                            android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom|left"
-                            android:text="university Name" />
+                            android:background="@drawable/gradient"
+                            android:paddingBottom="5dp"
+                            android:paddingLeft="10dp"
+                            android:text="University Of Texas At Arlington"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:textColor="@color/buttonColourWhite"
+                            android:visibility="gone" />
                     </FrameLayout>
 
                     <FrameLayout
@@ -196,16 +211,24 @@
 
                         <ImageView
                             android:id="@+id/imageView3"
-                            android:layout_width="match_parent"
+                            android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
+                            android:adjustViewBounds="true"
+                            android:scaleType="fitCenter"
                             android:src="@drawable/ic_us_dollar_256" />
 
                         <TextView
                             android:id="@+id/universityName3"
-                            android:layout_width="wrap_content"
+                            android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom|left"
-                            android:text="university Name" />
+                            android:background="@drawable/gradient"
+                            android:paddingBottom="5dp"
+                            android:paddingLeft="10dp"
+                            android:text="University Of Texas At Arlington"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:textColor="@color/buttonColourWhite"
+                            android:visibility="gone" />
                     </FrameLayout>
 
                     <FrameLayout
@@ -264,16 +287,24 @@
 
                         <ImageView
                             android:id="@+id/imageView4"
-                            android:layout_width="match_parent"
+                            android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
+                            android:adjustViewBounds="true"
+                            android:scaleType="fitCenter"
                             android:src="@drawable/ic_us_dollar_256" />
 
                         <TextView
                             android:id="@+id/universityName4"
-                            android:layout_width="wrap_content"
+                            android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom|left"
-                            android:text="university Name" />
+                            android:background="@drawable/gradient"
+                            android:paddingBottom="5dp"
+                            android:paddingLeft="10dp"
+                            android:text="University Of Texas At Arlington"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:textColor="@color/buttonColourWhite"
+                            android:visibility="gone" />
                     </FrameLayout>
 
                     <FrameLayout
