@@ -239,8 +239,6 @@ public class AdvancedSearchFragment extends Fragment implements
             mRecyclerVIew = (RecyclerView) pageView.findViewById(R.id.advSearchRecyclerView);
             mRecyclerVIew.setLayoutManager(new LinearLayoutManager(pageView.getContext()));
 
-            //old adapter
-            // mAccommodationAddsAdapter = new AccommodationAddsAdapter(pageView.getContext(), new ArrayList<AccommodationAdd>(), this);
             mAccommodationAddsAdapter = new AccommodationAddsAdapterLoader(pageView.getContext(), new ArrayList<AccommodationAdd>(), this, mRecyclerVIew);
 
             mRecyclerVIew.setAdapter(mAccommodationAddsAdapter);

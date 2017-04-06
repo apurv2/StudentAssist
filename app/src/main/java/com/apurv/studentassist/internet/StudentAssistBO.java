@@ -39,7 +39,7 @@ public class StudentAssistBO {
 
         UrlGenerator urlGenerator = new UrlGenerator();
         mHeaders.put(SAConstants.ACCESS_TOKEN, urlGenerator.getAccessToken());
-
+        mHeaders.put("Content-Type", "application/json; charset=utf-8");
 
         StringRequest request = new StringRequest(method, url, new Response.Listener<String>() {
             @Override
@@ -92,6 +92,8 @@ public class StudentAssistBO {
 
         UrlGenerator urlGenerator = new UrlGenerator();
         mHeaders.put(SAConstants.ACCESS_TOKEN, urlGenerator.getAccessToken());
+        mHeaders.put("Content-Type", "application/json; charset=utf-8");
+
 
         L.m("access Token =="+urlGenerator.getAccessToken());
 

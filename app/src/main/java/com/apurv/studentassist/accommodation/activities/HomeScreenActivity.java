@@ -435,7 +435,8 @@ public class HomeScreenActivity extends AppCompatActivity implements LodingDialo
             }.getType());
 
             // New User, ask him to choose universities
-            if (universitiesList.isEmpty()) {
+            //universitiesList.isEmpty()
+            if (false) {
                 Intent universitiesIntent = new Intent(this, UniversitiesListActivity.class);
                 startActivity(universitiesIntent);
                 finish();
@@ -445,8 +446,6 @@ public class HomeScreenActivity extends AppCompatActivity implements LodingDialo
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString(SAConstants.UNIVERSITIES_IN_DB, SAConstants.YES);
                 editor.commit();
-                checkUserDetails();
-
                 checkUserDetails();
 
             }

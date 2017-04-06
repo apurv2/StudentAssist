@@ -48,6 +48,8 @@ import com.facebook.FacebookSdk;
 import com.google.gson.Gson;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 
+import org.json.JSONObject;
+
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -166,47 +168,71 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
                         try {
 
-                            manager.volleyRequest(urlgen.unSubscribeNotifications(), new NetworkInterface() {
-                                @Override
-                                public void onResponseUpdate(String jsonResponse) {
+                            //sitiation when the user does not have any subscription settings and this function is being called by the framework
+                            // when we are setting the subscription switch to false. ( We want to set it to false because of business need)
+                            if (mGender != null && mGender != "") {
 
-                                    if (SAConstants.SUCCESS.equals(jsonResponse)) {
-                                        Utilities.hideView(actionButton);
+                                manager.volleyRequest(urlgen.unSubscribeNotifications(), new NetworkInterface() {
+                                    @Override
+                                    public void onResponseUpdate(String jsonResponse) {
 
-                                        unCheckAptNamesCheckboxes((ViewGroup) findViewById(R.id.onCampus));
-                                        unCheckAptNamesCheckboxes((ViewGroup) findViewById(R.id.offCampus));
-                                        unCheckAptNamesCheckboxes((ViewGroup) findViewById(R.id.dorms));
+                                        try {
 
-                                        Utilities.hideView(findViewById(R.id.onCampus));
-                                        Utilities.hideView(findViewById(R.id.offCampus));
-                                        Utilities.hideView(findViewById(R.id.dorms));
+                                            JSONObject jObject = new JSONObject(jsonResponse);
+                                            String responseString = "";
 
-                                        mOnCampusCheckbox.setChecked(false);
-                                        mOffCampusCheckbox.setChecked(false);
-                                        mDormsCheckbox.setChecked(false);
+                                            if (jObject.has(SAConstants.RESPONSE)) {
+                                                responseString = jObject.getString(SAConstants.RESPONSE);
+                                            }
 
-                                        mGenderRadioGroup.clearCheck();
+                                            if (SAConstants.SUCCESS.equals(responseString)) {
+                                                Utilities.hideView(actionButton);
 
-                                        mOnCampusCheckbox.setEnabled(false);
-                                        mOffCampusCheckbox.setEnabled(false);
-                                        mDormsCheckbox.setEnabled(false);
+                                                unCheckAptNamesCheckboxes((ViewGroup) findViewById(R.id.onCampus));
+                                                unCheckAptNamesCheckboxes((ViewGroup) findViewById(R.id.offCampus));
+                                                unCheckAptNamesCheckboxes((ViewGroup) findViewById(R.id.dorms));
 
-                                        for (int i = 0; i < mGenderRadioGroup.getChildCount(); i++) {
-                                            (mGenderRadioGroup.getChildAt(i)).setEnabled(false);
+                                                Utilities.hideView(findViewById(R.id.onCampus));
+                                                Utilities.hideView(findViewById(R.id.offCampus));
+                                                Utilities.hideView(findViewById(R.id.dorms));
+
+                                                mOnCampusCheckbox.setChecked(false);
+                                                mOffCampusCheckbox.setChecked(false);
+                                                mDormsCheckbox.setChecked(false);
+
+                                                mGenderRadioGroup.clearCheck();
+
+                                                mOnCampusCheckbox.setEnabled(false);
+                                                mOffCampusCheckbox.setEnabled(false);
+                                                mDormsCheckbox.setEnabled(false);
+
+                                                for (int i = 0; i < mGenderRadioGroup.getChildCount(); i++) {
+                                                    (mGenderRadioGroup.getChildAt(i)).setEnabled(false);
+                                                }
+
+
+                                            } else {
+                                                Bundle b = new Bundle();
+                                                b.putString(SAConstants.ALERT_TEXT, SAConstants.FAILED_TO_UNSUBSCRIBE);
+                                                AlertDialogL errorDialog = new AlertDialogL();
+                                                errorDialog.setArguments(b);
+                                                errorDialog.show(getSupportFragmentManager(), "");
+
+                                            }
+                                        } catch (Exception e) {
+
+                                            ErrorReporting.logReport(e);
+                                            Bundle b = new Bundle();
+                                            b.putString(SAConstants.ALERT_TEXT, SAConstants.FAILED_TO_UNSUBSCRIBE);
+                                            AlertDialogL errorDialog = new AlertDialogL();
+                                            errorDialog.setArguments(b);
+                                            errorDialog.show(getSupportFragmentManager(), "");
+
                                         }
-
-
-                                    } else {
-                                        Bundle b = new Bundle();
-                                        b.putString(SAConstants.ALERT_TEXT, SAConstants.FAILED_TO_UNSUBSCRIBE);
-                                        AlertDialogL errorDialog = new AlertDialogL();
-                                        errorDialog.setArguments(b);
-                                        errorDialog.show(getSupportFragmentManager(), "");
-
                                     }
+                                }, "", Request.Method.DELETE);
 
-                                }
-                            }, "", Request.Method.DELETE);
+                            }
 
                         } catch (Exception e) {
                             ErrorReporting.logReport(e);
@@ -334,7 +360,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
     }
 
-    private boolean validate() {
+    private boolean ifValidationFails() {
 
         boolean mValidateSw = false;
         String errors = "";
@@ -362,7 +388,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
             errorQueue.clear();
 
-            if (validate()) {
+            if (ifValidationFails()) {
 
                 L.m("validation error, apt type size==" + mApartmentTypesSet.size());
 
@@ -573,7 +599,6 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
     private void getNotificationSettings() {
 
-        AccommodationBO accommodationBO = new AccommodationBO();
         UrlInterface urlInterface = new UrlGenerator();
 
         if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
@@ -654,37 +679,39 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
         }
     }
 
-    /**
-     * Activity life cycle method that called when the activity resumes.
-     */
+
     @Override
     public void onResponse(String response) {
+        try {
 
-        if (SAConstants.SUCCESS.equals(response)) {
+            JSONObject jObject = new JSONObject(response);
+            String responseString = "";
 
-            Bundle b = new Bundle();
-            b.putString(SAConstants.ALERT_TEXT, SAConstants.SUCCESS);
-            AlertDialogL alertDialogL = new AlertDialogL();
-            alertDialogL.setArguments(b);
-            alertDialogL.show(getSupportFragmentManager(), "");
+            if (jObject.has(SAConstants.RESPONSE)) {
+                responseString = jObject.getString(SAConstants.RESPONSE);
+            }
 
-        } else if (!SAConstants.FAILURE.equals(response)) {
 
-            try {
+            if (SAConstants.SUCCESS.equals(responseString)) {
+
+                Bundle b = new Bundle();
+                b.putString(SAConstants.ALERT_TEXT, SAConstants.SUCCESS);
+                AlertDialogL alertDialogL = new AlertDialogL();
+                alertDialogL.setArguments(b);
+                alertDialogL.show(getSupportFragmentManager(), "");
+
+            } else if (!SAConstants.FAILURE.equals(response)) {
                 Gson gson = new Gson();
                 NotificationSettings settings = gson.fromJson(response, NotificationSettings.class);
 
                 populateNotifications(settings);
-
-            } catch (Exception e) {
-
-                e.printStackTrace();
-
-                populateNotifications(new NotificationSettings());
-
             }
-        }
+        } catch (Exception e) {
 
+            populateNotifications(new NotificationSettings());
+            e.printStackTrace();
+
+        }
 
     }
 

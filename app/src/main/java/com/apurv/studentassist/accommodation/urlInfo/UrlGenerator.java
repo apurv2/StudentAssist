@@ -118,7 +118,7 @@ public class UrlGenerator implements UrlInterface {
 
 
         parameters = SAConstants.LEFT_SPINNER + "=" + leftSpinnerCodeMap.get(leftSpinner) + "&" +
-                SAConstants.RIGHT_SPINNER + "=" + URLEncoder.encode(queryparam, "UTF-8");
+                SAConstants.RIGHT_SPINNER + "=" + URLEncoder.encode(queryparam, "UTF-8") + "&position=1";
 
         url = SAConstants.URL + "/" + GET_ACCOMMODATION_ADDS + "?" + parameters;
 
@@ -135,7 +135,7 @@ public class UrlGenerator implements UrlInterface {
         String url = "", parameters = "";
 
         parameters = SAConstants.APARTMENT_NAME + "=" + URLEncoder.encode(apartmentName, "UTF-8") + "&"
-                + SAConstants.GENDER + "=" + URLEncoder.encode(gender, "UTF-8") + "&" + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
+                + SAConstants.GENDER + "=" + URLEncoder.encode(gender, "UTF-8") + "&position=1";
 
         url = SAConstants.URL + "/" + GET_ADVANCED_SEARCH_ADDS + "?" + parameters;
 
@@ -145,14 +145,7 @@ public class UrlGenerator implements UrlInterface {
 
     @Override
     public String getUserPosts(String userId) throws UnsupportedEncodingException {
-
-        String url = "", parameters = "";
-
-
-        parameters = SAConstants.USER_ID + "=" + URLEncoder.encode(userId, "UTF-8") + "&" + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
-
-        url = SAConstants.URL + "/" + GET_USER_POSTS + "?" + parameters;
-        return url;
+        return SAConstants.URL + "/" + GET_USER_POSTS;
     }
 
     @Override
@@ -164,7 +157,7 @@ public class UrlGenerator implements UrlInterface {
 
 
         parameters = SAConstants.APARTMENT_NAME + "=" + URLEncoder.encode(apartmentName, "UTF-8") + "&" + SAConstants.APARTMENT_TYPE + "=" +
-                URLEncoder.encode(queryparam, "UTF-8") + "&" + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
+                URLEncoder.encode(queryparam, "UTF-8");
 
         url = SAConstants.URL + "/" + ADD_NEW_APT + "?" + parameters;
         return url;
@@ -179,8 +172,7 @@ public class UrlGenerator implements UrlInterface {
     public String getNotificationSettingsUrl(String access_token) throws UnsupportedEncodingException {
         String url = "", parameters = "";
 
-        parameters = SAConstants.ACCESS_TOKEN + "=" + URLEncoder.encode(access_token, "UTF-8")
-                + "&" + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
+        parameters = SAConstants.ACCESS_TOKEN + "=" + URLEncoder.encode(access_token, "UTF-8");
 
         url = SAConstants.URL + "/" + GET_NOTIFICATION_SETTINGS + "?" + parameters;
 
@@ -206,8 +198,7 @@ public class UrlGenerator implements UrlInterface {
 
         String url = "", parameters = "";
 
-        parameters = SAConstants.ADD_ID + "=" + URLEncoder.encode(addId + "", "UTF-8")
-                + "&" + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
+        parameters = SAConstants.ADD_ID + "=" + URLEncoder.encode(addId + "", "UTF-8");
 
         url = SAConstants.URL + "/" + DELETE_ACCOMMODATION + "?" + parameters;
 
@@ -218,7 +209,7 @@ public class UrlGenerator implements UrlInterface {
     @Override
     public String getAirportUrl() throws UnsupportedEncodingException {
 
-        String url = SAConstants.URL + "/" + AIRPORT + "?" + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
+        String url = SAConstants.URL + "/" + AIRPORT;
         return url;
     }
 
@@ -226,10 +217,7 @@ public class UrlGenerator implements UrlInterface {
     public String getRecentlyViewed() throws UnsupportedEncodingException {
         String url = "";
 
-        url = SAConstants.URL + "/" + RECENTLY_VIEWED + "?"
-                + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
-
-
+        url = SAConstants.URL + "/" + RECENTLY_VIEWED + "?position=1";
         return url;
     }
 
@@ -262,8 +250,7 @@ public class UrlGenerator implements UrlInterface {
     public String getApartmentNamesWithTypeUrl() throws UnsupportedEncodingException {
 
 
-        String url = SAConstants.URL + "/" + GET_APARTMENTNAMES_WITH_TYPE + "?"
-                + SAConstants.ACCESS_TOKEN + "=" + getAccessToken();
+        String url = SAConstants.URL + "/" + GET_APARTMENTNAMES_WITH_TYPE;
         return url;
     }
 
@@ -298,7 +285,7 @@ public class UrlGenerator implements UrlInterface {
     @Override
     public String getUserNotificationsUrl() throws UnsupportedEncodingException {
 
-        String url = SAConstants.URL + "/" + GET_USER_NOTIFICATIONS;
+        String url = SAConstants.URL + "/" + GET_USER_NOTIFICATIONS + "?position=1";
         return url;
     }
 

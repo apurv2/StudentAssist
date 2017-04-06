@@ -3,6 +3,7 @@ package com.apurv.studentassist.accommodation.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -161,7 +162,18 @@ public class AccommodationAddsAdapterLoader extends RecyclerView.Adapter {
 
     public void add(AccommodationAdd advertisement) {
         mAccommodationAdds.add(advertisement);
-        notifyItemInserted(mAccommodationAdds.size());
+
+        Handler handler = new Handler();
+
+        final Runnable r = new Runnable() {
+            public void run() {
+
+                notifyItemInserted(mAccommodationAdds.size());
+
+            }
+        };
+
+        handler.post(r);
     }
 
     public void pop() {
