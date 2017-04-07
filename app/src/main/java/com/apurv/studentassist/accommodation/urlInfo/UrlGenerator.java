@@ -135,7 +135,7 @@ public class UrlGenerator implements UrlInterface {
         String url = "", parameters = "";
 
         parameters = SAConstants.APARTMENT_NAME + "=" + URLEncoder.encode(apartmentName, "UTF-8") + "&"
-                + SAConstants.GENDER + "=" + URLEncoder.encode(gender, "UTF-8") + "&position=1";
+                + SAConstants.GENDER + "=" + URLEncoder.encode(gender, "UTF-8");
 
         url = SAConstants.URL + "/" + GET_ADVANCED_SEARCH_ADDS + "?" + parameters;
 
