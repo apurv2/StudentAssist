@@ -87,6 +87,32 @@
                 android:dropDownWidth="150dip"
                 android:gravity="left|center" />
         </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:padding="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/university_name"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <Spinner
+                android:id="@+id/universityNamesSpinner"
+                android:layout_width="150dip"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:dropDownWidth="150dip"
+                android:gravity="left|center" />
+        </TableRow>
+
+
     </TableLayout>
 
     <Button

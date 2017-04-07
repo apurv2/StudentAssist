@@ -28,7 +28,6 @@ import com.apurv.studentassist.accommodation.fragments.RecentlyViewedFragment;
 import com.apurv.studentassist.accommodation.fragments.SearchAccomodationFragment;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
-import com.apurv.studentassist.util.L;
 import com.apurv.studentassist.util.SAConstants;
 import com.apurv.studentassist.util.interfaces.EmptyInterface;
 
@@ -39,8 +38,6 @@ import java.util.Map;
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
-
-import static android.R.attr.data;
 
 //import com.squareup.leakcanary.LeakCanary;
 
@@ -80,7 +77,6 @@ public class AccommodationActivity extends AppCompatActivity implements
             reEntryFlag = true;
         }
 
-        L.m("on create called apugaduuuu");
 
         mCoordinator = (CoordinatorLayout) findViewById(R.id.root_coordinator);
         appBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);

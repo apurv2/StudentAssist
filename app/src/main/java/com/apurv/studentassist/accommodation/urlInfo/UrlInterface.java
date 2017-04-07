@@ -50,6 +50,8 @@ public interface UrlInterface {
 
     public String getUniversityDetailsForUser();
 
+    public String getUniversityNamesForUser();
+
 
 
 }

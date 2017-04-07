@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
+import com.android.volley.Request;
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.Dialogs.AdvancedSubscriptionAlertDialog;
 import com.apurv.studentassist.accommodation.Interfaces.AccommodationBI;
@@ -29,13 +30,18 @@ import com.apurv.studentassist.accommodation.activities.NotificationSettingsActi
 import com.apurv.studentassist.accommodation.adapters.AccommodationAddsAdapterLoader;
 import com.apurv.studentassist.accommodation.business.rules.AccommodationBO;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
+import com.apurv.studentassist.accommodation.classes.University;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
 import com.apurv.studentassist.airport.interfaces.RecyclerTouchInterface;
+import com.apurv.studentassist.internet.NetworkInterface;
+import com.apurv.studentassist.internet.StudentAssistBO;
 import com.apurv.studentassist.util.ErrorReporting;
 import com.apurv.studentassist.util.L;
 import com.apurv.studentassist.util.SAConstants;
 import com.apurv.studentassist.util.Utilities;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -46,7 +52,7 @@ public class AdvancedSearchFragment extends Fragment implements
 
 
     private View pageView;
-    Spinner aptTypes, aptNames, sex;
+    Spinner aptTypes, aptNames, sex, universityNames;
     UrlInterface urlGen = new UrlGenerator();
     private RecyclerView mRecyclerVIew;
     private AccommodationAddsAdapterLoader mAccommodationAddsAdapter;
@@ -68,9 +74,6 @@ public class AdvancedSearchFragment extends Fragment implements
         Utilities.hideView(pageView, R.id.loader);
 
 
-        // ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Advanced Search");
-
-
         // Initialize and set Spinners
         setSpinners();
 
@@ -90,6 +93,8 @@ public class AdvancedSearchFragment extends Fragment implements
 
         }
 
+
+        getUniversityNamesFromServer();
 
         return pageView;
     }
@@ -228,6 +233,11 @@ public class AdvancedSearchFragment extends Fragment implements
         // 3rd spinner - occupant sex
         sex = (Spinner) pageView.findViewById(R.id.occcupantSexSpinnerSearch);
         sex.setAdapter(createArrayAdapter(R.array.occcupant_gender));
+
+
+        universityNames = (Spinner) pageView.findViewById(R.id.universityNamesSpinner);
+        universityNames.setAdapter(createArrayAdapter(new ArrayList<String>()));
+
 
     }
 
@@ -446,4 +456,38 @@ public class AdvancedSearchFragment extends Fragment implements
     }
 
 
+    public void getUniversityNamesFromServer() {
+
+        StudentAssistBO manager = new StudentAssistBO();
+        UrlInterface urlgen = new UrlGenerator();
+
+        try {
+
+            manager.volleyRequest(urlgen.getUniversityNamesForUser(), new NetworkInterface() {
+                @Override
+                public void onResponseUpdate(String jsonResponse) {
+
+                    Gson gson = new Gson();
+                    List<University> universitiesList = gson.fromJson(jsonResponse, new TypeToken<List<University>>() {
+                    }.getType());
+
+                    ArrayAdapter<String> universityNamesAdapter = (ArrayAdapter<String>) universityNames.getAdapter();
+                    universityNamesAdapter.clear();
+
+                    for (University university : universitiesList) {
+                        universityNamesAdapter.add(university.getUniversityName());
+
+                    }
+
+                    universityNamesAdapter.notifyDataSetChanged();
+
+
+                }
+            }, "", Request.Method.GET);
+
+        } catch (Exception e) {
+            ErrorReporting.logReport(e);
+        }
+
+    }
 }
