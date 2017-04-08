@@ -21,7 +21,6 @@ import android.widget.Spinner;
 
 import com.android.volley.Request;
 import com.apurv.studentassist.R;
-import com.apurv.studentassist.accommodation.Dialogs.AdvancedSubscriptionAlertDialog;
 import com.apurv.studentassist.accommodation.Interfaces.AccommodationBI;
 import com.apurv.studentassist.accommodation.Interfaces.DialogCallback;
 import com.apurv.studentassist.accommodation.Interfaces.OnLoadMoreListener;
@@ -62,6 +61,7 @@ public class AdvancedSearchFragment extends Fragment implements
     String aptNamesVal = "", sexVal = "";
     ArrayList<String> mApartmentNames;
     String recentUrl = "";
+    List<String> universityIdsList = new ArrayList<String>();
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -89,10 +89,7 @@ public class AdvancedSearchFragment extends Fragment implements
             reEntryFlag = true;
             populateRecyclerView(savedInstanceState.<AccommodationAdd>getParcelableArrayList(SAConstants.STATE_CHANGED));
             bundle = savedInstanceState;
-
-
         }
-
 
         getUniversityNamesFromServer();
 
@@ -122,27 +119,6 @@ public class AdvancedSearchFragment extends Fragment implements
         }
     }
 
-    private void notificationAlert() {
-
-        Bundle bundle = new Bundle();
-
-        String apartmentType = aptTypes.getSelectedItem().toString();
-        String apartmentName = aptNames.getSelectedItem().toString();
-        String gender = sex.getSelectedItem().toString();
-
-
-        bundle.putString(SAConstants.APARTMENT_TYPE, apartmentType);
-        bundle.putString(SAConstants.APARTMENT_NAME, apartmentName);
-        bundle.putString(SAConstants.GENDER, gender);
-
-
-        AdvancedSubscriptionAlertDialog subscriptionAlert = new AdvancedSubscriptionAlertDialog();
-        subscriptionAlert.setArguments(bundle);
-        subscriptionAlert.setTargetFragment(this, 0);
-        subscriptionAlert.show(getActivity().getSupportFragmentManager(), "");
-
-
-    }
 
     @Override
     public void OnDialogResponse(int response) throws UnsupportedEncodingException {
@@ -338,13 +314,13 @@ public class AdvancedSearchFragment extends Fragment implements
         try {
 
 
-            if (parent.getId() == R.id.aptTypeSpinnerSearch) {
+            if (parent.getId() == R.id.aptTypeSpinnerSearch || parent.getId() == R.id.universityNamesSpinner) {
 
 
                 final ArrayAdapter<String> aptNamesAdapter = (ArrayAdapter<String>) aptNames.getAdapter();
                 aptNamesAdapter.clear();
 
-                String url = urlGen.getApartmentNamesUrl(aptTypes.getSelectedItem().toString());
+                String url = urlGen.getApartmentNamesUrl(aptTypes.getSelectedItem().toString(), universityIdsList.isEmpty() ? "0" : universityIdsList.get(universityNames.getSelectedItemPosition()));
 
 
                 if (reEntryFlag) {
@@ -467,21 +443,25 @@ public class AdvancedSearchFragment extends Fragment implements
                 @Override
                 public void onResponseUpdate(String jsonResponse) {
 
-                    Gson gson = new Gson();
-                    List<University> universitiesList = gson.fromJson(jsonResponse, new TypeToken<List<University>>() {
-                    }.getType());
+                    try {
+                        Gson gson = new Gson();
+                        List<University> universitiesList = gson.fromJson(jsonResponse, new TypeToken<List<University>>() {
+                        }.getType());
 
-                    ArrayAdapter<String> universityNamesAdapter = (ArrayAdapter<String>) universityNames.getAdapter();
-                    universityNamesAdapter.clear();
 
-                    for (University university : universitiesList) {
-                        universityNamesAdapter.add(university.getUniversityName());
+                        ArrayAdapter<String> universityNamesAdapter = (ArrayAdapter<String>) universityNames.getAdapter();
+                        universityNamesAdapter.clear();
 
+                        for (University university : universitiesList) {
+                            universityNamesAdapter.add(university.getUniversityName());
+                            universityIdsList.add((String.valueOf(university.getUniversityId())));
+                        }
+
+                        universityNamesAdapter.notifyDataSetChanged();
+
+                    } catch (Exception e) {
+                        ErrorReporting.logReport(e);
                     }
-
-                    universityNamesAdapter.notifyDataSetChanged();
-
-
                 }
             }, "", Request.Method.GET);
 

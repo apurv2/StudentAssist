@@ -123,7 +123,6 @@ public class PostAccomodationActivity extends AppCompatActivity implements
     List<String> filePaths = new ArrayList<>();
     private final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 0;
     private final int MY_PERMISSIONS_REQUEST_CAMERA_EXTERNAL_STORAGE = 1;
-    private final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 2;
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -839,7 +838,7 @@ public class PostAccomodationActivity extends AppCompatActivity implements
                         reEntryFlag = false;
                     } else {
 
-                        String url = urlGen.getApartmentNamesUrl(apartmentTypeSpinner.getSelectedItem().toString());
+                        String url = urlGen.getApartmentNamesUrl(apartmentTypeSpinner.getSelectedItem().toString(),"");
 
                         new AccommodationBO(url, new AccommodationBI() {
                             @Override

@@ -173,7 +173,7 @@ public class AccommodationActivity extends AppCompatActivity implements
 
         } else {
 
-            String url = urlInterface.getApartmentNamesUrl(SAConstants.ALL);
+            String url = urlInterface.getApartmentNamesUrl(SAConstants.ALL,"");
 
             new AccommodationBO(url, new AccommodationBI() {
 

@@ -7,8 +7,7 @@ import java.io.UnsupportedEncodingException;
  */
 public interface UrlInterface {
 
-    public String getApartmentNamesUrl(String aptType);
-
+    String getApartmentNamesUrl(String aptType, String universityId);
 
     public String getSearchAccommodationAdds(String leftSpinner, String rightSpinner) throws UnsupportedEncodingException;
 
@@ -51,7 +50,6 @@ public interface UrlInterface {
     public String getUniversityDetailsForUser();
 
     public String getUniversityNamesForUser();
-
 
 
 }
