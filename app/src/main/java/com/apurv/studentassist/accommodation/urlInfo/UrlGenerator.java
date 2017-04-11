@@ -123,7 +123,7 @@ public class UrlGenerator implements UrlInterface {
 
 
         parameters = SAConstants.LEFT_SPINNER + "=" + leftSpinnerCodeMap.get(leftSpinner) + "&" +
-                SAConstants.RIGHT_SPINNER + "=" + URLEncoder.encode(queryparam, "UTF-8") + "&position=1";
+                SAConstants.RIGHT_SPINNER + "=" + URLEncoder.encode(queryparam, "UTF-8") + "&position=0";
 
         url = SAConstants.URL + "/" + GET_ACCOMMODATION_ADDS + "?" + parameters;
 
@@ -223,7 +223,7 @@ public class UrlGenerator implements UrlInterface {
     public String getRecentlyViewed() throws UnsupportedEncodingException {
         String url = "";
 
-        url = SAConstants.URL + "/" + RECENTLY_VIEWED + "?position=1";
+        url = SAConstants.URL + "/" + RECENTLY_VIEWED + "?position=0";
         return url;
     }
 
@@ -291,7 +291,7 @@ public class UrlGenerator implements UrlInterface {
     @Override
     public String getUserNotificationsUrl() throws UnsupportedEncodingException {
 
-        String url = SAConstants.URL + "/" + GET_USER_NOTIFICATIONS + "?position=1";
+        String url = SAConstants.URL + "/" + GET_USER_NOTIFICATIONS + "?position=0";
         return url;
     }
 
