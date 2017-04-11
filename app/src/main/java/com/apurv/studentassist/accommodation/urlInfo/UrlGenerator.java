@@ -97,17 +97,14 @@ public class UrlGenerator implements UrlInterface {
 
 
     @Override
-    public String getApartmentNamesUrl(String aptType, String universityId) {
+    public String getApartmentNamesUrl(String aptType) {
 
         String url = "";
         if (aptType.equals(SAConstants.ALL)) {
             url = SAConstants.URL + "/" + GET_ALL_APARTMENT_NAMES;
         } else {
 
-            url = SAConstants.URL + "/" + GET_APARTMENT_NAMES + "?" +
-                    SAConstants.APARTMENT_TYPE + "=" + apartmentTypeCodeMap.get(aptType) + "&" +
-                    SAConstants.UNIVERSITY_ID + "=" + universityId;
-            ;
+            url = SAConstants.URL + "/" + GET_APARTMENT_NAMES;
         }
 
 
@@ -138,12 +135,13 @@ public class UrlGenerator implements UrlInterface {
 
 
     @Override
-    public String getAdvancedSearchAccommodationAdds(String apartmentName, String gender) throws UnsupportedEncodingException {
+    public String getAdvancedSearchAccommodationAdds(String apartmentName, String gender, int universityId) throws UnsupportedEncodingException {
 
         String url = "", parameters = "";
 
         parameters = SAConstants.APARTMENT_NAME + "=" + URLEncoder.encode(apartmentName, "UTF-8") + "&"
-                + SAConstants.GENDER + "=" + URLEncoder.encode(gender, "UTF-8") + "&position=1";
+                + SAConstants.GENDER + "=" + URLEncoder.encode(gender, "UTF-8")
+                + "&" + SAConstants.UNIVERSITY_ID + "=" + universityId + "&position=0";
 
         url = SAConstants.URL + "/" + GET_ADVANCED_SEARCH_ADDS + "?" + parameters;
 

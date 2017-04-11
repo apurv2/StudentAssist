@@ -7,11 +7,11 @@ import java.io.UnsupportedEncodingException;
  */
 public interface UrlInterface {
 
-    String getApartmentNamesUrl(String aptType, String universityId);
+    String getApartmentNamesUrl(String aptType);
 
     public String getSearchAccommodationAdds(String leftSpinner, String rightSpinner) throws UnsupportedEncodingException;
 
-    public String getAdvancedSearchAccommodationAdds(String apartmentName, String gender) throws UnsupportedEncodingException;
+    public String getAdvancedSearchAccommodationAdds(String apartmentName, String gender, int universityid) throws UnsupportedEncodingException;
 
     public String getUserPosts(String userId) throws UnsupportedEncodingException;
 

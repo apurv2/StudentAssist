@@ -29,7 +29,8 @@ import com.apurv.studentassist.accommodation.activities.NotificationSettingsActi
 import com.apurv.studentassist.accommodation.adapters.AccommodationAddsAdapterLoader;
 import com.apurv.studentassist.accommodation.business.rules.AccommodationBO;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
-import com.apurv.studentassist.accommodation.classes.University;
+import com.apurv.studentassist.accommodation.classes.ApartmentNamesInUnivs;
+import com.apurv.studentassist.accommodation.classes.ApartmentNamesWithType;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
 import com.apurv.studentassist.airport.interfaces.RecyclerTouchInterface;
@@ -56,13 +57,13 @@ public class AdvancedSearchFragment extends Fragment implements
     private RecyclerView mRecyclerVIew;
     private AccommodationAddsAdapterLoader mAccommodationAddsAdapter;
     ArrayList<AccommodationAdd> adds = new ArrayList<AccommodationAdd>();
-    Bundle bundle;
-    boolean reEntryFlag = false;
-    String aptNamesVal = "", sexVal = "";
+    String aptNamesVal = "", sexVal = "", univVal = "";
     ArrayList<String> mApartmentNames;
     String recentUrl = "";
     List<String> universityIdsList = new ArrayList<String>();
-
+    ArrayAdapter<String> universityNamesAdapter;
+    ArrayList<ApartmentNamesInUnivs> apartmentNamesInUnivs;
+    ArrayAdapter<String> aptNamesAdapter;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -86,12 +87,26 @@ public class AdvancedSearchFragment extends Fragment implements
 
         if (savedInstanceState != null) {
 
-            reEntryFlag = true;
-            populateRecyclerView(savedInstanceState.<AccommodationAdd>getParcelableArrayList(SAConstants.STATE_CHANGED));
-            bundle = savedInstanceState;
-        }
+            populateRecyclerView(savedInstanceState.getParcelableArrayList(SAConstants.STATE_CHANGED));
+            apartmentNamesInUnivs = savedInstanceState.getParcelableArrayList(SAConstants.APARTMENT_NAMES);
 
-        getUniversityNamesFromServer();
+            universityNamesAdapter.remove("");
+            for (ApartmentNamesInUnivs university : apartmentNamesInUnivs) {
+                universityNamesAdapter.add(university.getUniversityName());
+            }
+            universityNames.setSelection(savedInstanceState.getInt(SAConstants.UNIVERSITY_NAME_POSITION));
+
+            addApartmentNames();
+
+
+            aptNames.setSelection(savedInstanceState.getInt(SAConstants.APARTMENT_NAME_POSITION));
+            aptTypes.setSelection(savedInstanceState.getInt(SAConstants.APARTMENT_TYPE_POSITION));
+            sex.setSelection(savedInstanceState.getInt(SAConstants.GENDER_POSITION));
+
+        } else {
+
+            getApartmentNames();
+        }
 
         return pageView;
     }
@@ -166,9 +181,18 @@ public class AdvancedSearchFragment extends Fragment implements
 
                         String apartmentName = aptNames.getSelectedItem().toString();
                         String gender = sex.getSelectedItem().toString();
-                        String url = urlGen.getAdvancedSearchAccommodationAdds(apartmentName, gender);
+                        String universityVal = universityNames.getSelectedItem().toString();
+                        int universityId = -1;
+                        for (ApartmentNamesInUnivs univ : apartmentNamesInUnivs) {
+                            if (univ.getUniversityName().equals(universityVal)) {
+                                universityId = univ.getUniversityId();
+                            }
 
-                        if (!aptNamesVal.equals(apartmentName) || !sexVal.equals(gender)) {
+                        }
+
+                        String url = urlGen.getAdvancedSearchAccommodationAdds(apartmentName, gender, universityId);
+
+                        if ((!aptNamesVal.equals(apartmentName) || !sexVal.equals(gender) || !univVal.equals(universityVal)) && universityId != -1) {
 
 
                             L.m("came inside");
@@ -199,12 +223,14 @@ public class AdvancedSearchFragment extends Fragment implements
         // 1st spinner - apartment Type- ( On campus, off, dorms)
         aptTypes = (Spinner) pageView.findViewById(R.id.aptTypeSpinnerSearch);
         aptTypes.setAdapter(createArrayAdapter(R.array.apartment_type));
+        aptTypes.setSelection(0, false);
         aptTypes.setOnItemSelectedListener(this);
 
 
         // 2nd spinner - apt names
         aptNames = (Spinner) pageView.findViewById(R.id.aptNameSpinnerSearch);
         aptNames.setAdapter(createArrayAdapter(new ArrayList<String>()));
+        aptNamesAdapter = (ArrayAdapter<String>) aptNames.getAdapter();
 
         // 3rd spinner - occupant sex
         sex = (Spinner) pageView.findViewById(R.id.occcupantSexSpinnerSearch);
@@ -213,7 +239,11 @@ public class AdvancedSearchFragment extends Fragment implements
 
         universityNames = (Spinner) pageView.findViewById(R.id.universityNamesSpinner);
         universityNames.setAdapter(createArrayAdapter(new ArrayList<String>()));
+        universityNamesAdapter = (ArrayAdapter<String>) universityNames.getAdapter();
 
+        universityNamesAdapter.add("");
+        universityNames.setSelection(0, false);
+        universityNames.setOnItemSelectedListener(this);
 
     }
 
@@ -313,49 +343,78 @@ public class AdvancedSearchFragment extends Fragment implements
 
         try {
 
-
             if (parent.getId() == R.id.aptTypeSpinnerSearch || parent.getId() == R.id.universityNamesSpinner) {
 
-
-                final ArrayAdapter<String> aptNamesAdapter = (ArrayAdapter<String>) aptNames.getAdapter();
-                aptNamesAdapter.clear();
-
-                String url = urlGen.getApartmentNamesUrl(aptTypes.getSelectedItem().toString(), universityIdsList.isEmpty() ? "0" : universityIdsList.get(universityNames.getSelectedItemPosition()));
-
-
-                if (reEntryFlag) {
-
-                    mApartmentNames = bundle.getStringArrayList(SAConstants.APARTMENT_NAME);
-                    aptNamesAdapter.addAll(mApartmentNames);
-                    aptNamesAdapter.notifyDataSetChanged();
-                    aptNames.setSelection(bundle.getInt(SAConstants.APARTMENT_NAME_POSITION));
-                    reEntryFlag = false;
-                } else {
-                    L.m("advanced accommodation fragment requesting advanced search addds");
-
-
-                    new AccommodationBO(url, new AccommodationBI() {
-                        @Override
-                        public void onAccommodationAddsReady(ArrayList<AccommodationAdd> advertisements) {
-
-                        }
-
-                        @Override
-                        public void onApartmentNamesReady(ArrayList<String> apartmentNames) {
-
-                            mApartmentNames = apartmentNames;
-                            aptNamesAdapter.addAll(mApartmentNames);
-                            aptNamesAdapter.notifyDataSetChanged();
-
-                        }
-                    }, SAConstants.APARTMENT_NAMES);
-                }
+                addApartmentNames();
 
 
             }
         } catch (Exception e) {
             ErrorReporting.logReport(e);
         }
+
+    }
+
+    /**
+     * get the list of all apartment names with type and loops around it to get populate either on/off campus apartments into aptNames spinner
+     */
+    private void addApartmentNames() {
+
+        aptNamesAdapter.clear();
+        for (ApartmentNamesInUnivs university : apartmentNamesInUnivs) {
+
+            if (university.getUniversityName().equals(universityNames.getSelectedItem().toString())) {
+
+                for (ApartmentNamesWithType aptName : university.getApartmentNames()) {
+
+                    if (aptName.getApartmentType().equals(UrlGenerator.getApartmentTypeCodeMap().get(aptTypes.getSelectedItem().toString())))
+
+                        aptNamesAdapter.add(aptName.getApartmentName());
+                }
+
+            }
+        }
+    }
+
+
+    private void getApartmentNames() {
+
+        StudentAssistBO manager = new StudentAssistBO();
+        manager.volleyRequest(urlGen.getApartmentNamesUrl(""), new NetworkInterface() {
+            @Override
+            public void onResponseUpdate(String jsonResponse) {
+                try {
+
+                    Gson gson = new Gson();
+                    universityNamesAdapter.remove("");
+
+                    apartmentNamesInUnivs = gson.fromJson(jsonResponse, new TypeToken<List<ApartmentNamesInUnivs>>() {
+                    }.getType());
+                    int count = 0;
+
+
+                    for (ApartmentNamesInUnivs university : apartmentNamesInUnivs) {
+                        universityNamesAdapter.add(university.getUniversityName());
+
+
+                        if (count == 0) {
+
+                            //adding apartment names as per AptType(on/off campus)
+                            addApartmentNames();
+                        }
+
+                        count++;
+
+                    }
+
+
+                } catch (Exception e) {
+                    ErrorReporting.logReport(e);
+
+                }
+            }
+        }, "", Request.Method.GET);
+
 
     }
 
@@ -425,49 +484,16 @@ public class AdvancedSearchFragment extends Fragment implements
 
         if (aptNames != null) {
             outState.putParcelableArrayList(SAConstants.STATE_CHANGED, adds);
+            outState.putParcelableArrayList(SAConstants.APARTMENT_NAMES, apartmentNamesInUnivs);
+
+
             outState.putInt(SAConstants.APARTMENT_NAME_POSITION, aptNames.getSelectedItemPosition());
-            outState.putStringArrayList(SAConstants.APARTMENT_NAME, mApartmentNames);
+            outState.putInt(SAConstants.APARTMENT_TYPE_POSITION, aptTypes.getSelectedItemPosition());
+            outState.putInt(SAConstants.GENDER_POSITION, sex.getSelectedItemPosition());
+            outState.putInt(SAConstants.UNIVERSITY_NAME_POSITION, universityNames.getSelectedItemPosition());
 
         }
     }
 
 
-    public void getUniversityNamesFromServer() {
-
-        StudentAssistBO manager = new StudentAssistBO();
-        UrlInterface urlgen = new UrlGenerator();
-
-        try {
-
-            manager.volleyRequest(urlgen.getUniversityNamesForUser(), new NetworkInterface() {
-                @Override
-                public void onResponseUpdate(String jsonResponse) {
-
-                    try {
-                        Gson gson = new Gson();
-                        List<University> universitiesList = gson.fromJson(jsonResponse, new TypeToken<List<University>>() {
-                        }.getType());
-
-
-                        ArrayAdapter<String> universityNamesAdapter = (ArrayAdapter<String>) universityNames.getAdapter();
-                        universityNamesAdapter.clear();
-
-                        for (University university : universitiesList) {
-                            universityNamesAdapter.add(university.getUniversityName());
-                            universityIdsList.add((String.valueOf(university.getUniversityId())));
-                        }
-
-                        universityNamesAdapter.notifyDataSetChanged();
-
-                    } catch (Exception e) {
-                        ErrorReporting.logReport(e);
-                    }
-                }
-            }, "", Request.Method.GET);
-
-        } catch (Exception e) {
-            ErrorReporting.logReport(e);
-        }
-
-    }
 }

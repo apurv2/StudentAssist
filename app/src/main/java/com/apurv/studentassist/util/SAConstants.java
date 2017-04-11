@@ -289,6 +289,12 @@ public class SAConstants {
     public static final String YES = "YES";
 
     public static final String RESPONSE = "response";
-    
-    public static final String UNIVERSITY_ID = "UniversityId";
+
+    public static final String UNIVERSITY_ID = "universityId";
+
+    public static final String APARTMENT_TYPE_POSITION = "apartmentTypePosition";
+
+    public static final String GENDER_POSITION = "genderPosition";
+
+    public static final String UNIVERSITY_NAME_POSITION = "universityNamePosition";
 }

@@ -22,7 +22,7 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
     private String addId;
     private String notes;
     private String universityName;
-    private String universityId;
+    private int universityId;
     private List<String> addPhotoIds = new ArrayList<String>();
 
     private boolean userVisitedSw;
@@ -41,15 +41,31 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
         addId = in.readString();
         notes = in.readString();
         universityName = in.readString();
-        universityId = in.readString();
+        universityId = in.readInt();
         addPhotoIds = in.createStringArrayList();
         userVisitedSw = in.readByte() != 0;
     }
 
 
     public static Comparator<AccommodationAdd> getComparatorByUnivId() {
-        Comparator<AccommodationAdd> comp = (accommodationAdd, t1) -> accommodationAdd.universityId.compareTo(t1.universityId);
+
+        //   Comparator<AccommodationAdd> comp = (accommodationAdd, t1) -> accommodationAdd.universityId.compareTo(t1.universityId);
+
+        // return comp;
+
+        Comparator<AccommodationAdd> comp = new Comparator<AccommodationAdd>() {
+            @Override
+            public int compare(AccommodationAdd o1, AccommodationAdd o2) {
+
+                Integer i1 = o1.universityId;
+                Integer i2 = o2.universityId;
+
+                return i1.compareTo(i2);
+            }
+        };
+
         return comp;
+
     }
 
 
@@ -116,11 +132,11 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
         this.universityName = universityName;
     }
 
-    public String getUniversityId() {
+    public int getUniversityId() {
         return universityId;
     }
 
-    public void setUniversityId(String universityId) {
+    public void setUniversityId(int universityId) {
         this.universityId = universityId;
     }
 
@@ -235,7 +251,7 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
         parcel.writeString(addId);
         parcel.writeString(notes);
         parcel.writeString(universityName);
-        parcel.writeString(universityId);
+        parcel.writeInt(universityId);
         parcel.writeStringList(addPhotoIds);
         parcel.writeByte((byte) (userVisitedSw ? 1 : 0));
     }

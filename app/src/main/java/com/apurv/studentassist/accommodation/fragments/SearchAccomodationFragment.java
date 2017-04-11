@@ -375,7 +375,7 @@ public class SearchAccomodationFragment extends Fragment implements
 
             for (AccommodationAdd accAdd : advertisements) {
 
-                if (counter > 0 && accAdd.getUniversityId() != advertisements.get(counter - 1).getUniversityId()) {
+                if (counter > 0 && (accAdd.getUniversityId() != advertisements.get(counter - 1).getUniversityId())) {
                     accommodationAddsLists.add(tempList);
                     tempList = new ArrayList<>();
                 }

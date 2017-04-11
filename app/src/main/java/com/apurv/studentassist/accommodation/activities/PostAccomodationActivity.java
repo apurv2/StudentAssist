@@ -838,7 +838,7 @@ public class PostAccomodationActivity extends AppCompatActivity implements
                         reEntryFlag = false;
                     } else {
 
-                        String url = urlGen.getApartmentNamesUrl(apartmentTypeSpinner.getSelectedItem().toString(),"");
+                        String url = urlGen.getApartmentNamesUrl(apartmentTypeSpinner.getSelectedItem().toString());
 
                         new AccommodationBO(url, new AccommodationBI() {
                             @Override
