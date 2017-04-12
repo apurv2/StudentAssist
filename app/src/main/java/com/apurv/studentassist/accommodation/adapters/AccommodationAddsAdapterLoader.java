@@ -17,11 +17,11 @@ import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.apurv.studentassist.R;
+import com.apurv.studentassist.accommodation.Interfaces.AccommodationAddsRecyclerInterface;
 import com.apurv.studentassist.accommodation.Interfaces.OnLoadMoreListener;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
-import com.apurv.studentassist.airport.interfaces.RecyclerTouchInterface;
 import com.apurv.studentassist.internet.Network;
 import com.apurv.studentassist.internet.NetworkInterface;
 import com.apurv.studentassist.internet.StudentAssistBO;
@@ -50,7 +50,7 @@ public class AccommodationAddsAdapterLoader extends RecyclerView.Adapter {
 
     private ImageLoader mImageLoader;
     private Network network;
-    RecyclerTouchInterface parentActivity;
+    AccommodationAddsRecyclerInterface parentActivity;
     private final int VIEW_ITEM = 1;
     private final int VIEW_PROG = 0;
 
@@ -61,7 +61,7 @@ public class AccommodationAddsAdapterLoader extends RecyclerView.Adapter {
     private boolean loading = false;
     private OnLoadMoreListener onLoadMoreListener;
 
-    public AccommodationAddsAdapterLoader(Context context, List<AccommodationAdd> data, RecyclerTouchInterface parentActivity, RecyclerView recyclerView) {
+    public AccommodationAddsAdapterLoader(Context context, List<AccommodationAdd> data, AccommodationAddsRecyclerInterface parentActivity, RecyclerView recyclerView) {
 
         inflater = LayoutInflater.from(context);
         this.mAccommodationAdds = data;
@@ -239,7 +239,7 @@ public class AccommodationAddsAdapterLoader extends RecyclerView.Adapter {
             if (v != null) {
                 Utilities.showView(v.findViewById(R.id.userVisited));
                 setUserVisitedAdds(mAccommodationAdds.get(getAdapterPosition()).getAddId());
-                parentActivity.onTouch(getAdapterPosition(), v.findViewById(R.id.userPhoto3));
+                parentActivity.onTouch(mAccommodationAdds.get(getAdapterPosition()), v.findViewById(R.id.userPhoto3));
             }
         }
     }

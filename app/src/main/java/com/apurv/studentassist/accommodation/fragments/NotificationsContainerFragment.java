@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.apurv.studentassist.R;
+import com.apurv.studentassist.accommodation.Interfaces.AccommodationAddsRecyclerInterface;
 import com.apurv.studentassist.accommodation.Interfaces.AccommodationBI;
 import com.apurv.studentassist.accommodation.Interfaces.OnLoadMoreListener;
 import com.apurv.studentassist.accommodation.activities.AdDetailsActivity;
@@ -20,7 +21,6 @@ import com.apurv.studentassist.accommodation.business.rules.AccommodationBO;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
-import com.apurv.studentassist.airport.interfaces.RecyclerTouchInterface;
 import com.apurv.studentassist.util.ErrorReporting;
 import com.apurv.studentassist.util.L;
 import com.apurv.studentassist.util.SAConstants;
@@ -30,7 +30,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NotificationsContainerFragment extends Fragment implements RecyclerTouchInterface {
+public class NotificationsContainerFragment extends Fragment implements AccommodationAddsRecyclerInterface {
 
     View pageView;
     private AccommodationAddsAdapterLoader mAccommodationAddsAdapter;
@@ -152,10 +152,10 @@ public class NotificationsContainerFragment extends Fragment implements Recycler
     }
 
     @Override
-    public void onTouch(int position, View view) {
+    public void onTouch(AccommodationAdd add, View view) {
 
         Intent details = new Intent(getActivity(), AdDetailsActivity.class);
-        details.putExtra(SAConstants.ACCOMMODATION_ADD_PARCELABLE, (Parcelable) adds.get(position));
+        details.putExtra(SAConstants.ACCOMMODATION_ADD_PARCELABLE, (Parcelable) add);
         ActivityOptionsCompat options = ActivityOptionsCompat.
                 makeSceneTransitionAnimation(getActivity(), (View) view, "profile");
 

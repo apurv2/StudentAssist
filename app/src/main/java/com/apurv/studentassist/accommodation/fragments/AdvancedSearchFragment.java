@@ -21,6 +21,7 @@ import android.widget.Spinner;
 
 import com.android.volley.Request;
 import com.apurv.studentassist.R;
+import com.apurv.studentassist.accommodation.Interfaces.AccommodationAddsRecyclerInterface;
 import com.apurv.studentassist.accommodation.Interfaces.AccommodationBI;
 import com.apurv.studentassist.accommodation.Interfaces.DialogCallback;
 import com.apurv.studentassist.accommodation.Interfaces.OnLoadMoreListener;
@@ -33,7 +34,6 @@ import com.apurv.studentassist.accommodation.classes.ApartmentNamesInUnivs;
 import com.apurv.studentassist.accommodation.classes.ApartmentNamesWithType;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
-import com.apurv.studentassist.airport.interfaces.RecyclerTouchInterface;
 import com.apurv.studentassist.internet.NetworkInterface;
 import com.apurv.studentassist.internet.StudentAssistBO;
 import com.apurv.studentassist.util.ErrorReporting;
@@ -48,7 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AdvancedSearchFragment extends Fragment implements
-        OnItemSelectedListener, DialogCallback, RecyclerTouchInterface {
+        OnItemSelectedListener, DialogCallback, AccommodationAddsRecyclerInterface {
 
 
     private View pageView;
@@ -465,9 +465,9 @@ public class AdvancedSearchFragment extends Fragment implements
     }
 
     @Override
-    public void onTouch(int position, View view) {
+    public void onTouch(AccommodationAdd add, View view) {
         Intent details = new Intent(getActivity(), AdDetailsActivity.class);
-        details.putExtra(SAConstants.ACCOMMODATION_ADD_PARCELABLE, (Parcelable) adds.get(position));
+        details.putExtra(SAConstants.ACCOMMODATION_ADD_PARCELABLE, (Parcelable) add);
         ActivityOptionsCompat options = ActivityOptionsCompat.
                 makeSceneTransitionAnimation(getActivity(), (View) view, "profile");
 

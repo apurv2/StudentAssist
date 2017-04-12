@@ -13,6 +13,7 @@ import android.util.Base64;
 import android.view.View;
 
 import com.apurv.studentassist.R;
+import com.apurv.studentassist.accommodation.Interfaces.AccommodationAddsRecyclerInterface;
 import com.apurv.studentassist.accommodation.Interfaces.AccommodationBI;
 import com.apurv.studentassist.accommodation.Interfaces.OnLoadMoreListener;
 import com.apurv.studentassist.accommodation.adapters.AccommodationAddsAdapterLoader;
@@ -21,7 +22,6 @@ import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
 import com.apurv.studentassist.accommodation.classes.User;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
-import com.apurv.studentassist.airport.interfaces.RecyclerTouchInterface;
 import com.apurv.studentassist.util.ErrorReporting;
 import com.apurv.studentassist.util.L;
 import com.apurv.studentassist.util.ObjectSerializer;
@@ -31,7 +31,7 @@ import com.apurv.studentassist.util.Utilities;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserPostsActivity extends AppCompatActivity implements RecyclerTouchInterface {
+public class UserPostsActivity extends AppCompatActivity implements AccommodationAddsRecyclerInterface {
 
 
     private AccommodationAddsAdapterLoader mAccommodationAddsAdapter;
@@ -205,11 +205,11 @@ public class UserPostsActivity extends AppCompatActivity implements RecyclerTouc
     }
 
     @Override
-    public void onTouch(int position, View view) {
+    public void onTouch(AccommodationAdd add, View view) {
 
 
         Intent details = new Intent(this, AdDetailsActivity.class);
-        details.putExtra(SAConstants.ACCOMMODATION_ADD_PARCELABLE, (Parcelable) adds.get(position));
+        details.putExtra(SAConstants.ACCOMMODATION_ADD_PARCELABLE, (Parcelable) add);
         ActivityOptionsCompat options = ActivityOptionsCompat.
                 makeSceneTransitionAnimation(this, (View) view, "profile");
 

@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.Interfaces.AccommodationActivityToFragmentInterface;
+import com.apurv.studentassist.accommodation.Interfaces.AccommodationAddsRecyclerInterface;
 import com.apurv.studentassist.accommodation.Interfaces.AccommodationBI;
 import com.apurv.studentassist.accommodation.activities.AccommodationActivity;
 import com.apurv.studentassist.accommodation.activities.AdDetailsActivity;
@@ -34,7 +35,6 @@ import com.apurv.studentassist.accommodation.business.rules.AccommodationBO;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
-import com.apurv.studentassist.airport.interfaces.RecyclerTouchInterface;
 import com.apurv.studentassist.util.ErrorReporting;
 import com.apurv.studentassist.util.L;
 import com.apurv.studentassist.util.SAConstants;
@@ -49,7 +49,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class SearchAccomodationFragment extends Fragment implements
-        OnItemSelectedListener, RecyclerTouchInterface {
+        OnItemSelectedListener, AccommodationAddsRecyclerInterface {
 
 
     private View pageView;
@@ -638,20 +638,6 @@ public class SearchAccomodationFragment extends Fragment implements
     }
 */
 
-    @Override
-    public void onTouch(int position, View view) {
-
-
-        Intent details = new Intent(getActivity(), AdDetailsActivity.class);
-        adds.get(position).setUserVisitedSw(true);
-
-        details.putExtra(SAConstants.ACCOMMODATION_ADD_PARCELABLE, (Parcelable) adds.get(position));
-        ActivityOptionsCompat options = ActivityOptionsCompat.
-                makeSceneTransitionAnimation(getActivity(), (View) view, "profile");
-
-        details.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivityForResult(details, 1, options.toBundle());
-    }
 
     @Override
     public void onPause() {
@@ -692,6 +678,21 @@ public class SearchAccomodationFragment extends Fragment implements
             refresh();
         }
 
+
+    }
+
+    @Override
+    public void onTouch(AccommodationAdd add, View view) {
+
+        Intent details = new Intent(getActivity(), AdDetailsActivity.class);
+        add.setUserVisitedSw(true);
+
+        details.putExtra(SAConstants.ACCOMMODATION_ADD_PARCELABLE, (Parcelable) add);
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(getActivity(), (View) view, "profile");
+
+        details.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivityForResult(details, 1, options.toBundle());
 
     }
 }
