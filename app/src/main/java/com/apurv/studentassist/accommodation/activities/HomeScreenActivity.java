@@ -49,8 +49,11 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.tasks.RuntimeExecutionException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -428,27 +431,34 @@ public class HomeScreenActivity extends AppCompatActivity implements LodingDialo
 
     //called after the loading dialog is dismissed
     @Override
-    public void onResponse(String jsonResponse) {
+    public void onResponse(String response) {
 
         try {
-            Gson gson = new Gson();
-            List<University> universitiesList = gson.fromJson(jsonResponse, new TypeToken<List<University>>() {
-            }.getType());
 
-            // New User, ask him to choose universities
-            if (universitiesList.isEmpty()) {
-                Intent universitiesIntent = new Intent(this, UniversitiesListActivity.class);
-                universitiesIntent.putExtra(SAConstants.GET_UNIVERSITY_NAMES_WITH_USERS_LIST, false);
-                startActivity(universitiesIntent);
-                finish();
+            JSONObject jObject = new JSONObject(response);
+            String responseString = "";
+
+            if (jObject.has(SAConstants.RESPONSE)) {
+                responseString = jObject.getString(SAConstants.RESPONSE);
+
+                // New User, ask him to choose universities
+                if (Boolean.parseBoolean(responseString)) {
+
+                    SharedPreferences sharedPreferences = getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString(SAConstants.UNIVERSITIES_IN_DB, SAConstants.YES);
+                    editor.commit();
+                    checkUserDetails();
+
+                } else {
+
+                    Intent universitiesIntent = new Intent(this, UniversitiesListActivity.class);
+                    universitiesIntent.putExtra(SAConstants.GET_UNIVERSITY_NAMES_WITH_USERS_LIST, false);
+                    startActivity(universitiesIntent);
+                    finish();
+                }
             } else {
-
-                SharedPreferences sharedPreferences = getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString(SAConstants.UNIVERSITIES_IN_DB, SAConstants.YES);
-                editor.commit();
-                checkUserDetails();
-
+                throw new RuntimeExecutionException(new Throwable("invalid Response from server"));
             }
         } catch (Exception e) {
             ErrorReporting.logReport(e);
