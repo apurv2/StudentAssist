@@ -51,5 +51,7 @@ public interface UrlInterface {
 
     public String getUniversityNamesForUser();
 
+    public String getAllUnivsInclUserSelectd();
+
 
 }

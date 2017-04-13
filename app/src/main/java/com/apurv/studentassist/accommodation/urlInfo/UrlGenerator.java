@@ -37,7 +37,9 @@ public class UrlGenerator implements UrlInterface {
     public static final String GET_APARTMENTNAMES_WITH_TYPE = "accommodation/getAllApartmentsWithType";
     public static final String SET_USER_VISITED_ADDS = "accommodation/setUserVisitedAdds";
     public static final String UNSUBSCRIBE_NOTIFICATIONS = "accommodation/unSubscribeNotifications";
+
     public static final String GET_UNIVERSITY_NAMES = "accommodation/getAllUniversitiesList";
+    public static final String GET_ALL_UNIVS_INCL_USER_SELECTED = "accommodation/getAllUniversitiesWithUserSelected";
     public static final String GET_UNIVERSITY_DETAILS_FOR_USER = "accommodation/getUniversityDetailsForUser";
     public static final String GET_UNIVERSITY_NAMES_FOR_USER = "accommodation/getUniversityNamesWithId";
 
@@ -93,6 +95,11 @@ public class UrlGenerator implements UrlInterface {
     @Override
     public String getUniversityNamesForUser() {
         return SAConstants.URL + "/" + GET_UNIVERSITY_NAMES_FOR_USER;
+    }
+
+    @Override
+    public String getAllUnivsInclUserSelectd() {
+        return SAConstants.URL + "/" + GET_ALL_UNIVS_INCL_USER_SELECTED;
     }
 
 

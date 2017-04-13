@@ -297,4 +297,7 @@ public class SAConstants {
     public static final String GENDER_POSITION = "genderPosition";
 
     public static final String UNIVERSITY_NAME_POSITION = "universityNamePosition";
+
+    public static final String GET_UNIVERSITY_NAMES_WITH_USERS_LIST = "getUniversityNames";
 }
+

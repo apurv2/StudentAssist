@@ -13,8 +13,8 @@ import android.widget.TextView;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.apurv.studentassist.R;
+import com.apurv.studentassist.accommodation.Interfaces.UniversitiesRecyclerInterface;
 import com.apurv.studentassist.accommodation.classes.University;
-import com.apurv.studentassist.airport.interfaces.RecyclerTouchInterface;
 import com.apurv.studentassist.internet.Network;
 import com.apurv.studentassist.util.Utilities;
 
@@ -33,13 +33,13 @@ public class UniversitiesListAdapter extends RecyclerView.Adapter {
     List<University> mUniversities = Collections.emptyList();
 
     FloatingActionButton fab;
-    RecyclerTouchInterface parentActivity;
+    UniversitiesRecyclerInterface parentActivity;
 
     private ImageLoader mImageLoader;
     private Network network;
 
 
-    public UniversitiesListAdapter(Context context, List<University> data, RecyclerTouchInterface parentActivity, FloatingActionButton fab) {
+    public UniversitiesListAdapter(Context context, List<University> data, UniversitiesRecyclerInterface parentActivity, FloatingActionButton fab) {
 
         this.fab = fab;
         this.parentActivity = parentActivity;
@@ -73,6 +73,12 @@ public class UniversitiesListAdapter extends RecyclerView.Adapter {
             ((UniversitiesViewHolder) mUniversityRow).UniversityAddress.setText(mUniversity.getLocation());
             ((UniversitiesViewHolder) mUniversityRow).noOfListings.setText("" + mUniversity.getNoOfListings());
             ((UniversitiesViewHolder) mUniversityRow).noOfUsers.setText("" + mUniversity.getNoOfUsers());
+
+            if (!mUniversity.isSelected()) {
+                Utilities.hideView(((UniversitiesViewHolder) mUniversityRow).selectedPhoto);
+            } else {
+                Utilities.showView(((UniversitiesViewHolder) mUniversityRow).selectedPhoto);
+            }
 
             loadImages(((UniversitiesViewHolder) mUniversityRow), mUniversity.getUrls(), position);
         }
@@ -166,7 +172,11 @@ public class UniversitiesListAdapter extends RecyclerView.Adapter {
         public void onClick(View v) {
             if (v != null) {
 
-                parentActivity.onTouch(mUniversities.get(getAdapterPosition()).getUniversityId(), v);
+
+                University university = mUniversities.get(getAdapterPosition());
+                parentActivity.onTouch(university, v);
+
+                university.setSelected(!university.isSelected());
                 View roundTick = v.findViewById(R.id.selectedPhoto);
                 Utilities.toggleViewWithRevealAnimation(roundTick);
 

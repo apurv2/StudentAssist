@@ -27,10 +27,7 @@
                     android:id="@+id/universityPhoto"
                     android:layout_width="130dp"
                     android:layout_height="80dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="10dp"
                     android:layout_marginRight="5dp"
-                    android:layout_marginTop="5dp"
                     android:src="@drawable/ic_us_dollar_256" />
 
                 <ImageView
@@ -38,8 +35,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|left"
-                    android:src="@drawable/ic_round_tick"
-                    android:visibility="invisible" />
+                    android:src="@drawable/ic_round_tick" />
             </FrameLayout>
 
             <LinearLayout
@@ -120,11 +116,11 @@
                             android:id="@+id/noOfUsers"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/buttonColourBlackSolid"
                             android:layout_gravity="center"
                             android:gravity="bottom"
                             android:text="   20"
-                            android:textAppearance="?android:attr/textAppearanceSmall" />
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textColor="@color/buttonColourBlackSolid" />
                     </LinearLayout>
 
                     <LinearLayout

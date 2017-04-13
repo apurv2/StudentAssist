@@ -23,11 +23,11 @@ import com.android.volley.toolbox.ImageLoader;
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.Dialogs.AlertDialogL;
 import com.apurv.studentassist.accommodation.Dialogs.LoadingDialog;
+import com.apurv.studentassist.accommodation.classes.StudentAssistApplication;
 import com.apurv.studentassist.internet.Network;
 
 import java.io.File;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by apurv on 6/8/15.
@@ -50,10 +50,10 @@ public class Utilities {
         fadeOut.setInterpolator(new AccelerateInterpolator()); //and this
         fadeOut.setDuration(100);
 
-        slideUp = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.bottom_up);
+        slideUp = AnimationUtils.loadAnimation(StudentAssistApplication.getmInstance(), R.anim.bottom_up);
         slideUp.setDuration(100);
 
-        slideDown = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_out_bottom);
+        slideDown = AnimationUtils.loadAnimation(StudentAssistApplication.getmInstance(), R.anim.slide_out_bottom);
         slideDown.setDuration(100);
 
 

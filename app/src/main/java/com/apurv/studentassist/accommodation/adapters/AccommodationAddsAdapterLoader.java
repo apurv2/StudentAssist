@@ -125,8 +125,9 @@ public class AccommodationAddsAdapterLoader extends RecyclerView.Adapter {
 
             if (!mAccommodationAdd.getUserVisitedSw() && ((AccommodationAddsViewHolder) mAccommodationAddRow).userVisited != null) {
                 Utilities.hideView(((AccommodationAddsViewHolder) mAccommodationAddRow).userVisited);
+            } else {
+                Utilities.showView(((AccommodationAddsViewHolder) mAccommodationAddRow).userVisited);
             }
-
 
             loadImages(((AccommodationAddsViewHolder) mAccommodationAddRow), mAccommodationAdd.getUserId(), position);
         }

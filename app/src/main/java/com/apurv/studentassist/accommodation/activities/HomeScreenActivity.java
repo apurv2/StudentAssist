@@ -369,6 +369,7 @@ public class HomeScreenActivity extends AppCompatActivity implements LodingDialo
     private void settings() {
 
         Intent universitiesIntent = new Intent(this, UniversitiesListActivity.class);
+        universitiesIntent.putExtra(SAConstants.GET_UNIVERSITY_NAMES_WITH_USERS_LIST, true);
         startActivity(universitiesIntent);
         finish();
     }
@@ -435,9 +436,9 @@ public class HomeScreenActivity extends AppCompatActivity implements LodingDialo
             }.getType());
 
             // New User, ask him to choose universities
-            //universitiesList.isEmpty()
-            if (false) {
+            if (universitiesList.isEmpty()) {
                 Intent universitiesIntent = new Intent(this, UniversitiesListActivity.class);
+                universitiesIntent.putExtra(SAConstants.GET_UNIVERSITY_NAMES_WITH_USERS_LIST, false);
                 startActivity(universitiesIntent);
                 finish();
             } else {

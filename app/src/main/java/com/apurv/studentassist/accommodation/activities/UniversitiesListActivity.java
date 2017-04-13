@@ -13,11 +13,11 @@ import android.widget.EditText;
 
 import com.android.volley.Request;
 import com.apurv.studentassist.R;
+import com.apurv.studentassist.accommodation.Interfaces.UniversitiesRecyclerInterface;
 import com.apurv.studentassist.accommodation.adapters.UniversitiesListAdapter;
 import com.apurv.studentassist.accommodation.classes.University;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
-import com.apurv.studentassist.airport.interfaces.RecyclerTouchInterface;
 import com.apurv.studentassist.internet.NetworkInterface;
 import com.apurv.studentassist.internet.StudentAssistBO;
 import com.apurv.studentassist.util.ErrorReporting;
@@ -43,7 +43,7 @@ import static com.apurv.studentassist.util.Utilities.slideUp;
  */
 
 
-public class UniversitiesListActivity extends AppCompatActivity implements RecyclerTouchInterface {
+public class UniversitiesListActivity extends AppCompatActivity implements UniversitiesRecyclerInterface {
 
     private RecyclerView mRecyclerVIew;
     UniversitiesListAdapter universitiesListAdapter;
@@ -76,22 +76,9 @@ public class UniversitiesListActivity extends AppCompatActivity implements Recyc
         setSupportActionBar(toolbar);
         setmRecyclerVIew();
 
-        getFromServer();
-       /* List abc = new ArrayList<University>();
 
-
-        abc.add(new University(1, "UT Arlington", "description",
-                Arrays.asList("https://thumbs.dreamstime.com/x/san-diego-state-university-bell-tower-6140195.jpg "), 3, "Arlington, Texas", 1968, 30));
-
-        abc.add(new University(3, "SUNY Buffalo", "description",
-                Arrays.asList(
-                        "https://thumbs.dreamstime.com/x/san-diego-state-university-bell-tower-6140195.jpg "),
-                2, "Buffalo, New York", 1929, 30));
-
-        universityList.addAll(abc);
-        populateRecyclerView(abc);
-*/
-        //searchForUnivTextView.setOnQueryTextListener(this);
+        Intent intent = this.getIntent();
+        getFromServer(intent.getExtras().getBoolean(SAConstants.GET_UNIVERSITY_NAMES_WITH_USERS_LIST));
 
     }
 
@@ -130,20 +117,30 @@ public class UniversitiesListActivity extends AppCompatActivity implements Recyc
                     }
                 }
                 populateRecyclerView(displayUnivList);
-           }
+            }
         } catch (Exception e) {
             ErrorReporting.logReport(e);
         }
 
     }
 
-    private void getFromServer() {
+    private void getFromServer(boolean userPreferences) {
 
 
         StudentAssistBO studentAssistBo = new StudentAssistBO();
         UrlInterface urlgen = new UrlGenerator();
 
-        studentAssistBo.volleyRequest(urlgen.getUniversitieListUrl(), new NetworkInterface() {
+        String url;
+
+        if (userPreferences) {
+            url = urlgen.getAllUnivsInclUserSelectd();
+        } else {
+
+            url = urlgen.getUniversitieListUrl();
+        }
+
+
+        studentAssistBo.volleyRequest(url, new NetworkInterface() {
             @Override
             public void onResponseUpdate(String jsonResponse) {
 
@@ -197,29 +194,18 @@ public class UniversitiesListActivity extends AppCompatActivity implements Recyc
     /**
      * RecyclerView on touch event
      *
-     * @param clickedUniversityId
+     * @param
      * @param view
      */
     @Override
-    public void onTouch(int clickedUniversityId, View view) {
+    public void onTouch(University university, View view) {
 
-        //Code to get clicked Position in Recycler view and get the actual position in the original
-        //list to send to server.
-        int clickedPosition = 0;
-        for (University univ : universityList) {
-            if (univ.getUniversityId() == clickedUniversityId) {
-                break;
-            }
-            clickedPosition++;
-        }
-
-
-        if (selectedUniversityIds.contains(universityList.get(clickedPosition).getUniversityId())) {
-            selectedUniversityIds.remove(new Integer(universityList.get(clickedPosition).getUniversityId()));
-            selectedUniversityNames.remove(universityList.get(clickedPosition).getUniversityName());
+        if (selectedUniversityIds.contains(university.getUniversityId())) {
+            selectedUniversityIds.remove(new Integer(university.getUniversityId()));
+            selectedUniversityNames.remove(university.getUniversityName());
         } else {
-            selectedUniversityIds.add(universityList.get(clickedPosition).getUniversityId());
-            selectedUniversityNames.add(universityList.get(clickedPosition).getUniversityName());
+            selectedUniversityIds.add(university.getUniversityId());
+            selectedUniversityNames.add(university.getUniversityName());
         }
 
         String selectedUnivsText = android.text.TextUtils.join(",", selectedUniversityNames);
