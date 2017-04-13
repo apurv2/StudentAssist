@@ -38,7 +38,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/NoOfVacancies"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#000" />
 
         <Spinner
             android:id="@+id/noOfVacanciesSpinner"
@@ -65,7 +66,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/Sex"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#000" />
 
         <Spinner
             android:id="@+id/occcupantSexSpinner"
@@ -91,7 +93,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/Cost"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#000" />
 
         <EditText
             android:id="@+id/costOfLivingPerMonth"
@@ -116,7 +119,9 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:hint="Notes/Comments"
-            android:maxLength="60" />
+            android:maxLength="60"
+            android:textColor="#000"
+            android:textColorHint="#000" />
 
 
     </LinearLayout>

@@ -16,7 +16,7 @@ import com.apurv.studentassist.accommodation.Interfaces.AccommodationAddsRecycle
 import com.apurv.studentassist.accommodation.Interfaces.AccommodationBI;
 import com.apurv.studentassist.accommodation.Interfaces.OnLoadMoreListener;
 import com.apurv.studentassist.accommodation.activities.AdDetailsActivity;
-import com.apurv.studentassist.accommodation.adapters.AccommodationAddsAdapterLoader;
+import com.apurv.studentassist.accommodation.adapters.UnivAccommodationAddsAdapterLoader;
 import com.apurv.studentassist.accommodation.business.rules.AccommodationBO;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
@@ -33,7 +33,7 @@ import java.util.List;
 public class RecentlyViewedFragment extends Fragment implements AccommodationAddsRecyclerInterface {
 
     View pageView;
-    private AccommodationAddsAdapterLoader mAccommodationAddsAdapter;
+    private UnivAccommodationAddsAdapterLoader mAccommodationAddsAdapter;
     List<AccommodationAdd> adds = new ArrayList<AccommodationAdd>();
 
     private RecyclerView mRecyclerVIew;
@@ -112,7 +112,7 @@ public class RecentlyViewedFragment extends Fragment implements AccommodationAdd
         mRecyclerVIew = (RecyclerView) pageView.findViewById(R.id.recentAdsList);
         mRecyclerVIew.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
 
-        mAccommodationAddsAdapter = new AccommodationAddsAdapterLoader(pageView.getContext(), new ArrayList<AccommodationAdd>(), this, mRecyclerVIew);
+        mAccommodationAddsAdapter = new UnivAccommodationAddsAdapterLoader(pageView.getContext(), new ArrayList<AccommodationAdd>(), this, mRecyclerVIew);
         mRecyclerVIew.setAdapter(mAccommodationAddsAdapter);
 
         mAccommodationAddsAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {

@@ -23,7 +23,7 @@ public class University {
 
     private int noOfListings;
 
-    private boolean isSelected= false;
+    private boolean selected = false;
 
     public University(int universityId, String universityName, String description, String urls, int noOfUsers,
                       String location, int estdYear, int noOfListings) {
@@ -107,10 +107,10 @@ public class University {
     }
 
     public boolean isSelected() {
-        return isSelected;
+        return selected;
     }
 
     public void setSelected(boolean selected) {
-        isSelected = selected;
+        this.selected = selected;
     }
 }

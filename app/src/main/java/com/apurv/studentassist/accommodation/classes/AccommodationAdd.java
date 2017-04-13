@@ -24,6 +24,7 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
     private String universityName;
     private int universityId;
     private List<String> addPhotoIds = new ArrayList<String>();
+    private String univAcronym;
 
     private boolean userVisitedSw;
 
@@ -152,6 +153,14 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
         return notes;
     }
 
+    public String getUnivAcronym() {
+        return univAcronym;
+    }
+
+    public void setUnivAcronym(String univAcronym) {
+        this.univAcronym = univAcronym;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -234,6 +243,10 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    public void setNoOfRooms(String noOfRooms) {
+        this.noOfRooms = noOfRooms;
     }
 
     @Override

@@ -49,12 +49,14 @@ import com.apurv.studentassist.accommodation.Dialogs.AccommodationPosted;
 import com.apurv.studentassist.accommodation.Dialogs.AlertDialogL;
 import com.apurv.studentassist.accommodation.Dialogs.LoadingDialog;
 import com.apurv.studentassist.accommodation.Dialogs.NewApartmentDialog;
-import com.apurv.studentassist.accommodation.Interfaces.AccommodationBI;
 import com.apurv.studentassist.accommodation.Interfaces.PostAccommodationBI;
 import com.apurv.studentassist.accommodation.business.rules.AccommodationBO;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
+import com.apurv.studentassist.accommodation.classes.ApartmentNamesInUnivs;
+import com.apurv.studentassist.accommodation.classes.ApartmentNamesWithType;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
+import com.apurv.studentassist.internet.NetworkInterface;
 import com.apurv.studentassist.internet.StudentAssistBO;
 import com.apurv.studentassist.util.Alerts;
 import com.apurv.studentassist.util.ErrorReporting;
@@ -67,6 +69,7 @@ import com.apurv.studentassist.util.interfaces.OnRevealAnimationListener;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -108,9 +111,9 @@ public class PostAccomodationActivity extends AppCompatActivity implements
     ImageView imageHolder3;
     List<ImageView> imageHolders;
 
-
+    ArrayList<ApartmentNamesInUnivs> apartmentNamesInUnivs;
     UrlInterface urlGen = new UrlGenerator();
-    Spinner apartmentTypeSpinner, noOfRoomsSpinner, noOfVacanciesSpinner, occupantSexSpinner, apartmentNameSpinner;
+    Spinner apartmentTypeSpinner, noOfRoomsSpinner, noOfVacanciesSpinner, occupantSexSpinner, apartmentNameSpinner, universityNamesSpinner;
     List<String> errorQueue = new ArrayList<String>();
     SharedPreferences sharedPreferences;
     private View pageView;
@@ -123,6 +126,7 @@ public class PostAccomodationActivity extends AppCompatActivity implements
     List<String> filePaths = new ArrayList<>();
     private final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 0;
     private final int MY_PERMISSIONS_REQUEST_CAMERA_EXTERNAL_STORAGE = 1;
+    ArrayAdapter<String> universityNamesAdapter, apartmentTypesAdapter, apartmentNamesAdapter;
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -166,6 +170,8 @@ public class PostAccomodationActivity extends AppCompatActivity implements
                 imageViewReference = new WeakReference<Bitmap>(myBitmap);
                 mImage.setImageBitmap(imageViewReference.get());
             }
+        } else {
+            getApartmentNames();
         }
 
         if (mImagesList.isEmpty()) {
@@ -758,9 +764,19 @@ public class PostAccomodationActivity extends AppCompatActivity implements
     private void setSpinners() {
 
         // data from local
-        apartmentTypeSpinner = (Spinner) pageView.findViewById(R.id.aptTypeSpinner);
+        apartmentTypeSpinner = (Spinner) pageView.findViewById(R.id.aptTypeSpinnerSearch);
         apartmentTypeSpinner.setAdapter(createArrayAdapter(R.array.apartment_type));
+        apartmentTypesAdapter = (ArrayAdapter<String>) apartmentTypeSpinner.getAdapter();
+        apartmentTypeSpinner.setSelection(0, false);
+        apartmentTypeSpinner.setOnItemSelectedListener(this);
 
+        //data from server
+        universityNamesSpinner = (Spinner) pageView.findViewById(R.id.universityNamesSpinner);
+        universityNamesSpinner.setAdapter(createArrayAdapter(new ArrayList<String>()));
+        universityNamesAdapter = (ArrayAdapter<String>) universityNamesSpinner.getAdapter();
+        universityNamesAdapter.add("");
+        universityNamesSpinner.setSelection(0, false);
+        universityNamesSpinner.setOnItemSelectedListener(this);
 
         // data from local
         noOfRoomsSpinner = (Spinner) pageView.findViewById(R.id.noOfRoomsSpinner);
@@ -777,9 +793,7 @@ public class PostAccomodationActivity extends AppCompatActivity implements
         // data from server
         apartmentNameSpinner = (Spinner) pageView.findViewById(R.id.aptNameSpinner);
         apartmentNameSpinner.setAdapter(createArrayAdapter(new ArrayList<String>()));
-
-        apartmentTypeSpinner.setOnItemSelectedListener(this);
-        apartmentNameSpinner.setOnItemSelectedListener(this);
+        apartmentNamesAdapter= (ArrayAdapter<String>) apartmentNameSpinner.getAdapter();
 
 
     }
@@ -813,71 +827,18 @@ public class PostAccomodationActivity extends AppCompatActivity implements
 
         try {
 
-
-            if (parent.getId() == R.id.aptTypeSpinner) {
-
-                if (!aptTypeSpinnerVal.equals(apartmentTypeSpinner.getSelectedItem().toString())) {
-
-                    aptTypeSpinnerVal = apartmentTypeSpinner.getSelectedItem().toString();
-
-                    L.m("came to apt type spinner");
-
-                    final ArrayAdapter<String> aptNamesAdapter = (ArrayAdapter<String>) apartmentNameSpinner.getAdapter();
-                    aptNamesAdapter.clear();
-
-
-                    if (reEntryFlag) {
-                        mApartmentNames = bundle.getStringArrayList(SAConstants.APARTMENT_NAME);
-                        aptNamesAdapter.addAll(mApartmentNames);
-                        aptNamesAdapter.notifyDataSetChanged();
-
-                        L.m("spinner position from bundle=" + bundle.getInt(SAConstants.APARTMENT_NAME_POSITION));
-
-
-                        apartmentNameSpinner.setSelection(bundle.getInt(SAConstants.APARTMENT_NAME_POSITION));
-                        reEntryFlag = false;
-                    } else {
-
-                        String url = urlGen.getApartmentNamesUrl(apartmentTypeSpinner.getSelectedItem().toString());
-
-                        new AccommodationBO(url, new AccommodationBI() {
-                            @Override
-                            public void onAccommodationAddsReady(ArrayList<AccommodationAdd> advertisements) {
-
-                            }
-
-                            @Override
-                            public void onApartmentNamesReady(ArrayList<String> apartmentNames) {
-                                mApartmentNames = apartmentNames;
-                                aptNamesAdapter.addAll(apartmentNames);
-                                aptNamesAdapter.add(SAConstants.OTHER);
-                                aptNamesAdapter.notifyDataSetChanged();
-                            }
-
-
-                        }, SAConstants.APARTMENT_NAMES);
-
-                    }
-                }
-            } else if (parent.getId() == R.id.aptNameSpinner) {
-
+            if (parent.getId() == R.id.aptNameSpinner) {
 
                 if (SAConstants.OTHER.equals(apartmentNameSpinner.getItemAtPosition(position).toString())) {
-
-
                     DialogFragment apartmentName = new NewApartmentDialog();
                     apartmentName.show(getSupportFragmentManager(), "");
-
                 }
-
-
+            } else if (parent.getId() == R.id.aptTypeSpinnerSearch || parent.getId() == R.id.universityNamesSpinner) {
+                addApartmentNames();
             }
 
-        } catch (
-                Exception e
-                )
 
-        {
+        } catch (Exception e) {
             ErrorReporting.logReport(e);
         }
 
@@ -1084,6 +1045,66 @@ public class PostAccomodationActivity extends AppCompatActivity implements
         outState.putStringArrayList(SAConstants.IMAGE_FILE_PATHS, selectedFilePaths);
 
 
+    }
+
+    private void getApartmentNames() {
+
+        StudentAssistBO manager = new StudentAssistBO();
+        manager.volleyRequest(urlGen.getApartmentNamesUrl(""), new NetworkInterface() {
+            @Override
+            public void onResponseUpdate(String jsonResponse) {
+                try {
+
+                    Gson gson = new Gson();
+                    universityNamesAdapter.remove("");
+
+                    apartmentNamesInUnivs = gson.fromJson(jsonResponse, new TypeToken<List<ApartmentNamesInUnivs>>() {
+                    }.getType());
+                    int count = 0;
+
+
+                    for (ApartmentNamesInUnivs university : apartmentNamesInUnivs) {
+                        universityNamesAdapter.add(university.getUniversityName());
+
+
+                        if (count == 0) {
+
+                            //adding apartment names as per AptType(on/off campus)
+                            addApartmentNames();
+                        }
+
+                        count++;
+
+                    }
+
+
+                } catch (Exception e) {
+                    ErrorReporting.logReport(e);
+
+                }
+            }
+        }, "", Request.Method.GET);
+
+
+    }
+
+    /**
+     * get the list of all apartment names with type and loops around it to get populate either on/off campus apartments into aptNames spinner
+     */
+    private void addApartmentNames() {
+        apartmentNamesAdapter.clear();
+        for (ApartmentNamesInUnivs university : apartmentNamesInUnivs) {
+
+            if (university.getUniversityName().equals(universityNamesSpinner.getSelectedItem().toString())) {
+
+                for (ApartmentNamesWithType aptName : university.getApartmentNames()) {
+
+                    if (aptName.getApartmentType().equals(UrlGenerator.getApartmentTypeCodeMap().get(apartmentTypeSpinner.getSelectedItem().toString())))
+
+                        apartmentNamesAdapter.add(aptName.getApartmentName());
+                }
+            }
+        }
     }
 
     /**

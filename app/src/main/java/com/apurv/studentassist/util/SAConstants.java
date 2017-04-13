@@ -38,9 +38,9 @@ public class SAConstants {
 
     //  public static final String URL = "http://awsenv.czbki664xm.us-west-2.elasticbeanstalk.com/rest";
 
-    //public static final String URL = "http://studentassist.2mfu7mmben.us-east-1.elasticbeanstalk.com";
+    public static final String URL = "http://studentassist.2mfu7mmben.us-east-1.elasticbeanstalk.com";
 
-    public static final String URL = "http://10.0.2.2:8080";
+    //public static final String URL = "http://10.0.2.2:8080";
 
     //public static final String URL = "http://apurv-appugadu.rhcloud.com/rest";
 
@@ -299,5 +299,7 @@ public class SAConstants {
     public static final String UNIVERSITY_NAME_POSITION = "universityNamePosition";
 
     public static final String GET_UNIVERSITY_NAMES_WITH_USERS_LIST = "getUniversityNames";
+
+    public static final CharSequence UNVS_LIMIT_EXCEEDED = "You can only select a maximum of 4 universities";
 }
 

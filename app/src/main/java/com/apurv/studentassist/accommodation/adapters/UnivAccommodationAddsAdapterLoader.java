@@ -40,7 +40,7 @@ import java.util.List;
  */
 
 
-public class AccommodationAddsAdapterLoader extends RecyclerView.Adapter {
+public class UnivAccommodationAddsAdapterLoader extends RecyclerView.Adapter {
 
 
     private LayoutInflater inflater;
@@ -61,7 +61,7 @@ public class AccommodationAddsAdapterLoader extends RecyclerView.Adapter {
     private boolean loading = false;
     private OnLoadMoreListener onLoadMoreListener;
 
-    public AccommodationAddsAdapterLoader(Context context, List<AccommodationAdd> data, AccommodationAddsRecyclerInterface parentActivity, RecyclerView recyclerView) {
+    public UnivAccommodationAddsAdapterLoader(Context context, List<AccommodationAdd> data, AccommodationAddsRecyclerInterface parentActivity, RecyclerView recyclerView) {
 
         inflater = LayoutInflater.from(context);
         this.mAccommodationAdds = data;
@@ -104,7 +104,7 @@ public class AccommodationAddsAdapterLoader extends RecyclerView.Adapter {
 
         RecyclerView.ViewHolder mviewHolder;
         if (viewType == VIEW_ITEM) {
-            View view = inflater.inflate(R.layout.accomodation_view, viewGroup, false);
+            View view = inflater.inflate(R.layout.university_accomodation_view, viewGroup, false);
             mviewHolder = new AccommodationAddsViewHolder(view);
         } else {
             View v = inflater.inflate(R.layout.progressbar_item, viewGroup, false);
@@ -124,6 +124,7 @@ public class AccommodationAddsAdapterLoader extends RecyclerView.Adapter {
             ((AccommodationAddsViewHolder) mAccommodationAddRow).apartmentName.setText(mAccommodationAdd.getApartmentName());
             ((AccommodationAddsViewHolder) mAccommodationAddRow).noOfRooms.setText(mAccommodationAdd.getNoOfRooms());
             ((AccommodationAddsViewHolder) mAccommodationAddRow).costOfLiving.setText("$" + mAccommodationAdd.getCost());
+            ((AccommodationAddsViewHolder) mAccommodationAddRow).univAcronym.setText("(" + mAccommodationAdd.getUnivAcronym() + ")");
 
             if (!mAccommodationAdd.getUserVisitedSw() && ((AccommodationAddsViewHolder) mAccommodationAddRow).userVisited != null) {
                 Utilities.hideView(((AccommodationAddsViewHolder) mAccommodationAddRow).userVisited);
@@ -222,6 +223,7 @@ public class AccommodationAddsAdapterLoader extends RecyclerView.Adapter {
         TextView apartmentName;
         TextView noOfRooms;
         TextView costOfLiving;
+        TextView univAcronym;
         CircleRectView circularImageView;
         ImageView userVisited;
 
@@ -232,9 +234,11 @@ public class AccommodationAddsAdapterLoader extends RecyclerView.Adapter {
             itemView.setOnClickListener(this);
             apartmentName = (TextView) itemView.findViewById(R.id.large);
             noOfRooms = (TextView) itemView.findViewById(R.id.medium);
+            univAcronym = (TextView) itemView.findViewById(R.id.univAcro);
             costOfLiving = (TextView) itemView.findViewById(R.id.small);
             circularImageView = (CircleRectView) itemView.findViewById(R.id.userPhoto3);
             userVisited = (ImageView) itemView.findViewById(R.id.userVisited);
+
         }
 
         @Override

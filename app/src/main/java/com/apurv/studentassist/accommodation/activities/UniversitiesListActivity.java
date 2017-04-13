@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.apurv.studentassist.R;
@@ -98,6 +99,28 @@ public class UniversitiesListActivity extends AppCompatActivity implements Unive
 
     }
 
+    private void prePopulateUserUniversities(List<University> universitiesList) {
+
+
+        for (University university : universitiesList) {
+            if (university.isSelected()) {
+
+                selectedUniversityIds.add(university.getUniversityId());
+                selectedUniversityNames.add(university.getUniversityName());
+            }
+        }
+        String selectedUnivsText = android.text.TextUtils.join(",", selectedUniversityNames);
+        bottomBar.setText(selectedUnivsText);
+
+
+        if (!selectedUniversityIds.isEmpty()) {
+
+            Utilities.showViewUsingAnimation(bottomBar, slideUp);
+            Utilities.revealShow(sendUniversities);
+        }
+
+    }
+
     @OnTextChanged(value = R.id.searchForUniv,
             callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
     void afterEmailInput(CharSequence text) {
@@ -150,6 +173,8 @@ public class UniversitiesListActivity extends AppCompatActivity implements Unive
                     }.getType());
 
                     universityList = universitiesList;
+
+                    prePopulateUserUniversities(universitiesList);
                     populateRecyclerView(universitiesList);
                 } catch (Exception e) {
                     ErrorReporting.logReport(e);
@@ -198,14 +223,21 @@ public class UniversitiesListActivity extends AppCompatActivity implements Unive
      * @param view
      */
     @Override
-    public void onTouch(University university, View view) {
+    public boolean onTouch(University university, View view) {
 
         if (selectedUniversityIds.contains(university.getUniversityId())) {
             selectedUniversityIds.remove(new Integer(university.getUniversityId()));
             selectedUniversityNames.remove(university.getUniversityName());
         } else {
+
+            if (selectedUniversityIds.size() == 4) {
+                Toast.makeText(this,SAConstants.UNVS_LIMIT_EXCEEDED,Toast.LENGTH_LONG).show();
+                return false;
+            }
+
             selectedUniversityIds.add(university.getUniversityId());
             selectedUniversityNames.add(university.getUniversityName());
+
         }
 
         String selectedUnivsText = android.text.TextUtils.join(",", selectedUniversityNames);
@@ -219,6 +251,8 @@ public class UniversitiesListActivity extends AppCompatActivity implements Unive
             Utilities.showViewUsingAnimation(bottomBar, slideUp);
             Utilities.revealShow(sendUniversities);
         }
+
+        return true;
     }
 
 }

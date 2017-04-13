@@ -240,7 +240,6 @@ public class AdvancedSearchFragment extends Fragment implements
         universityNames = (Spinner) pageView.findViewById(R.id.universityNamesSpinner);
         universityNames.setAdapter(createArrayAdapter(new ArrayList<String>()));
         universityNamesAdapter = (ArrayAdapter<String>) universityNames.getAdapter();
-
         universityNamesAdapter.add("");
         universityNames.setSelection(0, false);
         universityNames.setOnItemSelectedListener(this);
@@ -265,8 +264,9 @@ public class AdvancedSearchFragment extends Fragment implements
 
                     mAccommodationAddsAdapter.add(null);
 
+                    String paginationUrl = UrlGenerator.getPaginationUrl(recentUrl, position);
 
-                    new AccommodationBO(UrlGenerator.getPaginationUrl(recentUrl, position), new AccommodationBI() {
+                    new AccommodationBO(paginationUrl, new AccommodationBI() {
                         @Override
                         public void onAccommodationAddsReady(ArrayList<AccommodationAdd> advertisements) {
                             mAccommodationAddsAdapter.pop();
@@ -344,15 +344,11 @@ public class AdvancedSearchFragment extends Fragment implements
         try {
 
             if (parent.getId() == R.id.aptTypeSpinnerSearch || parent.getId() == R.id.universityNamesSpinner) {
-
                 addApartmentNames();
-
-
             }
         } catch (Exception e) {
             ErrorReporting.logReport(e);
         }
-
     }
 
     /**
@@ -456,7 +452,6 @@ public class AdvancedSearchFragment extends Fragment implements
 
     private void populateRecyclerView(ArrayList<AccommodationAdd> advertisements) {
 
-
         Utilities.hideView(pageView, R.id.loader);
         mAccommodationAddsAdapter.clear();
         mAccommodationAddsAdapter.addAll(advertisements);
@@ -474,9 +469,7 @@ public class AdvancedSearchFragment extends Fragment implements
         details.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivityForResult(details, 1, options.toBundle());
 
-
     }
-
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

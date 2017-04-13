@@ -174,11 +174,12 @@ public class UniversitiesListAdapter extends RecyclerView.Adapter {
 
 
                 University university = mUniversities.get(getAdapterPosition());
-                parentActivity.onTouch(university, v);
+                if (parentActivity.onTouch(university, v)) {
 
-                university.setSelected(!university.isSelected());
-                View roundTick = v.findViewById(R.id.selectedPhoto);
-                Utilities.toggleViewWithRevealAnimation(roundTick);
+                    university.setSelected(!university.isSelected());
+                    View roundTick = v.findViewById(R.id.selectedPhoto);
+                    Utilities.toggleViewWithRevealAnimation(roundTick);
+                }
 
             }
         }

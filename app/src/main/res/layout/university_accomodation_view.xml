@@ -1,0 +1,93 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:background="@drawable/custom_bg"
+    android:clickable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="8dp">
+
+
+        <com.apurv.studentassist.util.CircleRectView
+            android:id="@+id/userPhoto3"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:transitionName="profile"
+            app:circleRadius="25dp" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:orientation="vertical"
+            android:paddingLeft="6dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/large"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/largeText"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/buttonColourBlackSolid" />
+
+                <TextView
+                    android:id="@+id/small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/smallText"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/normal" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/medium"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:text="@string/smallText"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/normal" />
+
+                <TextView
+                    android:id="@+id/univAcro"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:text="@string/smallText"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/normal"
+                    android:textStyle="bold" />
+
+
+                <ImageView
+                    android:id="@+id/userVisited"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_tick" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

@@ -9,5 +9,5 @@ import com.apurv.studentassist.accommodation.classes.University;
  */
 public interface UniversitiesRecyclerInterface {
 
-    public void onTouch(University add, View view);
+    public boolean onTouch(University add, View view);
 }

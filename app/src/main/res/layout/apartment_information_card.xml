@@ -33,16 +33,16 @@
 
 
         <TextView
-            android:id="@+id/aptType"
+            android:id="@+id/universityName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/ApartmentType"
+            android:text="@string/university_name"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#000" />
 
         <Spinner
-            android:id="@+id/aptTypeSpinner"
+            android:id="@+id/universityNamesSpinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -51,6 +51,35 @@
 
 
     </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/aptTypeSearch"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|center_vertical"
+            android:text="@string/ApartmentType"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#000" />
+
+        <Spinner
+            android:id="@+id/aptTypeSpinnerSearch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:dropDownWidth="150dip"
+            android:gravity="left" />
+    </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"

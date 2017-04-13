@@ -551,7 +551,8 @@ public class SearchAccomodationFragment extends Fragment implements
             // Checking if the server call happens only once for the same parameters. It does not however store the previous history.
             if (!(left.equals(historyLeftSpinner) && right.equals(historyRightSpinner))) {
 
-
+              //  historyLeftSpinner = left;
+                //historyRightSpinner = right;
                 //Utilities.showView(pageView, R.id.loadingPanel);
 
                 L.m("search accommodation fragment requresting simple search addds");
