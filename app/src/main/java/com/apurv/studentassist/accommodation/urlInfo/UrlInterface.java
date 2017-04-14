@@ -19,7 +19,7 @@ public interface UrlInterface {
 
     public String getPostAccUrl() throws UnsupportedEncodingException;
 
-    public String getNotificationSettingsUrl(String access_token)
+    public String getNotificationSettingsUrl()
             throws UnsupportedEncodingException;
 
 

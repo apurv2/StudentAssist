@@ -71,6 +71,8 @@ import com.cloudinary.utils.ObjectUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONObject;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -145,6 +147,8 @@ public class PostAccomodationActivity extends AppCompatActivity implements
         } else {
             initViews();
         }
+        //set spinners
+        setSpinners();
 
         if (savedInstanceState != null) {
             mLlContainer.setVisibility(View.VISIBLE);
@@ -153,6 +157,26 @@ public class PostAccomodationActivity extends AppCompatActivity implements
             reEntryFlag = true;
             ArrayList<String> selectedFilePaths;
             selectedFilePaths = bundle.getStringArrayList(SAConstants.IMAGE_FILE_PATHS);
+
+
+            apartmentNamesInUnivs = savedInstanceState.getParcelableArrayList(SAConstants.APARTMENT_NAMES);
+
+            universityNamesAdapter.remove("");
+            for (ApartmentNamesInUnivs university : apartmentNamesInUnivs) {
+                universityNamesAdapter.add(university.getUniversityName());
+            }
+            universityNamesSpinner.setSelection(savedInstanceState.getInt(SAConstants.UNIVERSITY_NAME_POSITION));
+
+            addApartmentNames();
+
+
+            apartmentNameSpinner.setSelection(savedInstanceState.getInt(SAConstants.APARTMENT_NAME_POSITION));
+            apartmentTypeSpinner.setSelection(savedInstanceState.getInt(SAConstants.APARTMENT_TYPE_POSITION));
+            occupantSexSpinner.setSelection(savedInstanceState.getInt(SAConstants.GENDER_POSITION));
+
+            noOfVacanciesSpinner.setSelection(savedInstanceState.getInt(SAConstants.NO_OF_VACANCIES_POSITION));
+            noOfRoomsSpinner.setSelection(savedInstanceState.getInt(SAConstants.NO_OF_ROOMS_POSITION));
+
 
             for (String selectedFilePath : selectedFilePaths) {
 
@@ -205,9 +229,6 @@ public class PostAccomodationActivity extends AppCompatActivity implements
             }
         });
 
-
-        //set spinners
-        setSpinners();
 
         final Button postVacancy = (Button) pageView.findViewById(R.id.postVacancy);
         postVacancy.setOnClickListener(new View.OnClickListener() {
@@ -793,7 +814,7 @@ public class PostAccomodationActivity extends AppCompatActivity implements
         // data from server
         apartmentNameSpinner = (Spinner) pageView.findViewById(R.id.aptNameSpinner);
         apartmentNameSpinner.setAdapter(createArrayAdapter(new ArrayList<String>()));
-        apartmentNamesAdapter= (ArrayAdapter<String>) apartmentNameSpinner.getAdapter();
+        apartmentNamesAdapter = (ArrayAdapter<String>) apartmentNameSpinner.getAdapter();
 
 
     }
@@ -996,26 +1017,49 @@ public class PostAccomodationActivity extends AppCompatActivity implements
     @Override
     public void onResponse(String response) {
 
-        if (response.equals(SAConstants.SUCCESS)) {
-            Bundle b = new Bundle();
-            b.putString(SAConstants.ALERT_TEXT, SAConstants.SUCCESSFULLY_POSTED);
+        try {
 
-            AccommodationPosted alert = new AccommodationPosted();
-            alert.setArguments(b);
-            alert.show(getSupportFragmentManager(), "");
-        } else {
+
+            JSONObject jObject = new JSONObject(response);
+            String responseString = "";
+
+            if (jObject.has(SAConstants.RESPONSE)) {
+                responseString = jObject.getString(SAConstants.RESPONSE);
+            }
+
+
+            if (responseString.equals(SAConstants.SUCCESS)) {
+                Bundle b = new Bundle();
+                b.putString(SAConstants.ALERT_TEXT, SAConstants.SUCCESSFULLY_POSTED);
+
+                AccommodationPosted alert = new AccommodationPosted();
+                alert.setArguments(b);
+                alert.show(getSupportFragmentManager(), "");
+            } else {
+                Bundle b = new Bundle();
+                b.putString(SAConstants.ALERT_TEXT, Alerts.errors.get(15));
+
+                AccommodationPosted alert = new AccommodationPosted();
+                alert.setArguments(b);
+                alert.show(getSupportFragmentManager(), "");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
             Bundle b = new Bundle();
             b.putString(SAConstants.ALERT_TEXT, Alerts.errors.get(15));
 
             AccommodationPosted alert = new AccommodationPosted();
             alert.setArguments(b);
             alert.show(getSupportFragmentManager(), "");
+
         }
+
     }
 
 
     // callback method from AlertDialogDismiss.java
-    // This closes this activity after the accommodation add has been posted
+// This closes this activity after the accommodation add has been posted
     public void closeActivity(boolean result) {
 
         if (result) {
@@ -1031,11 +1075,7 @@ public class PostAccomodationActivity extends AppCompatActivity implements
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        L.m("spinner position=" + apartmentNameSpinner.getSelectedItemPosition());
-
-        outState.putInt(SAConstants.APARTMENT_NAME_POSITION, apartmentNameSpinner.getSelectedItemPosition());
         outState.putStringArrayList(SAConstants.APARTMENT_NAME, mApartmentNames);
-
         ArrayList<String> selectedFilePaths = new ArrayList<String>();
 
         for (String filePath : filePaths) {
@@ -1044,6 +1084,17 @@ public class PostAccomodationActivity extends AppCompatActivity implements
 
         outState.putStringArrayList(SAConstants.IMAGE_FILE_PATHS, selectedFilePaths);
 
+
+        outState.putParcelableArrayList(SAConstants.APARTMENT_NAMES, apartmentNamesInUnivs);
+
+        // saving the spinners
+        outState.putInt(SAConstants.APARTMENT_NAME_POSITION, apartmentNameSpinner.getSelectedItemPosition());
+        outState.putInt(SAConstants.APARTMENT_TYPE_POSITION, apartmentTypeSpinner.getSelectedItemPosition());
+        outState.putInt(SAConstants.GENDER_POSITION, occupantSexSpinner.getSelectedItemPosition());
+        outState.putInt(SAConstants.UNIVERSITY_NAME_POSITION, universityNamesSpinner.getSelectedItemPosition());
+
+        outState.putInt(SAConstants.NO_OF_VACANCIES_POSITION, noOfVacanciesSpinner.getSelectedItemPosition());
+        outState.putInt(SAConstants.NO_OF_ROOMS_POSITION, noOfRoomsSpinner.getSelectedItemPosition());
 
     }
 

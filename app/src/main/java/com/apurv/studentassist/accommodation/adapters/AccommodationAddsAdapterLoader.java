@@ -198,8 +198,6 @@ public class AccommodationAddsAdapterLoader extends RecyclerView.Adapter {
             mAccommodationAdds.remove(mAccommodationAdds.get(i));
             notifyItemRemoved(mAccommodationAdds.size());
         }
-
-
     }
 
     @Override

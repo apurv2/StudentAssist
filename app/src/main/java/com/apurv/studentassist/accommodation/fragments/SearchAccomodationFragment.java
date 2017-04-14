@@ -12,6 +12,8 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -551,7 +553,7 @@ public class SearchAccomodationFragment extends Fragment implements
             // Checking if the server call happens only once for the same parameters. It does not however store the previous history.
             if (!(left.equals(historyLeftSpinner) && right.equals(historyRightSpinner))) {
 
-              //  historyLeftSpinner = left;
+                //  historyLeftSpinner = left;
                 //historyRightSpinner = right;
                 //Utilities.showView(pageView, R.id.loadingPanel);
 
@@ -604,10 +606,12 @@ public class SearchAccomodationFragment extends Fragment implements
                     Utilities.hideView(loaderList.get(i));
 
 
+                    AccommodationAdd add = accommodationAddsList.get(i).get(0);
+
                     //shows card views to length of adapterslist
                     Utilities.showView(cardViewsList.get(i));
-                    Utilities.loadImages("https://upload.wikimedia.org/wikipedia/commons/0/0f/Shaffer_Art_Building%2C_Syracuse_University.JPG", imageViewsList.get(i), textViewList.get(i));
-
+                    Utilities.loadImages(add.getPhotoUrl(), imageViewsList.get(i), textViewList.get(i));
+                    textViewList.get(i).setText(add.getUniversityName());
 
                 } else {
 
@@ -639,6 +643,14 @@ public class SearchAccomodationFragment extends Fragment implements
     }
 */
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        inflater.inflate(R.menu.subscribe, menu);
+
+
+    }
 
     @Override
     public void onPause() {

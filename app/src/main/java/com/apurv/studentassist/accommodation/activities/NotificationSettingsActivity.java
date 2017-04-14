@@ -43,7 +43,6 @@ import com.apurv.studentassist.util.L;
 import com.apurv.studentassist.util.SAConstants;
 import com.apurv.studentassist.util.Utilities;
 import com.apurv.studentassist.util.interfaces.LodingDialogInterface;
-import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
 import com.google.gson.Gson;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
@@ -601,22 +600,16 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
         UrlInterface urlInterface = new UrlGenerator();
 
-        if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
 
-            try {
-                String fbToken = AccessToken.getCurrentAccessToken().getToken();
-                String url = urlInterface.getNotificationSettingsUrl(fbToken);
-                final LoadingDialog loadingDialog = Utilities.showLoadingDialog(SAConstants.GETTING_NOTIFICATION_SETTINGS, getSupportFragmentManager());
+        try {
+            String url = urlInterface.getNotificationSettingsUrl();
+            final LoadingDialog loadingDialog = Utilities.showLoadingDialog(SAConstants.GETTING_NOTIFICATION_SETTINGS, getSupportFragmentManager());
 
+            StudentAssistBO studentAssistBO = new StudentAssistBO();
+            studentAssistBO.volleyRequestWithLoadingDialog(url, loadingDialog, null, Request.Method.GET);
 
-                StudentAssistBO studentAssistBO = new StudentAssistBO();
-                studentAssistBO.volleyRequestWithLoadingDialog(url, loadingDialog, null, Request.Method.GET);
-
-            } catch (Exception e) {
-                ErrorReporting.logReport(e);
-            }
-
-
+        } catch (Exception e) {
+            ErrorReporting.logReport(e);
         }
 
 

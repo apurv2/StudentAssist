@@ -182,10 +182,8 @@ public class UrlGenerator implements UrlInterface {
     }
 
     @Override
-    public String getNotificationSettingsUrl(String access_token) throws UnsupportedEncodingException {
+    public String getNotificationSettingsUrl() throws UnsupportedEncodingException {
         String url = "", parameters = "";
-
-        parameters = SAConstants.ACCESS_TOKEN + "=" + URLEncoder.encode(access_token, "UTF-8");
 
         url = SAConstants.URL + "/" + GET_NOTIFICATION_SETTINGS + "?" + parameters;
 

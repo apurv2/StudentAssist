@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -56,6 +58,15 @@ public class RecentlyViewedFragment extends Fragment implements AccommodationAdd
         Utilities.showView(pageView, R.id.loadingPanel);
         setmRecyclerVIew();
         fetchRecentList();
+
+
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        inflater.inflate(R.menu.subscribe, menu);
 
 
     }

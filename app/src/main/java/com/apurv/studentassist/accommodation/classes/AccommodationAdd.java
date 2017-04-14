@@ -25,7 +25,7 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
     private int universityId;
     private List<String> addPhotoIds = new ArrayList<String>();
     private String univAcronym;
-
+    private String photoUrl;
     private boolean userVisitedSw;
 
     protected AccommodationAdd(Parcel in) {
@@ -44,9 +44,22 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
         universityName = in.readString();
         universityId = in.readInt();
         addPhotoIds = in.createStringArrayList();
+        univAcronym = in.readString();
+        photoUrl = in.readString();
         userVisitedSw = in.readByte() != 0;
     }
 
+    public static final Creator<AccommodationAdd> CREATOR = new Creator<AccommodationAdd>() {
+        @Override
+        public AccommodationAdd createFromParcel(Parcel in) {
+            return new AccommodationAdd(in);
+        }
+
+        @Override
+        public AccommodationAdd[] newArray(int size) {
+            return new AccommodationAdd[size];
+        }
+    };
 
     public static Comparator<AccommodationAdd> getComparatorByUnivId() {
 
@@ -68,19 +81,6 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
         return comp;
 
     }
-
-
-    public static final Creator<AccommodationAdd> CREATOR = new Creator<AccommodationAdd>() {
-        @Override
-        public AccommodationAdd createFromParcel(Parcel in) {
-            return new AccommodationAdd(in);
-        }
-
-        @Override
-        public AccommodationAdd[] newArray(int size) {
-            return new AccommodationAdd[size];
-        }
-    };
 
     public List<String> getAddPhotoIds() {
         return addPhotoIds;
@@ -124,6 +124,55 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
         this.addPhotoIds = apartmentPictureId;
 
     }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmailId() {
+        return emailId;
+    }
+
+    public void setEmailId(String emailId) {
+        this.emailId = emailId;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void setVacancies(String vacancies) {
+        this.vacancies = vacancies;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public void setAddId(String addId) {
+        this.addId = addId;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
+
+    public boolean isUserVisitedSw() {
+        return userVisitedSw;
+    }
+
 
     public String getUniversityName() {
         return universityName;
@@ -240,32 +289,34 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
         return userId;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
     public void setNoOfRooms(String noOfRooms) {
         this.noOfRooms = noOfRooms;
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(firstName);
-        parcel.writeString(lastName);
-        parcel.writeString(emailId);
-        parcel.writeString(phoneNumber);
-        parcel.writeString(apartmentName);
-        parcel.writeString(vacancies);
-        parcel.writeString(gender);
-        parcel.writeString(noOfRooms);
-        parcel.writeString(cost);
-        parcel.writeString(userId);
-        parcel.writeString(addId);
-        parcel.writeString(notes);
-        parcel.writeString(universityName);
-        parcel.writeInt(universityId);
-        parcel.writeStringList(addPhotoIds);
-        parcel.writeByte((byte) (userVisitedSw ? 1 : 0));
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(firstName);
+        dest.writeString(lastName);
+        dest.writeString(emailId);
+        dest.writeString(phoneNumber);
+        dest.writeString(apartmentName);
+        dest.writeString(vacancies);
+        dest.writeString(gender);
+        dest.writeString(noOfRooms);
+        dest.writeString(cost);
+        dest.writeString(userId);
+        dest.writeString(addId);
+        dest.writeString(notes);
+        dest.writeString(universityName);
+        dest.writeInt(universityId);
+        dest.writeStringList(addPhotoIds);
+        dest.writeString(univAcronym);
+        dest.writeString(photoUrl);
+        dest.writeByte((byte) (userVisitedSw ? 1 : 0));
     }
 }
