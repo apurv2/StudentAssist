@@ -46,7 +46,6 @@ public class StudentAssistBO {
             public void onResponse(String response) {
 
                 L.m("volley response=="+response);
-
                 dialog.lodingDialogInterface.onResponse(response);
                 dialog.dismiss();
 

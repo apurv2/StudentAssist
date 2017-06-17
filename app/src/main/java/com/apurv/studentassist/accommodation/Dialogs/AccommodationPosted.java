@@ -39,7 +39,10 @@ public class AccommodationPosted extends DialogFragment {
             @Override
             public void onClick(View v) {
                 PostAccomodationActivity parentActivity = (PostAccomodationActivity) getActivity();
-                parentActivity.closeActivity(true);
+
+                if (text.equals(SAConstants.SUCCESSFULLY_POSTED)) {
+                    parentActivity.closeActivity(true);
+                }
                 dismiss();
             }
         });

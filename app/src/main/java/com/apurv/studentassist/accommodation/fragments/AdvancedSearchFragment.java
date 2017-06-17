@@ -461,6 +461,9 @@ public class AdvancedSearchFragment extends Fragment implements
 
     @Override
     public void onTouch(AccommodationAdd add, View view) {
+
+        add.setUserVisitedSw(true);
+
         Intent details = new Intent(getActivity(), AdDetailsActivity.class);
         details.putExtra(SAConstants.ACCOMMODATION_ADD_PARCELABLE, (Parcelable) add);
         ActivityOptionsCompat options = ActivityOptionsCompat.

@@ -360,7 +360,10 @@ public class HomeScreenActivity extends AppCompatActivity implements LodingDialo
         switch (item.getItemId()) {
             case R.id.action_settings:
 
-                settings();
+                Intent universitiesIntent = new Intent(this, UniversitiesListActivity.class);
+                universitiesIntent.putExtra(SAConstants.GET_UNIVERSITY_NAMES_WITH_USERS_LIST, true);
+                startActivity(universitiesIntent);
+
                 return true;
             case R.id.action_logout:
                 logout();
