@@ -14,6 +14,10 @@ import java.util.List;
 
 public class NotificationSettings implements Parcelable {
 
+    private int univserityId;
+
+    private String universityName;
+
     private String userId;
 
     private List<String> apartmentName = new ArrayList<String>();
@@ -62,6 +66,21 @@ public class NotificationSettings implements Parcelable {
     public NotificationSettings() {
     }
 
+    public int getUnivserityId() {
+        return univserityId;
+    }
+
+    public void setUnivserityId(int univserityId) {
+        this.univserityId = univserityId;
+    }
+
+    public String getUniversityName() {
+        return universityName;
+    }
+
+    public void setUniversityName(String universityName) {
+        this.universityName = universityName;
+    }
 
     public List<String> getApartmentName() {
         return apartmentName;
@@ -96,6 +115,22 @@ public class NotificationSettings implements Parcelable {
         dest.writeStringList(apartmentType);
         dest.writeString(gcmId);
         dest.writeString(deviceId);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        NotificationSettings that = (NotificationSettings) o;
+
+        return univserityId == that.univserityId;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return univserityId;
     }
 }
 

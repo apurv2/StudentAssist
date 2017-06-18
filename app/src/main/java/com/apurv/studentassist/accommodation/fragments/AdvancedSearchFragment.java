@@ -389,6 +389,8 @@ public class AdvancedSearchFragment extends Fragment implements
                     int count = 0;
 
 
+
+
                     for (ApartmentNamesInUnivs university : apartmentNamesInUnivs) {
                         universityNamesAdapter.add(university.getUniversityName());
 

@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -30,6 +31,7 @@ import com.apurv.studentassist.accommodation.Dialogs.AlertDialogL;
 import com.apurv.studentassist.accommodation.Dialogs.LoadingDialog;
 import com.apurv.studentassist.accommodation.Interfaces.NotificationsBI;
 import com.apurv.studentassist.accommodation.business.rules.AccommodationBO;
+import com.apurv.studentassist.accommodation.classes.ApartmentNamesInUnivs;
 import com.apurv.studentassist.accommodation.classes.ApartmentNamesWithType;
 import com.apurv.studentassist.accommodation.classes.NotificationSettings;
 import com.apurv.studentassist.accommodation.classes.StudentAssistApplication;
@@ -45,6 +47,7 @@ import com.apurv.studentassist.util.Utilities;
 import com.apurv.studentassist.util.interfaces.LodingDialogInterface;
 import com.facebook.FacebookSdk;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 
 import org.json.JSONObject;
@@ -62,9 +65,9 @@ import butterknife.ButterKnife;
 public class NotificationSettingsActivity extends AppCompatActivity implements LodingDialogInterface {
 
 
-    UrlInterface urlGen = new UrlGenerator();
     final Set<String> mApartmentNamesSet = new LinkedHashSet<String>();
     final Set<String> mApartmentTypesSet = new LinkedHashSet<String>();
+    UrlInterface urlGen = new UrlGenerator();
     String mGender = "";
     boolean mAskForPhoneStatePermission = false;
     boolean mRequestFlag = false;
@@ -72,8 +75,18 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
     List<String> errorQueue = new ArrayList<String>();
     FloatingActionButton actionButton;
 
+    List<NotificationSettings> notificationSettings;
+    ArrayList<ApartmentNamesInUnivs> apartmentNamesInUnivs;
+    String previouslySelectedUnivName = "";
+    NotificationSettings selectedUniversity;
+
+
     @Bind(R.id.genderRadioGroup)
     RadioGroup mGenderRadioGroup;
+
+    @Bind(R.id.universityRadioGroup)
+    RadioGroup mUniversityRadioGroup;
+
 
     @Bind(R.id.notificationToolbar)
     Toolbar mToolbar;
@@ -93,7 +106,12 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
     @Bind(R.id.dormsCheckbox)
     CheckBox mDormsCheckbox;
 
-    ValueAnimator anim;
+
+    ContextThemeWrapper mCheckboxThemeContext = new ContextThemeWrapper(getApplicationContext(),
+            R.style.MyCheckBox);
+    LinearLayout onCampusLayout = (LinearLayout) findViewById(R.id.onCampus);
+    LinearLayout offCampusLayout = (LinearLayout) findViewById(R.id.offCampus);
+    LinearLayout dormsLayout = (LinearLayout) findViewById(R.id.dorms);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,14 +143,48 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
             mApartmentNames = savedInstanceState.getParcelableArrayList(SAConstants.APARTMENT_NAMES);
             setCheckboxes(settings);
-            createApartmentNamesCheckbox(mApartmentNames, settings);
+          //  createApartmentNamesCheckbox(mApartmentNames, settings);
             populateSetsAndRadioButtons(settings);
 
         } else {
-            getNotificationSettings();
+            //getNotificationSettings();
+
+
+            getAllUnivsAndApartmentNamesOfUser();
         }
 
+
+        mUniversityRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
+
+                int selectedId = radioGroup.getCheckedRadioButtonId();
+                String selectedUniversityName = "";
+
+                if (selectedId != -1) {
+                    RadioButton universityNameRadioButton = (RadioButton) findViewById(selectedId);
+                    selectedUniversityName = String.valueOf(universityNameRadioButton.getText());
+
+                }
+
+                for (NotificationSettings setting : notificationSettings) {
+                    if (setting != null && setting.getUniversityName().equals(selectedUniversityName)) {
+
+                        if (setting.getGender() == null) {
+                            setting.setGender(SAConstants.EmptyText);
+                            selectedUniversity = setting;
+                        }
+
+                        populateNotifications(setting);
+
+                    }
+                }
+
+            }
+        });
+
     }
+
 
     private void setSubscriptionSw() {
 
@@ -378,6 +430,31 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
         return mValidateSw;
     }
 
+    private NotificationSettings getNotificationSettingsFromForm() {
+
+        NotificationSettings settings = new NotificationSettings();
+        for (String mApartmentName : mApartmentNamesSet) {
+            settings.getApartmentName().add(mApartmentName);
+        }
+
+        int selectedId = mGenderRadioGroup.getCheckedRadioButtonId();
+        if (selectedId != -1) {
+            RadioButton genderRadioButton = (RadioButton) findViewById(selectedId);
+            mGender = String.valueOf(genderRadioButton.getText());
+        }
+
+        settings.setGender(mGender);
+
+        for (String mApartmentType : mApartmentTypesSet) {
+            settings.getApartmentType().add(mApartmentType);
+            L.m("apartment type==" + mApartmentType);
+
+        }
+        return settings;
+
+
+    }
+
     private void subscribeNotifications() {
         try {
 
@@ -399,24 +476,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
                 Utilities.showALertDialog(errorContent, getSupportFragmentManager());
 
             } else {
-                NotificationSettings settings = new NotificationSettings();
-                for (String mApartmentName : mApartmentNamesSet) {
-                    settings.getApartmentName().add(mApartmentName);
-                }
-
-                int selectedId = mGenderRadioGroup.getCheckedRadioButtonId();
-                if (selectedId != -1) {
-                    RadioButton genderRadioButton = (RadioButton) findViewById(selectedId);
-                    mGender = String.valueOf(genderRadioButton.getText());
-                }
-
-                settings.setGender(mGender);
-
-                for (String mApartmentType : mApartmentTypesSet) {
-                    settings.getApartmentType().add(mApartmentType);
-                    L.m("apartment type==" + mApartmentType);
-
-                }
+                NotificationSettings settings = getNotificationSettingsFromForm();
 
 
                 SharedPreferences sharedPreferences = StudentAssistApplication.getAppContext().getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
@@ -467,37 +527,6 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
     }
 
 
-    /**
-     * Callback method after the user interacts with the Permissions popup
-     *
-     * @param requestCode  contains the request code for the permission
-     * @param permissions  array that contains all permissions
-     * @param grantResults array containing code for granted and not granted.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
-        switch (requestCode) {
-            case 0: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    subscribeNotifications();
-
-                } else {
-
-                    //flag to track the user permission for GPS
-                    mAskForPhoneStatePermission = true;
-                }
-                return;
-            }
-
-
-        }
-
-
-    }
-
     private void hideViews() {
         Utilities.hideView(findViewById(R.id.onCampus));
         Utilities.hideView(findViewById(R.id.offCampus));
@@ -507,20 +536,12 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
     }
 
     /**
-     * 1. created apartmentNames checkboxes
-     * 2. Checks the checkboxes as per user's notification settings.
+     * 1. create apartmentNames checkboxes but they stay hidden at this point
      *
      * @param apartmentNames
-     * @param settings
      */
-    private void createApartmentNamesCheckbox(List<ApartmentNamesWithType> apartmentNames, NotificationSettings settings) {
+    private void createApartmentNamesCheckbox(List<ApartmentNamesWithType> apartmentNames) {
 
-
-        ContextThemeWrapper mCheckboxThemeContext = new ContextThemeWrapper(getApplicationContext(),
-                R.style.MyCheckBox);
-        LinearLayout onCampusLayout = (LinearLayout) findViewById(R.id.onCampus);
-        LinearLayout offCampusLayout = (LinearLayout) findViewById(R.id.offCampus);
-        LinearLayout dormsLayout = (LinearLayout) findViewById(R.id.dorms);
 
         CheckBox mApartmentNamesCheckbox;
         for (ApartmentNamesWithType apartmentName : apartmentNames) {
@@ -529,10 +550,10 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
             mApartmentNamesCheckbox = new CheckBox(mCheckboxThemeContext);
             mApartmentNamesCheckbox.setText(apartmentName.getApartmentName());
 
-            if (settings.getApartmentName().contains(apartmentName.getApartmentName())) {
+        /*    if (settings.getApartmentName().contains(apartmentName.getApartmentName())) {
                 mApartmentNamesCheckbox.setChecked(true);
 
-            }
+            }*/
 
 
             mApartmentNamesCheckbox.setOnClickListener(new View.OnClickListener() {
@@ -541,10 +562,13 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
                     CheckBox checkBox = (CheckBox) mCheckboxView;
                     if (checkBox.isChecked()) {
-                        mApartmentNamesSet.add(String.valueOf(checkBox.getText()));
+                        selectedUniversity.getApartmentName().add(String.valueOf(checkBox.getText()));
+
+                        // mApartmentNamesSet.add(String.valueOf(checkBox.getText()));
 
                     } else {
-                        mApartmentNamesSet.remove(String.valueOf(checkBox.getText()));
+                        selectedUniversity.getApartmentName().remove(String.valueOf(checkBox.getText()));
+                        // mApartmentNamesSet.remove(String.valueOf(checkBox.getText()));
                     }
 
                 }
@@ -574,26 +598,51 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
     /**
      * Fetches apartmentNames and calls createApartmentNamesCheckbox method.
-     *
-     * @param settings
      */
-    private void getApartmentNames(final NotificationSettings settings) {
+    private void getAllUnivsAndApartmentNamesOfUser() {
 
-        AccommodationBO bo = new AccommodationBO();
         String url = "";
         try {
             url = urlGen.getApartmentNamesWithTypeUrl();
+
+            StudentAssistBO bo = new StudentAssistBO();
+            bo.volleyRequest(url, new NetworkInterface() {
+                @Override
+                public void onResponseUpdate(String jsonResponse) {
+
+                    Gson gson = new Gson();
+                    apartmentNamesInUnivs = gson.fromJson(jsonResponse, new TypeToken<List<ApartmentNamesInUnivs>>() {
+                    }.getType());
+
+
+                    //LOgic to populate University names
+                    populateUniversityNames(apartmentNamesInUnivs);
+
+                    // logic to populate default or first University ApartmentNames
+                    createApartmentNamesCheckbox(apartmentNamesInUnivs.get(0).getApartmentNames());
+
+                }
+            }, "", Request.Method.GET);
+
+
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        bo.getApartmentNamesWithType(url, new NotificationsBI() {
-            @Override
-            public void onApartmentNamesReady(List<ApartmentNamesWithType> apartmentNames) {
 
-                mApartmentNames = apartmentNames;
-                createApartmentNamesCheckbox(apartmentNames, settings);
+    }
+
+    private void populateUniversityNames(List<ApartmentNamesInUnivs> universities) {
+
+        for (ApartmentNamesInUnivs university : universities) {
+            for (int i = 0; i < mUniversityRadioGroup.getChildCount(); i++) {
+
+                RadioButton radioButton = (RadioButton) mUniversityRadioGroup.getChildAt(i);
+
+                radioButton.setText(university.getUniversityName());
             }
-        });
+
+
+        }
     }
 
     private void getNotificationSettings() {
@@ -617,7 +666,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
     private void populateNotifications(NotificationSettings settings) {
         setCheckboxes(settings);
-        getApartmentNames(settings);
+     //   getApartmentNames(settings);
         populateSetsAndRadioButtons(settings);
     }
 
@@ -694,10 +743,18 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
                 alertDialogL.show(getSupportFragmentManager(), "");
 
             } else if (!SAConstants.FAILURE.equals(response)) {
-                Gson gson = new Gson();
-                NotificationSettings settings = gson.fromJson(response, NotificationSettings.class);
 
-                populateNotifications(settings);
+                Gson gson = new Gson();
+                notificationSettings = gson.fromJson(response, new TypeToken<List<ApartmentNamesInUnivs>>() {
+                }.getType());
+
+
+                if (notificationSettings.isEmpty()) {
+
+                }
+
+              //  populateNotifications(settings);
+
             }
         } catch (Exception e) {
 

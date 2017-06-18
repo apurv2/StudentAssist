@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="10dp"
+    android:background="@color/editTextColourWhite"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/apartmentName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/university_names"
+            android:textColor="#000"
+            android:textSize="27sp" />
+    </LinearLayout>
+
+
+    <RadioGroup
+        android:layout_marginLeft="10dp"
+            android:id="@+id/universityRadioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:layout_width="0dp"
+                android:id="@+id/univ1"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/buttonColourBlack"
+                android:text="University 1"
+                android:textColor="@color/buttonColourBlack"
+                android:layout_weight="1" />
+
+
+            <RadioButton
+                android:layout_width="0dp"
+                android:id="@+id/univ2"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/buttonColourBlack"
+                android:text="University 1"
+                android:textColor="@color/buttonColourBlack"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:layout_width="0dp"
+                android:id="@+id/univ3"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/buttonColourBlack"
+                android:text="University 1"
+                android:textColor="@color/buttonColourBlack"
+                android:layout_weight="1" />
+
+
+            <RadioButton
+                android:layout_width="0dp"
+                android:id="@+id/univ4"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/buttonColourBlack"
+                android:text="University 1"
+                android:textColor="@color/buttonColourBlack"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+
+    </RadioGroup>
+
+
+
+</LinearLayout>
