@@ -21,6 +21,8 @@ public class University {
 
     private int estdYear;
 
+    private String univAcronym;
+
     private int noOfListings;
 
     private boolean selected = false;
@@ -35,6 +37,14 @@ public class University {
         this.location = location;
         this.estdYear = estdYear;
         this.noOfListings = noOfListings;
+    }
+
+    public String getUnivAcronym() {
+        return univAcronym;
+    }
+
+    public void setUnivAcronym(String univAcronym) {
+        this.univAcronym = univAcronym;
     }
 
     public int getNoOfListings() {

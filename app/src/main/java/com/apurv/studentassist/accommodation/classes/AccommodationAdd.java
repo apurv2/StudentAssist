@@ -25,7 +25,7 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
     private int universityId;
     private List<String> addPhotoIds = new ArrayList<String>();
     private String univAcronym;
-    private String photoUrl;
+    private String universityPhotoUrl;
     private boolean userVisitedSw;
 
     protected AccommodationAdd(Parcel in) {
@@ -45,7 +45,7 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
         universityId = in.readInt();
         addPhotoIds = in.createStringArrayList();
         univAcronym = in.readString();
-        photoUrl = in.readString();
+        universityPhotoUrl = in.readString();
         userVisitedSw = in.readByte() != 0;
     }
 
@@ -162,11 +162,11 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
     }
 
     public String getPhotoUrl() {
-        return photoUrl;
+        return universityPhotoUrl;
     }
 
     public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
+        this.universityPhotoUrl = photoUrl;
     }
 
     public boolean isUserVisitedSw() {
@@ -316,7 +316,7 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
         dest.writeInt(universityId);
         dest.writeStringList(addPhotoIds);
         dest.writeString(univAcronym);
-        dest.writeString(photoUrl);
+        dest.writeString(universityPhotoUrl);
         dest.writeByte((byte) (userVisitedSw ? 1 : 0));
     }
 }

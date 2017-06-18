@@ -92,7 +92,7 @@ public class FacebookLogin extends AppCompatActivity {
 
             @Override
             public void onError(FacebookException exception) {
-                // App code
+                exception.printStackTrace();
             }
         });
 

@@ -138,6 +138,10 @@ public class UniversitiesListActivity extends AppCompatActivity implements Unive
                     if (univ.getUniversityName().matches("(?i).*" + queryText + ".*")) {
                         displayUnivList.add(univ);
                     }
+                    if (univ.getUnivAcronym().matches("(?i).*" + queryText + ".*")) {
+                        displayUnivList.add(univ);
+
+                    }
                 }
                 populateRecyclerView(displayUnivList);
             }
@@ -231,7 +235,7 @@ public class UniversitiesListActivity extends AppCompatActivity implements Unive
         } else {
 
             if (selectedUniversityIds.size() == 4) {
-                Toast.makeText(this,SAConstants.UNVS_LIMIT_EXCEEDED,Toast.LENGTH_LONG).show();
+                Toast.makeText(this, SAConstants.UNVS_LIMIT_EXCEEDED, Toast.LENGTH_LONG).show();
                 return false;
             }
 

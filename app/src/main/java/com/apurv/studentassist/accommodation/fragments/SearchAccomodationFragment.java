@@ -158,6 +158,8 @@ public class SearchAccomodationFragment extends Fragment implements
         setRetainInstance(true);
 
 
+
+
         //reEntry flag is true if device is rotated or fragment state is restored
         if (savedInstanceState != null) {
             bundle = savedInstanceState;
@@ -425,7 +427,6 @@ public class SearchAccomodationFragment extends Fragment implements
 
 
         try {
-
             String accommodationAddsUrl = "";
 
             // left spinner selected
@@ -462,6 +463,8 @@ public class SearchAccomodationFragment extends Fragment implements
 
                                                             rightSpinnerAdapter.addAll(apartmentStringArray);
                                                             rightSpinnerAdapter.notifyDataSetChanged();
+
+
 
                                                             if (reEntryFlag) {
                                                                 rightSpinner.setSelection(bundle.getInt(SAConstants.RIGHT_SPINNER), false);
@@ -520,7 +523,6 @@ public class SearchAccomodationFragment extends Fragment implements
 
                     }
                 }
-
             }
         } catch (UnsupportedEncodingException e) {
             ErrorReporting.logReport(e);

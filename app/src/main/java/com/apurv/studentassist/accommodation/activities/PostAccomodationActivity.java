@@ -774,7 +774,7 @@ public class PostAccomodationActivity extends AppCompatActivity implements
             String postBody = gson.toJson(mAccommodationAdd);
 
             StudentAssistBO manager = new StudentAssistBO();
-            manager.volleyRequestWithLoadingDialog(urlGen.getPostAccUrl(), loadingDialog, postBody, Request.Method.POST);
+            manager.volleyRequestWithLoadingDialog(urlGen.getPostAccUrl(), loadingDialog, postBody, Request.Method.PUT);
 
         } catch (Exception e) {
             ErrorReporting.logReport(e);
