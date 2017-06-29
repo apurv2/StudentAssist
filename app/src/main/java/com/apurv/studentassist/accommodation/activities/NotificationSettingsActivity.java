@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextThemeWrapper;
@@ -17,7 +18,6 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -28,10 +28,11 @@ import com.android.volley.Request;
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.Dialogs.AlertDialogL;
 import com.apurv.studentassist.accommodation.Dialogs.LoadingDialog;
-import com.apurv.studentassist.accommodation.Interfaces.NotificationsBI;
-import com.apurv.studentassist.accommodation.business.rules.AccommodationBO;
+import com.apurv.studentassist.accommodation.Dialogs.SelectUniversityDialog;
 import com.apurv.studentassist.accommodation.classes.ApartmentNamesWithType;
 import com.apurv.studentassist.accommodation.classes.NotificationSettings;
+import com.apurv.studentassist.accommodation.classes.RApartmentNamesInUnivs;
+import com.apurv.studentassist.accommodation.classes.RApartmentNamesWithType;
 import com.apurv.studentassist.accommodation.classes.StudentAssistApplication;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
@@ -45,11 +46,9 @@ import com.apurv.studentassist.util.Utilities;
 import com.apurv.studentassist.util.interfaces.LodingDialogInterface;
 import com.facebook.FacebookSdk;
 import com.google.gson.Gson;
-import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -57,6 +56,11 @@ import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+
+import static com.apurv.studentassist.util.Utilities.hideFabLayout;
+import static com.apurv.studentassist.util.Utilities.rotateAnticlockwise;
+import static com.apurv.studentassist.util.Utilities.rotateClockwise;
+import static com.apurv.studentassist.util.Utilities.showFabLayout;
 
 
 public class NotificationSettingsActivity extends AppCompatActivity implements LodingDialogInterface {
@@ -71,6 +75,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
     List<ApartmentNamesWithType> mApartmentNames;
     List<String> errorQueue = new ArrayList<String>();
     FloatingActionButton actionButton;
+    boolean fabOpen;
 
     @Bind(R.id.genderRadioGroup)
     RadioGroup mGenderRadioGroup;
@@ -90,8 +95,18 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
     @Bind(R.id.offCampusCheckbox)
     CheckBox mOffCampusCheckbox;
 
+    @Bind(R.id.fabPlus)
+    FloatingActionButton fabPlus;
+
+    @Bind(R.id.fabChangeUniversity)
+    LinearLayout fabChangeUniversity;
+
+    @Bind(R.id.fabSubscribe)
+    LinearLayout fabSubscribe;
+
     @Bind(R.id.dormsCheckbox)
     CheckBox mDormsCheckbox;
+
 
     ValueAnimator anim;
 
@@ -125,7 +140,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
             mApartmentNames = savedInstanceState.getParcelableArrayList(SAConstants.APARTMENT_NAMES);
             setCheckboxes(settings);
-            createApartmentNamesCheckbox(mApartmentNames, settings);
+            createApartmentNamesCheckbox(settings);
             populateSetsAndRadioButtons(settings);
 
         } else {
@@ -421,7 +436,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
                 SharedPreferences sharedPreferences = StudentAssistApplication.getAppContext().getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
                 settings.setGcmId(sharedPreferences.getString(SAConstants.GCM_ID, ""));
-                settings.setDeviceId(sharedPreferences.getString(SAConstants.INSTANCE_ID, ""));
+                settings.setInstanceId(sharedPreferences.getString(SAConstants.INSTANCE_ID, ""));
 
 
                 Gson gson = new Gson();
@@ -447,6 +462,22 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
     private void setFAB() {
 
+        // Utilities.revealShow(fabPlus);
+        fabPlus.setOnClickListener(v -> {
+            if (fabOpen) {
+
+                Utilities.rotateAnimation(v, rotateAnticlockwise);
+                fabChangeUniversity.startAnimation(hideFabLayout);
+                fabSubscribe.startAnimation(hideFabLayout);
+                fabOpen = false;
+            } else {
+                Utilities.rotateAnimation(v, rotateClockwise);
+                fabChangeUniversity.startAnimation(showFabLayout);
+                fabSubscribe.startAnimation(showFabLayout);
+                fabOpen = true;
+            }
+        });
+/*
         ImageView icon = new ImageView(this); // Create an icon
         icon.setImageResource(R.drawable.ic_subscribe);
         actionButton = new FloatingActionButton.Builder(this)
@@ -462,6 +493,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
             }
         });
+*/
 
 
     }
@@ -508,12 +540,11 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
     /**
      * 1. created apartmentNames checkboxes
-     * 2. Checks the checkboxes as per user's notification settings.
+     * 2. Checks(ticks) the checkboxes as per user's notification settings.
      *
-     * @param apartmentNames
      * @param settings
      */
-    private void createApartmentNamesCheckbox(List<ApartmentNamesWithType> apartmentNames, NotificationSettings settings) {
+    private void createApartmentNamesCheckbox(NotificationSettings settings) {
 
 
         ContextThemeWrapper mCheckboxThemeContext = new ContextThemeWrapper(getApplicationContext(),
@@ -523,52 +554,54 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
         LinearLayout dormsLayout = (LinearLayout) findViewById(R.id.dorms);
 
         CheckBox mApartmentNamesCheckbox;
-        for (ApartmentNamesWithType apartmentName : apartmentNames) {
+        for (RApartmentNamesInUnivs apartmentNamesInUniv : settings.getApartmentNames()) {
+
+            if (apartmentNamesInUniv.getUniversityId() == settings.getUniversityId()) {
+
+                List<RApartmentNamesWithType> apartmentNamesWithType = apartmentNamesInUniv.getApartmentNames();
+
+                for (RApartmentNamesWithType apartmentName : apartmentNamesWithType) {
 
 
-            mApartmentNamesCheckbox = new CheckBox(mCheckboxThemeContext);
-            mApartmentNamesCheckbox.setText(apartmentName.getApartmentName());
+                    mApartmentNamesCheckbox = new CheckBox(mCheckboxThemeContext);
+                    mApartmentNamesCheckbox.setText(apartmentName.getApartmentName());
 
-            if (settings.getApartmentName().contains(apartmentName.getApartmentName())) {
-                mApartmentNamesCheckbox.setChecked(true);
+                    if (settings.getApartmentName().contains(apartmentName.getApartmentName())) {
+                        mApartmentNamesCheckbox.setChecked(true);
 
-            }
-
-
-            mApartmentNamesCheckbox.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View mCheckboxView) {
-
-                    CheckBox checkBox = (CheckBox) mCheckboxView;
-                    if (checkBox.isChecked()) {
-                        mApartmentNamesSet.add(String.valueOf(checkBox.getText()));
-
-                    } else {
-                        mApartmentNamesSet.remove(String.valueOf(checkBox.getText()));
                     }
 
+
+                    mApartmentNamesCheckbox.setOnClickListener(mCheckboxView -> {
+                        CheckBox checkBox = (CheckBox) mCheckboxView;
+                        if (checkBox.isChecked()) {
+                            mApartmentNamesSet.add(String.valueOf(checkBox.getText()));
+
+                        } else {
+                            mApartmentNamesSet.remove(String.valueOf(checkBox.getText()));
+                        }
+
+                    });
+
+
+                    switch (apartmentName.getApartmentType()) {
+                        case SAConstants.ON:
+                            onCampusLayout.addView(mApartmentNamesCheckbox);
+                            break;
+
+                        case SAConstants.OFF:
+                            offCampusLayout.addView(mApartmentNamesCheckbox);
+                            break;
+                        case SAConstants.DORMS:
+                            dormsLayout.addView(mApartmentNamesCheckbox);
+                            break;
+
+                    }
+
+
                 }
-            });
-
-
-            switch (apartmentName.getApartmentType()) {
-                case SAConstants.ON:
-                    onCampusLayout.addView(mApartmentNamesCheckbox);
-                    break;
-
-                case SAConstants.OFF:
-                    offCampusLayout.addView(mApartmentNamesCheckbox);
-                    break;
-                case SAConstants.DORMS:
-                    dormsLayout.addView(mApartmentNamesCheckbox);
-                    break;
-
             }
-
-
         }
-
-
     }
 
 
@@ -578,29 +611,12 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
      * @param settings
      */
     private void getApartmentNames(final NotificationSettings settings) {
-
-        AccommodationBO bo = new AccommodationBO();
-        String url = "";
-        try {
-            url = urlGen.getApartmentNamesWithTypeUrl();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        bo.getApartmentNamesWithType(url, new NotificationsBI() {
-            @Override
-            public void onApartmentNamesReady(List<ApartmentNamesWithType> apartmentNames) {
-
-                mApartmentNames = apartmentNames;
-                createApartmentNamesCheckbox(apartmentNames, settings);
-            }
-        });
+        createApartmentNamesCheckbox(settings);
     }
 
     private void getNotificationSettings() {
 
         UrlInterface urlInterface = new UrlGenerator();
-
-
         try {
             String url = urlInterface.getNotificationSettingsUrl();
             final LoadingDialog loadingDialog = Utilities.showLoadingDialog(SAConstants.GETTING_NOTIFICATION_SETTINGS, getSupportFragmentManager());
@@ -616,9 +632,22 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
     }
 
     private void populateNotifications(NotificationSettings settings) {
-        setCheckboxes(settings);
-        getApartmentNames(settings);
-        populateSetsAndRadioButtons(settings);
+
+        if (settings.getUniversityId() == -1) {
+
+            Bundle b = new Bundle();
+            b.putParcelable(SAConstants.NOTIFICATION_SETTINGS, settings);
+            SelectUniversityDialog selectUniversityDialog = new SelectUniversityDialog();
+            selectUniversityDialog.setArguments(b);
+            selectUniversityDialog.show(getSupportFragmentManager(), "");
+
+        } else {
+            setCheckboxes(settings);
+            getApartmentNames(settings);
+            populateSetsAndRadioButtons(settings);
+        }
+
+
     }
 
     /**
@@ -672,7 +701,13 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
         }
     }
 
-
+    /**
+     * This method is used as a callback for 2 methods:
+     * 1. when subscriptions are posted
+     * 2. when subscriptions are received.
+     *
+     * @param response
+     */
     @Override
     public void onResponse(String response) {
         try {

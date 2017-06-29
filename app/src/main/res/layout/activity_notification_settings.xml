@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/wall_2"
     android:orientation="vertical">
-
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/notificationToolbar"
@@ -23,66 +22,164 @@
             android:layout_height="wrap_content" />
     </android.support.v7.widget.Toolbar>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/parLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:orientation="vertical">
+
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="vertical"
+                    card_view:cardCornerRadius="6dp"
+                    card_view:cardElevation="10dp"
+                    card_view:cardUseCompatPadding="true">
+
+                    <include layout="@layout/subscribe_notifications_apt_types_card" />
+
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="vertical"
+                    card_view:cardCornerRadius="6dp"
+                    card_view:cardElevation="10dp"
+                    card_view:cardUseCompatPadding="true">
+
+                    <include layout="@layout/subscribe_notifications_gender_card" />
+
+
+                </android.support.v7.widget.CardView>
+
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/apartmentNamesCardView"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:animateLayoutChanges="true"
+                    android:orientation="vertical"
+                    card_view:cardCornerRadius="6dp"
+                    card_view:cardElevation="10dp"
+                    card_view:cardUseCompatPadding="true">
+
+                    <include layout="@layout/subscribe_notifications_apt_names" />
+
+
+                </android.support.v7.widget.CardView>
+
+            </LinearLayout>
+        </ScrollView>
 
         <LinearLayout
-            android:id="@+id/parLayout"
-            android:animateLayoutChanges="true"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="12dp"
+            android:gravity="bottom|right"
             android:orientation="vertical">
 
-
-            <android.support.v7.widget.CardView
-                android:layout_width="fill_parent"
+            <LinearLayout
+                android:id="@+id/fabChangeUniversity"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:orientation="vertical"
-                card_view:cardCornerRadius="6dp"
-                card_view:cardElevation="10dp"
-                card_view:cardUseCompatPadding="true">
+                android:orientation="horizontal"
+                android:visibility="invisible">
 
-                <include layout="@layout/subscribe_notifications_apt_types_card" />
+                <TextView
+                    style="@style/TextAppearance.AppCompat.Body2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/rounded_corner"
+                    android:paddingBottom="1dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingTop="1dp"
+                    android:text="Select University"
+                    android:textColor="@color/buttonColourWhite" />
 
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/changeUniversity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|right"
+                    android:layout_marginBottom="18dp"
+                    android:layout_marginRight="23dp"
+                    android:background="@drawable/bluebutton"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_action_graduate_hat"
+                    app:fabSize="mini" />
+            </LinearLayout>
 
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                android:layout_width="fill_parent"
+            <LinearLayout
+                android:id="@+id/fabSubscribe"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:orientation="vertical"
-                card_view:cardCornerRadius="6dp"
-                card_view:cardElevation="10dp"
-                card_view:cardUseCompatPadding="true">
+                android:orientation="horizontal"
+                android:visibility="invisible">
 
-                <include layout="@layout/subscribe_notifications_gender_card" />
+                <TextView
+                    style="@style/TextAppearance.AppCompat.Body2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/rounded_corner"
+                    android:paddingBottom="1dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingTop="1dp"
+                    android:text="Save Subscription"
+                    android:textColor="@color/buttonColourWhite" />
 
+                <android.support.design.widget.FloatingActionButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginBottom="18dp"
+                    android:layout_marginRight="23dp"
+                    android:background="@color/colorPrimary"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_action_subscribe"
+                    app:fabSize="mini" />
 
-            </android.support.v7.widget.CardView>
+            </LinearLayout>
 
-
-            <android.support.v7.widget.CardView
-                android:id="@+id/apartmentNamesCardView"
-                android:layout_width="fill_parent"
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fabPlus"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:animateLayoutChanges="true"
-                android:orientation="vertical"
-                card_view:cardCornerRadius="6dp"
-                card_view:cardElevation="10dp"
-                card_view:cardUseCompatPadding="true">
-
-                <include layout="@layout/subscribe_notifications_apt_names" />
-
-
-            </android.support.v7.widget.CardView>
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="18dp"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/bluebutton"
+                android:scaleType="center"
+                android:src="@drawable/ic_action_plus2"
+                app:fabSize="normal" />
 
         </LinearLayout>
-    </ScrollView>
+
+
+    </RelativeLayout>
 
 
 </LinearLayout>

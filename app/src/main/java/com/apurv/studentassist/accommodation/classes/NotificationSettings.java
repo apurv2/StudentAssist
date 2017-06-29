@@ -14,26 +14,37 @@ import java.util.List;
 
 public class NotificationSettings implements Parcelable {
 
-    private String userId;
-
     private List<String> apartmentName = new ArrayList<String>();
 
     private String gender;
 
-    private List<String> apartmentType = new ArrayList<String>();
-
+    int universityId;
 
     private String gcmId;
 
-    private String deviceId;
+    private String instanceId;
+
+    private List<String> apartmentType = new ArrayList<String>();
+
+    private List<RApartmentNamesInUnivs> apartmentNames = new ArrayList<RApartmentNamesInUnivs>();
+
+    public NotificationSettings(List<String> apartmentName, String gender, int universityId,
+                                List<String> apartmentType, List<RApartmentNamesInUnivs> apartmentNames) {
+        super();
+        this.apartmentName = apartmentName;
+        this.gender = gender;
+        this.universityId = universityId;
+        this.apartmentType = apartmentType;
+        this.apartmentNames = apartmentNames;
+    }
 
     protected NotificationSettings(Parcel in) {
-        userId = in.readString();
         apartmentName = in.createStringArrayList();
         gender = in.readString();
-        apartmentType = in.createStringArrayList();
+        universityId = in.readInt();
         gcmId = in.readString();
-        deviceId = in.readString();
+        instanceId = in.readString();
+        apartmentType = in.createStringArrayList();
     }
 
     public static final Creator<NotificationSettings> CREATOR = new Creator<NotificationSettings>() {
@@ -48,20 +59,29 @@ public class NotificationSettings implements Parcelable {
         }
     };
 
+    public String getGcmId() {
+        return gcmId;
+    }
 
     public void setGcmId(String gcmId) {
         this.gcmId = gcmId;
     }
 
-
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
+    public List<RApartmentNamesInUnivs> getApartmentNames() {
+        return apartmentNames;
     }
 
-
-    public NotificationSettings() {
+    public void setApartmentNames(List<RApartmentNamesInUnivs> apartmentNames) {
+        this.apartmentNames = apartmentNames;
     }
 
+    public String getInstanceId() {
+        return instanceId;
+    }
+
+    public void setInstanceId(String instanceId) {
+        this.instanceId = instanceId;
+    }
 
     public List<String> getApartmentName() {
         return apartmentName;
@@ -83,6 +103,27 @@ public class NotificationSettings implements Parcelable {
         return apartmentType;
     }
 
+    public void setApartmentType(List<String> apartmentType) {
+        this.apartmentType = apartmentType;
+    }
+
+    public int getUniversityId() {
+        return universityId;
+    }
+
+    public void setUniversityId(int universityId) {
+        this.universityId = universityId;
+    }
+
+    public NotificationSettings() {
+    }
+
+    @Override
+    public String toString() {
+        return "RNotificationSettings [apartmentName=" + apartmentName + ", gender=" + gender + ", apartmentType="
+                + apartmentType + "]";
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -90,12 +131,12 @@ public class NotificationSettings implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(userId);
         dest.writeStringList(apartmentName);
         dest.writeString(gender);
-        dest.writeStringList(apartmentType);
+        dest.writeInt(universityId);
         dest.writeString(gcmId);
-        dest.writeString(deviceId);
+        dest.writeString(instanceId);
+        dest.writeStringList(apartmentType);
     }
 }
 

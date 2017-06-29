@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/editTextColourWhite"
+    android:orientation="vertical"
+    android:paddingBottom="10dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/subscribe_for_notifications"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/subscribe_for_notifications"
+            android:textColor="#000"
+            android:textSize="23sp" />
+
+        <View
+            android:layout_width="20dp"
+            android:layout_height="1dp"
+            android:layout_alignLeft="@+id/subscribe_for_notifications"
+            android:layout_alignRight="@+id/subscribe_for_notifications"
+            android:layout_below="@+id/subscribe_for_notifications"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:background="@android:color/darker_gray" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/university_names"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/university_names"
+            android:textColor="#000"
+            android:textSize="20sp" />
+
+        <View
+            android:layout_width="20dp"
+            android:layout_height="1dp"
+            android:layout_alignLeft="@+id/university_names"
+            android:layout_alignRight="@+id/university_names"
+            android:layout_below="@+id/university_names"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:background="@android:color/darker_gray" />
+
+    </RelativeLayout>
+
+
+    <RadioGroup
+        android:id="@+id/universityRadioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/univ1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:buttonTint="@color/buttonColourBlack"
+            android:text="University 1"
+            android:textColor="@color/buttonColourBlack" />
+
+
+        <RadioButton
+            android:id="@+id/univ2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:buttonTint="@color/buttonColourBlack"
+            android:text="University 1"
+            android:textColor="@color/buttonColourBlack"
+            android:visibility="gone" />
+
+        <RadioButton
+            android:id="@+id/univ3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/buttonColourBlack"
+            android:text="University 1"
+            android:textColor="@color/buttonColourBlack"
+            android:visibility="gone" />
+
+
+        <RadioButton
+            android:id="@+id/univ4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/buttonColourBlack"
+            android:text="University 1"
+            android:textColor="@color/buttonColourBlack"
+            android:visibility="gone" />
+
+    </RadioGroup>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/sendUniversities"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="18dp"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/bluebutton"
+        android:src="@drawable/ic_action_send" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/whyIsThisImportant"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Why is this Important?"
+            android:textColor="#000"
+            android:textSize="20sp" />
+
+        <View
+            android:layout_width="20dp"
+            android:layout_height="1dp"
+            android:layout_alignLeft="@+id/whyIsThisImportant"
+            android:layout_alignRight="@+id/whyIsThisImportant"
+            android:layout_below="@+id/whyIsThisImportant"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:background="@android:color/darker_gray" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="You will get push notitifications when someone posts about a new Vacancy in their apartment!!!"
+        android:textColor="@color/editTextColourBlack" />
+
+
+</LinearLayout>

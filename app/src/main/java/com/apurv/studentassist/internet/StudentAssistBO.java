@@ -41,6 +41,8 @@ public class StudentAssistBO {
         mHeaders.put(SAConstants.ACCESS_TOKEN, urlGenerator.getAccessToken());
         mHeaders.put("Content-Type", "application/json; charset=utf-8");
 
+        L.m("token =="+ urlGenerator.getAccessToken());
+
         StringRequest request = new StringRequest(method, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

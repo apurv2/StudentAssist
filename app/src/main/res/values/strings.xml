@@ -179,6 +179,8 @@
     <string name="type_university_name">University Name</string>
     <string name="university_settings">University Settings</string>
     <string name="university_name">University Name</string>
+    <string name="university_names">University Names</string>
+    <string name="subscribe_for_notifications">Subscribe For Notifications</string>
 
 
 </resources>

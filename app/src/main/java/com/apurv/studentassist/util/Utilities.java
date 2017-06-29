@@ -39,6 +39,10 @@ public class Utilities {
     public static Animation fadeOut;
     public static Animation slideUp;
     public static Animation slideDown;
+    public static Animation rotateClockwise;
+    public static Animation rotateAnticlockwise;
+    public static Animation showFabLayout;
+    public static Animation hideFabLayout;
 
 
     static {
@@ -56,7 +60,12 @@ public class Utilities {
         slideDown = AnimationUtils.loadAnimation(StudentAssistApplication.getmInstance(), R.anim.slide_out_bottom);
         slideDown.setDuration(100);
 
+        rotateClockwise = AnimationUtils.loadAnimation(StudentAssistApplication.getmInstance(), R.anim.rotate_clockwise);
+        rotateClockwise.setDuration(100);
 
+        rotateAnticlockwise = AnimationUtils.loadAnimation(StudentAssistApplication.getmInstance(), R.anim.rotate_anticlockwise);
+        showFabLayout = AnimationUtils.loadAnimation(StudentAssistApplication.getmInstance(), R.anim.show_layout);
+        hideFabLayout = AnimationUtils.loadAnimation(StudentAssistApplication.getmInstance(), R.anim.hide_layout);
     }
 
 
@@ -168,13 +177,19 @@ public class Utilities {
         }
     }
 
-    public static void showViewUsingAnimation(View view, Animation fadeIn) {
+    public static void showViewUsingAnimation(View view, Animation showAnimation) {
 
         if (view.getVisibility() != View.VISIBLE) {
-            view.startAnimation(fadeIn);
+            view.startAnimation(showAnimation);
             showView(view);
         }
     }
+
+    public static void rotateAnimation(View view, Animation rotateAnimation) {
+
+        view.startAnimation(rotateAnimation);
+    }
+
 
     public static void hideView(View view) {
 
@@ -271,7 +286,7 @@ public class Utilities {
     /**
      * @param url
      * @param imageView
-     * @param textView - optional
+     * @param textView  - optional
      */
     public static void loadImages(String url, ImageView imageView, TextView textView) {
 

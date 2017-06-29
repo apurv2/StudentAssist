@@ -305,5 +305,7 @@ public class SAConstants {
     public static final String NO_OF_VACANCIES_POSITION = "NoOfVacancies";
 
     public static final String NO_OF_ROOMS_POSITION = "noOfRooms";
+
+    public static final String SELECTED_UNIVERSITY_NAME = "selected university name";
 }
 
