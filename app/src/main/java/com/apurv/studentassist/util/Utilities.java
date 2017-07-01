@@ -73,7 +73,6 @@ public class Utilities {
 
         viewGroup.findViewById(viewId).setVisibility(View.VISIBLE);
 
-
     }
 
     public static void hideView(View viewGroup, int viewId) {

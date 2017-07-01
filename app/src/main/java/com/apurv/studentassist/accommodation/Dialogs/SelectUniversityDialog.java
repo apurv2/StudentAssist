@@ -2,6 +2,7 @@ package com.apurv.studentassist.accommodation.Dialogs;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.apurv.studentassist.R;
+import com.apurv.studentassist.accommodation.activities.NotificationSettingsActivity;
 import com.apurv.studentassist.accommodation.classes.NotificationSettings;
 import com.apurv.studentassist.accommodation.classes.RApartmentNamesInUnivs;
 import com.apurv.studentassist.util.SAConstants;
@@ -40,6 +42,10 @@ public class SelectUniversityDialog extends DialogFragment {
 
     @Bind(R.id.universityRadioGroup)
     RadioGroup universityRadioGroup;
+
+    @Bind(R.id.sendUniversities)
+    FloatingActionButton sendUniversities;
+
 
     List<RadioButton> radioButtons = new ArrayList<>();
 
@@ -81,10 +87,30 @@ public class SelectUniversityDialog extends DialogFragment {
             index++;
         }
 
+        sendUniversities.setOnClickListener(v -> {
 
-        RadioGroup universityGroup = (RadioGroup) pageView.findViewById(R.id.universityRadioGroup);
+            NotificationSettingsActivity parentActivity = (NotificationSettingsActivity)
+                    getActivity();
+            String selectedUnivName = "";
+            int selectedId = universityRadioGroup.getCheckedRadioButtonId();
+            if (selectedId != -1) {
+                RadioButton genderRadioButton = (RadioButton) pageView.findViewById(selectedId);
+                selectedUnivName = String.valueOf(genderRadioButton.getText());
+            }
+            for (RApartmentNamesInUnivs universityName : universityNames) {
+                if (selectedUnivName.equals(universityName.getUniversityName())) {
 
-        universityGroup.setOnCheckedChangeListener((group, checkedId) -> {
+                    settings.setUniversityId(universityName.getUniversityId());
+                    parentActivity.createApartmentNamesCheckbox(settings);
+                }
+            }
+
+            dismiss();
+
+        });
+
+
+        universityRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
 
             Utilities.revealShow(pageView.findViewById(R.id.sendUniversities));
         });

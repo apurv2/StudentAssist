@@ -374,6 +374,11 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
     }
 
+    public void changeUniversity(NotificationSettings settings) {
+        populateNotifications(settings);
+    }
+
+
     private boolean ifValidationFails() {
 
         boolean mValidateSw = false;
@@ -544,7 +549,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
      *
      * @param settings
      */
-    private void createApartmentNamesCheckbox(NotificationSettings settings) {
+    public void createApartmentNamesCheckbox(NotificationSettings settings) {
 
 
         ContextThemeWrapper mCheckboxThemeContext = new ContextThemeWrapper(getApplicationContext(),
@@ -731,7 +736,6 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
             } else if (!SAConstants.FAILURE.equals(response)) {
                 Gson gson = new Gson();
                 NotificationSettings settings = gson.fromJson(response, NotificationSettings.class);
-
                 populateNotifications(settings);
             }
         } catch (Exception e) {
