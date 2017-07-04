@@ -4,11 +4,9 @@ package com.apurv.studentassist.accommodation.activities;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -56,6 +54,7 @@ import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.apurv.studentassist.util.Utilities.hideFabLayout;
 import static com.apurv.studentassist.util.Utilities.rotateAnticlockwise;
@@ -290,25 +289,25 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
      */
     private void setCheckboxes(NotificationSettings settings) {
 
+        if (settings != null && settings.getApartmentType() != null) {
+            for (String apartmentType : settings.getApartmentType()) {
 
-        for (String apartmentType : settings.getApartmentType()) {
-
-            switch (apartmentType) {
-                case SAConstants.ON:
-                    Utilities.showView(findViewById(R.id.onCampus));
-                    mOnCampusCheckbox.setChecked(true);
-                    break;
-                case SAConstants.OFF:
-                    Utilities.showView(findViewById(R.id.offCampus));
-                    mOffCampusCheckbox.setChecked(true);
-                    break;
-                case SAConstants.DORMS:
-                    mDormsCheckbox.setChecked(true);
-                    Utilities.showView(findViewById(R.id.dorms));
-                    break;
+                switch (apartmentType) {
+                    case SAConstants.ON:
+                        Utilities.showView(findViewById(R.id.onCampus));
+                        mOnCampusCheckbox.setChecked(true);
+                        break;
+                    case SAConstants.OFF:
+                        Utilities.showView(findViewById(R.id.offCampus));
+                        mOffCampusCheckbox.setChecked(true);
+                        break;
+                    case SAConstants.DORMS:
+                        mDormsCheckbox.setChecked(true);
+                        Utilities.showView(findViewById(R.id.dorms));
+                        break;
+                }
             }
         }
-
         View.OnClickListener mCheckboxListener = new View.OnClickListener() {
             @Override
             public void onClick(View mNotificatinoSettingItem) {
@@ -402,9 +401,6 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
         try {
 
             L.m("subscription requrested");
-
-            mRequestFlag = false;
-
             errorQueue.clear();
 
             if (ifValidationFails()) {
@@ -465,6 +461,17 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
     }
 
 
+    @OnClick(R.id.fabChangeUniversity)
+    public void changeUniversity(View view) {
+        //TODO
+    }
+
+    @OnClick(R.id.fabSubscribe)
+    public void subscribeNotifications(View view) {
+        subscribeNotifications();
+    }
+
+
     private void setFAB() {
 
         // Utilities.revealShow(fabPlus);
@@ -499,38 +506,6 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
             }
         });
 */
-
-
-    }
-
-
-    /**
-     * Callback method after the user interacts with the Permissions popup
-     *
-     * @param requestCode  contains the request code for the permission
-     * @param permissions  array that contains all permissions
-     * @param grantResults array containing code for granted and not granted.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
-        switch (requestCode) {
-            case 0: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    subscribeNotifications();
-
-                } else {
-
-                    //flag to track the user permission for GPS
-                    mAskForPhoneStatePermission = true;
-                }
-                return;
-            }
-
-
-        }
 
 
     }
@@ -571,12 +546,10 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
                     mApartmentNamesCheckbox = new CheckBox(mCheckboxThemeContext);
                     mApartmentNamesCheckbox.setText(apartmentName.getApartmentName());
 
-                    if (settings.getApartmentName().contains(apartmentName.getApartmentName())) {
+                    if (settings.getApartmentName() != null && settings.getApartmentName().contains(apartmentName.getApartmentName())) {
                         mApartmentNamesCheckbox.setChecked(true);
 
                     }
-
-
                     mApartmentNamesCheckbox.setOnClickListener(mCheckboxView -> {
                         CheckBox checkBox = (CheckBox) mCheckboxView;
                         if (checkBox.isChecked()) {
@@ -654,6 +627,15 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
 
     }
+
+    /**
+     * called when a new university is selected from SelectUniversity Dialog box
+     */
+    public void createNewNotificationSettings(NotificationSettings settings) {
+        createApartmentNamesCheckbox(settings);
+        setCheckboxes(settings);
+    }
+
 
     /**
      * populates sets with user's preferences and Radio buttons.

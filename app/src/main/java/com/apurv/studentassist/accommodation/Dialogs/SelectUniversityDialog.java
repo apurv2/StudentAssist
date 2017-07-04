@@ -101,7 +101,7 @@ public class SelectUniversityDialog extends DialogFragment {
                 if (selectedUnivName.equals(universityName.getUniversityName())) {
 
                     settings.setUniversityId(universityName.getUniversityId());
-                    parentActivity.createApartmentNamesCheckbox(settings);
+                    parentActivity.createNewNotificationSettings(settings);
                 }
             }
 
