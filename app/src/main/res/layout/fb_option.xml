@@ -11,18 +11,11 @@
         android:paddingBottom="15dp"
         android:paddingLeft="15dp"
         android:paddingTop="15dp"
-        android:text="@string/facebookId"
+        android:text="Changing university will delete your existing University settings.
+Do you want to proceed?"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/courseDetailsBackground" />
 
-    <EditText
-        android:id="@+id/facebookId"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:hint="facebook Id"
-        android:textColor="@color/courseDetailsBackground"
-        android:textColorHint="@color/courseDetailsBackground" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,29 +24,22 @@
 
 
         <Button
-            android:id="@+id/no_im_good"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/button_height"
-            android:layout_weight="1"
-            android:background="@drawable/borderlessbutton_bg"
-            android:text="No, I am good without it"
-            android:textAllCaps="false"
-            android:textColor="@color/colorPrimary" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="2" />
-
-        <Button
             android:id="@+id/okButton"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/button_height"
-            android:layout_weight="1"
             android:background="@drawable/borderlessbutton_bg"
-            android:text="@string/ok"
+            android:text="Yes"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPrimary" />
+
+        <Button
+            android:id="@+id/cancel"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/button_height"
+            android:background="@drawable/borderlessbutton_bg"
+            android:text="No"
             android:textAllCaps="false"
             android:textColor="@color/colorPrimary" />
 

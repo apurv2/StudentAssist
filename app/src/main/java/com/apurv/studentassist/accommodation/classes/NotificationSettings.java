@@ -28,15 +28,6 @@ public class NotificationSettings implements Parcelable {
 
     private List<RApartmentNamesInUnivs> apartmentNames = new ArrayList<RApartmentNamesInUnivs>();
 
-    public NotificationSettings(List<String> apartmentName, String gender, int universityId,
-                                List<String> apartmentType, List<RApartmentNamesInUnivs> apartmentNames) {
-        super();
-        this.apartmentName = apartmentName;
-        this.gender = gender;
-        this.universityId = universityId;
-        this.apartmentType = apartmentType;
-        this.apartmentNames = apartmentNames;
-    }
 
     protected NotificationSettings(Parcel in) {
         apartmentName = in.createStringArrayList();

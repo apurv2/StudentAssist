@@ -63,7 +63,6 @@ public class SelectUniversityDialog extends DialogFragment {
 
         Bundle bundle = this.getArguments();
         NotificationSettings settings = bundle.getParcelable(SAConstants.NOTIFICATION_SETTINGS);
-        String selectedUniversityName = bundle.getParcelable(SAConstants.SELECTED_UNIVERSITY_NAME);
 
         radioButtons.add(radioButton1);
         radioButtons.add(radioButton2);
@@ -78,12 +77,9 @@ public class SelectUniversityDialog extends DialogFragment {
 
             Utilities.showView(radioButtons.get(index));
             radioButtons.get(index).setText(universityName.getUniversityName());
-
-
-            if (null != selectedUniversityName && !selectedUniversityName.equals("") && selectedUniversityName.equals(universityName)) {
-                radioButtons.get(index).setSelected(true);
+            if (settings.getUniversityId() != -1 && universityName.getUniversityId() == settings.getUniversityId()) {
+                universityRadioGroup.check(radioButtons.get(index).getId());
             }
-
             index++;
         }
 
@@ -93,19 +89,23 @@ public class SelectUniversityDialog extends DialogFragment {
                     getActivity();
             String selectedUnivName = "";
             int selectedId = universityRadioGroup.getCheckedRadioButtonId();
+
             if (selectedId != -1) {
-                RadioButton genderRadioButton = (RadioButton) pageView.findViewById(selectedId);
-                selectedUnivName = String.valueOf(genderRadioButton.getText());
-            }
-            for (RApartmentNamesInUnivs universityName : universityNames) {
-                if (selectedUnivName.equals(universityName.getUniversityName())) {
 
-                    settings.setUniversityId(universityName.getUniversityId());
-                    parentActivity.createNewNotificationSettings(settings);
-                }
+                RadioButton universityRadioButton = (RadioButton) pageView.findViewById(selectedId);
+                selectedUnivName = String.valueOf(universityRadioButton.getText());
+                int idx = universityRadioGroup.indexOfChild(universityRadioButton);
+
+                settings.setUniversityId(universityNames.get(idx).getUniversityId());
+                parentActivity.createNewNotificationSettings(settings);
+                dismiss();
+
+            } else {
+
+
+                //TODO VALIDATION
             }
 
-            dismiss();
 
         });
 

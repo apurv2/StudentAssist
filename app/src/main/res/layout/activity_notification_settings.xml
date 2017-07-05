@@ -3,6 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootNotificationSettingsView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/wall_2"
@@ -97,6 +98,40 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/unsubscribe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="invisible">
+
+                <TextView
+                    style="@style/TextAppearance.AppCompat.Body2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/rounded_corner"
+                    android:paddingBottom="1dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingTop="1dp"
+                    android:text="Select University"
+                    android:textColor="@color/buttonColourWhite" />
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/unsubscribeNotifications"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|right"
+                    android:layout_marginBottom="18dp"
+                    android:layout_marginRight="23dp"
+                    android:background="@drawable/bluebutton"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_action_graduate_hat"
+                    app:fabSize="mini" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/fabChangeUniversity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -174,6 +209,7 @@
                 android:background="@drawable/bluebutton"
                 android:scaleType="center"
                 android:src="@drawable/ic_action_plus2"
+                android:visibility="invisible"
                 app:fabSize="normal" />
 
         </LinearLayout>

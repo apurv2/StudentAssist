@@ -1059,7 +1059,7 @@ public class PostAccomodationActivity extends AppCompatActivity implements
 
 
     // callback method from AlertDialogDismiss.java
-// This closes this activity after the accommodation add has been posted
+    // This closes this activity after the accommodation add has been posted
     public void closeActivity(boolean result) {
 
         if (result) {
@@ -1113,22 +1113,16 @@ public class PostAccomodationActivity extends AppCompatActivity implements
                     }.getType());
                     int count = 0;
 
-
                     for (ApartmentNamesInUnivs university : apartmentNamesInUnivs) {
                         universityNamesAdapter.add(university.getUniversityName());
 
-
                         if (count == 0) {
-
                             //adding apartment names as per AptType(on/off campus)
                             addApartmentNames();
                         }
 
                         count++;
-
                     }
-
-
                 } catch (Exception e) {
                     ErrorReporting.logReport(e);
 

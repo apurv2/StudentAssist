@@ -4,6 +4,7 @@ package com.apurv.studentassist.accommodation.activities;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextThemeWrapper;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -27,6 +29,7 @@ import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.Dialogs.AlertDialogL;
 import com.apurv.studentassist.accommodation.Dialogs.LoadingDialog;
 import com.apurv.studentassist.accommodation.Dialogs.SelectUniversityDialog;
+import com.apurv.studentassist.accommodation.Dialogs.YesNoDialog;
 import com.apurv.studentassist.accommodation.classes.ApartmentNamesWithType;
 import com.apurv.studentassist.accommodation.classes.NotificationSettings;
 import com.apurv.studentassist.accommodation.classes.RApartmentNamesInUnivs;
@@ -69,11 +72,12 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
     final Set<String> mApartmentNamesSet = new LinkedHashSet<String>();
     final Set<String> mApartmentTypesSet = new LinkedHashSet<String>();
     String mGender = "";
-    boolean mAskForPhoneStatePermission = false;
-    boolean mRequestFlag = false;
     List<ApartmentNamesWithType> mApartmentNames;
     List<String> errorQueue = new ArrayList<String>();
-    FloatingActionButton actionButton;
+    NotificationSettings settings;
+    boolean serverHasSettings;
+
+
     boolean fabOpen;
 
     @Bind(R.id.genderRadioGroup)
@@ -100,11 +104,28 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
     @Bind(R.id.fabChangeUniversity)
     LinearLayout fabChangeUniversity;
 
+    @Bind(R.id.unsubscribe)
+    LinearLayout fabUnSubscribe;
+
     @Bind(R.id.fabSubscribe)
     LinearLayout fabSubscribe;
 
     @Bind(R.id.dormsCheckbox)
     CheckBox mDormsCheckbox;
+
+
+    @Bind(R.id.onCampusCheckboxes)
+    LinearLayout mOnCampusCheckboxes;
+
+    @Bind(R.id.offCampusCheckboxes)
+    LinearLayout mOffCampusCheckboxes;
+
+    @Bind(R.id.dormsCheckboxes)
+    LinearLayout mDormsCheckboxes;
+
+
+    @Bind(R.id.rootNotificationSettingsView)
+    LinearLayout rootNotificationSettingsView;
 
 
     ValueAnimator anim;
@@ -165,7 +186,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
                         mOffCampusCheckbox.setEnabled(true);
                         mDormsCheckbox.setEnabled(true);
 
-                        Utilities.showView(actionButton);
+                        //   Utilities.showView(actionButton);
 
 
                         for (int i = 0; i < mGenderRadioGroup.getChildCount(); i++) {
@@ -199,11 +220,16 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
                                             }
 
                                             if (SAConstants.SUCCESS.equals(responseString)) {
-                                                Utilities.hideView(actionButton);
+                                                //  Utilities.hideView(actionButton);
 
-                                                unCheckAptNamesCheckboxes((ViewGroup) findViewById(R.id.onCampus));
-                                                unCheckAptNamesCheckboxes((ViewGroup) findViewById(R.id.offCampus));
-                                                unCheckAptNamesCheckboxes((ViewGroup) findViewById(R.id.dorms));
+
+                                                mApartmentNamesSet.clear();
+                                                mApartmentTypesSet.clear();
+
+                                                //removeCheckboxes((ViewGroup) findViewById(R.id.onCampus));
+                                                //removeCheckboxes((ViewGroup) findViewById(R.id.offCampus));
+                                                //removeCheckboxes((ViewGroup) findViewById(R.id.dorms));
+
 
                                                 Utilities.hideView(findViewById(R.id.onCampus));
                                                 Utilities.hideView(findViewById(R.id.offCampus));
@@ -265,6 +291,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
 
     }
+
 
     private void unCheckAptNamesCheckboxes(ViewGroup mViewGroup) {
 
@@ -347,17 +374,17 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
                             mViewGroup = (ViewGroup) findViewById(R.id.onCampus);
                             Utilities.hideView(mViewGroup);
-                            unCheckAptNamesCheckboxes(mViewGroup);
+                            unCheckAptNamesCheckboxes(mOnCampusCheckboxes);
                             break;
                         case SAConstants.OFF:
                             mViewGroup = (ViewGroup) findViewById(R.id.offCampus);
                             Utilities.hideView(mViewGroup);
-                            unCheckAptNamesCheckboxes(mViewGroup);
+                            unCheckAptNamesCheckboxes(mOnCampusCheckboxes);
                             break;
                         case SAConstants.DORMS:
                             mViewGroup = (ViewGroup) findViewById(R.id.dorms);
                             Utilities.hideView(mViewGroup);
-                            unCheckAptNamesCheckboxes(mViewGroup);
+                            unCheckAptNamesCheckboxes(mOnCampusCheckboxes);
                             break;
                     }
 
@@ -372,11 +399,6 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
         mDormsCheckbox.setOnClickListener(mCheckboxListener);
 
     }
-
-    public void changeUniversity(NotificationSettings settings) {
-        populateNotifications(settings);
-    }
-
 
     private boolean ifValidationFails() {
 
@@ -416,6 +438,8 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
             } else {
                 NotificationSettings settings = new NotificationSettings();
+                settings.setUniversityId(this.settings.getUniversityId());
+
                 for (String mApartmentName : mApartmentNamesSet) {
                     settings.getApartmentName().add(mApartmentName);
                 }
@@ -462,8 +486,15 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
 
     @OnClick(R.id.fabChangeUniversity)
-    public void changeUniversity(View view) {
-        //TODO
+    public void changeUniversityConfirmation(View view) {
+
+        YesNoDialog yesNoDialog = new YesNoDialog();
+        yesNoDialog.show(getSupportFragmentManager(), "");
+
+    }
+
+    public void changeUniversity() {
+        openSelectUniversityDialog(settings);
     }
 
     @OnClick(R.id.fabSubscribe)
@@ -472,9 +503,30 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
     }
 
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (fabOpen) {
+
+
+                Rect outRect = new Rect();
+                fabPlus.getGlobalVisibleRect(outRect);
+                if (!outRect.contains((int) event.getRawX(), (int) event.getRawY())) {
+                    Utilities.rotateAnimation(fabPlus, rotateAnticlockwise);
+                    fabChangeUniversity.startAnimation(hideFabLayout);
+                    fabSubscribe.startAnimation(hideFabLayout);
+                    fabOpen = false;
+                }
+            }
+
+
+        }
+        return super.dispatchTouchEvent(event);
+
+    }
+
     private void setFAB() {
 
-        // Utilities.revealShow(fabPlus);
         fabPlus.setOnClickListener(v -> {
             if (fabOpen) {
 
@@ -482,40 +534,32 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
                 fabChangeUniversity.startAnimation(hideFabLayout);
                 fabSubscribe.startAnimation(hideFabLayout);
                 fabOpen = false;
+
+                if (serverHasSettings) {
+                    fabUnSubscribe.startAnimation(hideFabLayout);
+                }
+
+
             } else {
                 Utilities.rotateAnimation(v, rotateClockwise);
                 fabChangeUniversity.startAnimation(showFabLayout);
                 fabSubscribe.startAnimation(showFabLayout);
                 fabOpen = true;
-            }
-        });
-/*
-        ImageView icon = new ImageView(this); // Create an icon
-        icon.setImageResource(R.drawable.ic_subscribe);
-        actionButton = new FloatingActionButton.Builder(this)
-                .setContentView(icon)
-                .build();
 
-        actionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                if (serverHasSettings) {
+                    fabUnSubscribe.startAnimation(hideFabLayout);
 
-                mRequestFlag = true;
-                subscribeNotifications();
+                }
+
 
             }
         });
-*/
-
-
     }
 
     private void hideViews() {
         Utilities.hideView(findViewById(R.id.onCampus));
         Utilities.hideView(findViewById(R.id.offCampus));
         Utilities.hideView(findViewById(R.id.dorms));
-
-
     }
 
     /**
@@ -529,9 +573,9 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
         ContextThemeWrapper mCheckboxThemeContext = new ContextThemeWrapper(getApplicationContext(),
                 R.style.MyCheckBox);
-        LinearLayout onCampusLayout = (LinearLayout) findViewById(R.id.onCampus);
-        LinearLayout offCampusLayout = (LinearLayout) findViewById(R.id.offCampus);
-        LinearLayout dormsLayout = (LinearLayout) findViewById(R.id.dorms);
+        LinearLayout onCampusLayout = (LinearLayout) findViewById(R.id.onCampusCheckboxes);
+        LinearLayout offCampusLayout = (LinearLayout) findViewById(R.id.offCampusCheckboxes);
+        LinearLayout dormsLayout = (LinearLayout) findViewById(R.id.dormsCheckboxes);
 
         CheckBox mApartmentNamesCheckbox;
         for (RApartmentNamesInUnivs apartmentNamesInUniv : settings.getApartmentNames()) {
@@ -609,22 +653,44 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
     }
 
+    /**
+     *
+     * @param settings
+     */
     private void populateNotifications(NotificationSettings settings) {
 
         if (settings.getUniversityId() == -1) {
 
-            Bundle b = new Bundle();
-            b.putParcelable(SAConstants.NOTIFICATION_SETTINGS, settings);
-            SelectUniversityDialog selectUniversityDialog = new SelectUniversityDialog();
-            selectUniversityDialog.setArguments(b);
-            selectUniversityDialog.show(getSupportFragmentManager(), "");
+            openSelectUniversityDialog(settings);
+
 
         } else {
+            serverHasSettings = true;
             setCheckboxes(settings);
             getApartmentNames(settings);
             populateSetsAndRadioButtons(settings);
         }
 
+        Utilities.revealShow(fabPlus);
+
+        /*
+        rootNotificationSettingsView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                v.removeOnLayoutChangeListener(this);
+            }
+        });*/
+
+
+    }
+
+    private void openSelectUniversityDialog(NotificationSettings settings) {
+
+        Bundle b = new Bundle();
+        b.putParcelable(SAConstants.NOTIFICATION_SETTINGS, settings);
+        SelectUniversityDialog selectUniversityDialog = new SelectUniversityDialog();
+        selectUniversityDialog.setArguments(b);
+        selectUniversityDialog.show(getSupportFragmentManager(), "");
 
     }
 
@@ -632,6 +698,26 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
      * called when a new university is selected from SelectUniversity Dialog box
      */
     public void createNewNotificationSettings(NotificationSettings settings) {
+
+        mApartmentNamesSet.clear();
+        mApartmentTypesSet.clear();
+
+        mOnCampusCheckboxes.removeAllViews();
+        mOffCampusCheckboxes.removeAllViews();
+        mDormsCheckboxes.removeAllViews();
+
+
+        mOnCampusCheckbox.setChecked(false);
+        mOffCampusCheckbox.setChecked(false);
+        mDormsCheckbox.setChecked(false);
+
+        Utilities.hideView(findViewById(R.id.onCampus));
+        Utilities.hideView(findViewById(R.id.offCampus));
+        Utilities.hideView(findViewById(R.id.dorms));
+
+        mGenderRadioGroup.clearCheck();
+
+        this.settings.setUniversityId(settings.getUniversityId());
         createApartmentNamesCheckbox(settings);
         setCheckboxes(settings);
     }
@@ -654,7 +740,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
 
             mSubscriptionSw.setChecked(false);
-            Utilities.hideView(actionButton);
+            // Utilities.hideView(actionButton);
 
             mOnCampusCheckbox.setEnabled(false);
             mOffCampusCheckbox.setEnabled(false);
@@ -718,6 +804,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
             } else if (!SAConstants.FAILURE.equals(response)) {
                 Gson gson = new Gson();
                 NotificationSettings settings = gson.fromJson(response, NotificationSettings.class);
+                this.settings = settings;
                 populateNotifications(settings);
             }
         } catch (Exception e) {
