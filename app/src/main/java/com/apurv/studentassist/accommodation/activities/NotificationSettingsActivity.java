@@ -15,21 +15,22 @@ import android.view.ContextThemeWrapper;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Switch;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.Dialogs.AlertDialogL;
+import com.apurv.studentassist.accommodation.Dialogs.ChangeUniversityPromptDialog;
 import com.apurv.studentassist.accommodation.Dialogs.LoadingDialog;
+import com.apurv.studentassist.accommodation.Dialogs.SaveSettingsPrompt;
 import com.apurv.studentassist.accommodation.Dialogs.SelectUniversityDialog;
-import com.apurv.studentassist.accommodation.Dialogs.YesNoDialog;
+import com.apurv.studentassist.accommodation.Dialogs.UnsubsribePromptDialog;
 import com.apurv.studentassist.accommodation.classes.ApartmentNamesWithType;
 import com.apurv.studentassist.accommodation.classes.NotificationSettings;
 import com.apurv.studentassist.accommodation.classes.RApartmentNamesInUnivs;
@@ -37,7 +38,6 @@ import com.apurv.studentassist.accommodation.classes.RApartmentNamesWithType;
 import com.apurv.studentassist.accommodation.classes.StudentAssistApplication;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
-import com.apurv.studentassist.internet.NetworkInterface;
 import com.apurv.studentassist.internet.StudentAssistBO;
 import com.apurv.studentassist.util.Alerts;
 import com.apurv.studentassist.util.ErrorReporting;
@@ -59,7 +59,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.apurv.studentassist.util.Utilities.hideFabLayout;
+import static com.apurv.studentassist.R.id.genderRadioGroup;
 import static com.apurv.studentassist.util.Utilities.rotateAnticlockwise;
 import static com.apurv.studentassist.util.Utilities.rotateClockwise;
 import static com.apurv.studentassist.util.Utilities.showFabLayout;
@@ -76,20 +76,13 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
     List<String> errorQueue = new ArrayList<String>();
     NotificationSettings settings;
     boolean serverHasSettings;
-
-
     boolean fabOpen;
 
-    @Bind(R.id.genderRadioGroup)
+    @Bind(genderRadioGroup)
     RadioGroup mGenderRadioGroup;
 
     @Bind(R.id.notificationToolbar)
     Toolbar mToolbar;
-
-
-    @Bind(R.id.subscriptionSw)
-    Switch mSubscriptionSw;
-
 
     @Bind(R.id.onCampusCheckbox)
     CheckBox mOnCampusCheckbox;
@@ -127,6 +120,8 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
     @Bind(R.id.rootNotificationSettingsView)
     LinearLayout rootNotificationSettingsView;
 
+    @Bind(R.id.selectUniversity)
+    TextView selectUniversityTv;
 
     ValueAnimator anim;
 
@@ -146,14 +141,13 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NotificationSettingsActivity.super.onBackPressed();
+                onBackPressed();
             }
         });
 
 
         setFAB();
         hideViews();
-        setSubscriptionSw();
         if (savedInstanceState != null) {
 
             NotificationSettings settings = savedInstanceState.getParcelable(SAConstants.NOTIFICATION_SETTINGS);
@@ -166,132 +160,145 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
         } else {
             getNotificationSettings();
         }
+    }
+
+    public void openNavTray() {
+        fabPlus.startAnimation(rotateClockwise);
+        fabChangeUniversity.startAnimation(showFabLayout);
+        fabSubscribe.startAnimation(showFabLayout);
+        Utilities.showView(fabChangeUniversity);
+        Utilities.showView(fabSubscribe);
+
+        fabOpen = true;
+
+        if (serverHasSettings) {
+            fabUnSubscribe.startAnimation(showFabLayout);
+            Utilities.showView(fabUnSubscribe);
+        }
 
     }
 
-    private void setSubscriptionSw() {
+    public void closeActivity() {
+        super.onBackPressed();
+    }
+
+    private void closeNavTray() {
 
 
-        mSubscriptionSw.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+        Animation hideFabLayout;
+        hideFabLayout = AnimationUtils.loadAnimation(this, R.anim.hide_layout);
+
+        fabPlus.startAnimation(rotateAnticlockwise);
+        fabChangeUniversity.startAnimation(hideFabLayout);
+        fabSubscribe.startAnimation(hideFabLayout);
+
+        if (serverHasSettings) {
+            fabUnSubscribe.startAnimation(hideFabLayout);
+        }
+        hideFabLayout.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
 
             @Override
-            public void onCheckedChanged(CompoundButton buttonView,
-                                         boolean isChecked) {
-
-                if (isNetworkAvailable()) {
-
-                    if (isChecked) {
-
-                        mOnCampusCheckbox.setEnabled(true);
-                        mOffCampusCheckbox.setEnabled(true);
-                        mDormsCheckbox.setEnabled(true);
-
-                        //   Utilities.showView(actionButton);
-
-
-                        for (int i = 0; i < mGenderRadioGroup.getChildCount(); i++) {
-                            (mGenderRadioGroup.getChildAt(i)).setEnabled(true);
-                        }
-
-                    } else {
-
-
-                        StudentAssistBO manager = new StudentAssistBO();
-                        UrlInterface urlgen = new UrlGenerator();
-
-
-                        try {
-
-                            //sitiation when the user does not have any subscription settings and this function is being called by the framework
-                            // when we are setting the subscription switch to false. ( We want to set it to false because of business need)
-                            if (mGender != null && mGender != "") {
-
-                                manager.volleyRequest(urlgen.unSubscribeNotifications(), new NetworkInterface() {
-                                    @Override
-                                    public void onResponseUpdate(String jsonResponse) {
-
-                                        try {
-
-                                            JSONObject jObject = new JSONObject(jsonResponse);
-                                            String responseString = "";
-
-                                            if (jObject.has(SAConstants.RESPONSE)) {
-                                                responseString = jObject.getString(SAConstants.RESPONSE);
-                                            }
-
-                                            if (SAConstants.SUCCESS.equals(responseString)) {
-                                                //  Utilities.hideView(actionButton);
-
-
-                                                mApartmentNamesSet.clear();
-                                                mApartmentTypesSet.clear();
-
-                                                //removeCheckboxes((ViewGroup) findViewById(R.id.onCampus));
-                                                //removeCheckboxes((ViewGroup) findViewById(R.id.offCampus));
-                                                //removeCheckboxes((ViewGroup) findViewById(R.id.dorms));
-
-
-                                                Utilities.hideView(findViewById(R.id.onCampus));
-                                                Utilities.hideView(findViewById(R.id.offCampus));
-                                                Utilities.hideView(findViewById(R.id.dorms));
-
-                                                mOnCampusCheckbox.setChecked(false);
-                                                mOffCampusCheckbox.setChecked(false);
-                                                mDormsCheckbox.setChecked(false);
-
-                                                mGenderRadioGroup.clearCheck();
-
-                                                mOnCampusCheckbox.setEnabled(false);
-                                                mOffCampusCheckbox.setEnabled(false);
-                                                mDormsCheckbox.setEnabled(false);
-
-                                                for (int i = 0; i < mGenderRadioGroup.getChildCount(); i++) {
-                                                    (mGenderRadioGroup.getChildAt(i)).setEnabled(false);
-                                                }
-
-
-                                            } else {
-                                                Bundle b = new Bundle();
-                                                b.putString(SAConstants.ALERT_TEXT, SAConstants.FAILED_TO_UNSUBSCRIBE);
-                                                AlertDialogL errorDialog = new AlertDialogL();
-                                                errorDialog.setArguments(b);
-                                                errorDialog.show(getSupportFragmentManager(), "");
-
-                                            }
-                                        } catch (Exception e) {
-
-                                            ErrorReporting.logReport(e);
-                                            Bundle b = new Bundle();
-                                            b.putString(SAConstants.ALERT_TEXT, SAConstants.FAILED_TO_UNSUBSCRIBE);
-                                            AlertDialogL errorDialog = new AlertDialogL();
-                                            errorDialog.setArguments(b);
-                                            errorDialog.show(getSupportFragmentManager(), "");
-
-                                        }
-                                    }
-                                }, "", Request.Method.DELETE);
-
-                            }
-
-                        } catch (Exception e) {
-                            ErrorReporting.logReport(e);
-                        }
-
-
-                    }
-                } else {
-                    Toast.makeText(getApplicationContext(), Alerts.errors.get(2), Toast.LENGTH_LONG).show();
-                    mSubscriptionSw.setChecked(false);
-
+            public void onAnimationEnd(Animation animation) {
+                Utilities.hideView(fabChangeUniversity);
+                Utilities.hideView(fabSubscribe);
+                if (serverHasSettings) {
+                    Utilities.hideView(fabUnSubscribe);
                 }
+            }
 
+            @Override
+            public void onAnimationRepeat(Animation animation) {
 
             }
         });
 
 
+        fabOpen = false;
+
+
     }
 
+    /**
+     * Unsubscribes notifications setings
+     * Note: This method does not remove the Apartment names checkboxes after successful removal of
+     * subscription -> It will automatically be removed when user selects a new university in the changeUniversity() method.
+     */
+    public void unSubscribeNotifications() {
+
+        StudentAssistBO manager = new StudentAssistBO();
+        UrlInterface urlgen = new UrlGenerator();
+        try {
+
+            manager.volleyRequest(urlgen.unSubscribeNotifications(), jsonResponse -> {
+
+                try {
+
+                    JSONObject jObject = new JSONObject(jsonResponse);
+                    String responseString = "";
+
+                    if (jObject.has(SAConstants.RESPONSE)) {
+                        responseString = jObject.getString(SAConstants.RESPONSE);
+                    }
+
+                    if (SAConstants.SUCCESS.equals(responseString)) {
+
+                        mToolbar.setTitle(SAConstants.SUBSCRIBE_FOR_NOTIFICATIONS);
+                        mApartmentNamesSet.clear();
+                        mApartmentTypesSet.clear();
+                        mGender = null;
+
+                        serverHasSettings = false;
+                        this.settings.setUniversityId(-1);
+                        this.settings.setApartmentName(null);
+                        this.settings.setApartmentType(null);
+                        this.settings.setGender(null);
+
+
+                        selectUniversityTv.setText(SAConstants.SELECT_UNIVERSITY);
+
+                        Utilities.hideView(findViewById(R.id.onCampus));
+                        Utilities.hideView(findViewById(R.id.offCampus));
+                        Utilities.hideView(findViewById(R.id.dorms));
+
+                        //clearing checxboxes
+                        mOnCampusCheckbox.setChecked(false);
+                        mOffCampusCheckbox.setChecked(false);
+                        mDormsCheckbox.setChecked(false);
+                        mGenderRadioGroup.clearCheck();
+
+                        Utilities.hideView(findViewById(R.id.genderRadioGroup));
+                        Utilities.hideView(findViewById(R.id.aptTypesChxBx));
+
+
+                        openNavTray();
+                    } else {
+                        Bundle b = new Bundle();
+                        b.putString(SAConstants.ALERT_TEXT, SAConstants.FAILED_TO_UNSUBSCRIBE);
+                        AlertDialogL errorDialog = new AlertDialogL();
+                        errorDialog.setArguments(b);
+                        errorDialog.show(getSupportFragmentManager(), "");
+
+                    }
+                } catch (Exception e) {
+
+                    ErrorReporting.logReport(e);
+                    Bundle b = new Bundle();
+                    b.putString(SAConstants.ALERT_TEXT, SAConstants.FAILED_TO_UNSUBSCRIBE);
+                    AlertDialogL errorDialog = new AlertDialogL();
+                    errorDialog.setArguments(b);
+                    errorDialog.show(getSupportFragmentManager(), "");
+
+                }
+            }, "", Request.Method.DELETE);
+
+
+        } catch (Exception e) {
+            ErrorReporting.logReport(e);
+        }
+    }
 
     private void unCheckAptNamesCheckboxes(ViewGroup mViewGroup) {
 
@@ -305,7 +312,6 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
                     mCheckbox.setChecked(false);
                 }
             }
-
         }
     }
 
@@ -345,11 +351,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
                 aptTypeCheckboxValue = checkBox.getText() + "";
 
                 if (checkBox.isChecked()) {
-
-
                     mApartmentTypesSet.add(UrlGenerator.getApartmentTypeCodeMap().get(aptTypeCheckboxValue));
-
-
                     switch (UrlGenerator.getApartmentTypeCodeMap().get(aptTypeCheckboxValue)) {
                         case SAConstants.ON:
 
@@ -362,12 +364,8 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
                             Utilities.showView(findViewById(R.id.dorms));
                             break;
                     }
-
-
                 } else {
-
                     ViewGroup mViewGroup = null;
-
                     mApartmentTypesSet.remove(UrlGenerator.getApartmentTypeCodeMap().get(aptTypeCheckboxValue));
                     switch (UrlGenerator.getApartmentTypeCodeMap().get(aptTypeCheckboxValue)) {
                         case SAConstants.ON:
@@ -387,17 +385,12 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
                             unCheckAptNamesCheckboxes(mOnCampusCheckboxes);
                             break;
                     }
-
-
                 }
-
             }
         };
-
         mOffCampusCheckbox.setOnClickListener(mCheckboxListener);
         mOnCampusCheckbox.setOnClickListener(mCheckboxListener);
         mDormsCheckbox.setOnClickListener(mCheckboxListener);
-
     }
 
     private boolean ifValidationFails() {
@@ -419,7 +412,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
         return mValidateSw;
     }
 
-    private void subscribeNotifications() {
+    public void subscribeNotifications() {
         try {
 
             L.m("subscription requrested");
@@ -457,15 +450,14 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
                     L.m("apartment type==" + mApartmentType);
 
                 }
-
-
                 SharedPreferences sharedPreferences = StudentAssistApplication.getAppContext().getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
                 settings.setGcmId(sharedPreferences.getString(SAConstants.GCM_ID, ""));
                 settings.setInstanceId(sharedPreferences.getString(SAConstants.INSTANCE_ID, ""));
 
-
                 Gson gson = new Gson();
                 String postParams = gson.toJson(settings);
+                settings.setApartmentNames(this.settings.getApartmentNames());
+                this.settings = settings;
 
                 UrlInterface urlgen = new UrlGenerator();
                 StudentAssistBO manager = new StudentAssistBO();
@@ -488,10 +480,35 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
     @OnClick(R.id.fabChangeUniversity)
     public void changeUniversityConfirmation(View view) {
 
-        YesNoDialog yesNoDialog = new YesNoDialog();
-        yesNoDialog.show(getSupportFragmentManager(), "");
+        //check if a University has already  been selected. If so show change university alert
+        if (serverHasSettings || settings.getUniversityId() != -1) {
+            Bundle b = new Bundle();
+            b.putString(SAConstants.ALERT_TEXT, SAConstants.CHANGE_UNIVERSITY_PROMPT);
+            ChangeUniversityPromptDialog changeUniversityPromptDialog = new ChangeUniversityPromptDialog();
+            changeUniversityPromptDialog.setArguments(b);
+            changeUniversityPromptDialog.show(getSupportFragmentManager(), "");
+        } else {
+            openSelectUniversityDialog(settings);
+        }
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        openNavTray();
+    }
+
+    @OnClick(R.id.unsubscribe)
+    public void unsubscribe(View view) {
+        Bundle b = new Bundle();
+        b.putString(SAConstants.ALERT_TEXT, SAConstants.SELECT_UNIVERSITY_PROMPT);
+        UnsubsribePromptDialog unsubsribePromptDialog = new UnsubsribePromptDialog();
+        unsubsribePromptDialog.setArguments(b);
+        unsubsribePromptDialog.show(getSupportFragmentManager(), "");
+
+    }
+
 
     public void changeUniversity() {
         openSelectUniversityDialog(settings);
@@ -507,51 +524,25 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             if (fabOpen) {
-
-
                 Rect outRect = new Rect();
                 fabPlus.getGlobalVisibleRect(outRect);
                 if (!outRect.contains((int) event.getRawX(), (int) event.getRawY())) {
-                    Utilities.rotateAnimation(fabPlus, rotateAnticlockwise);
-                    fabChangeUniversity.startAnimation(hideFabLayout);
-                    fabSubscribe.startAnimation(hideFabLayout);
-                    fabOpen = false;
+                    closeNavTray();
                 }
             }
-
-
         }
         return super.dispatchTouchEvent(event);
-
     }
 
     private void setFAB() {
 
         fabPlus.setOnClickListener(v -> {
             if (fabOpen) {
-
-                Utilities.rotateAnimation(v, rotateAnticlockwise);
-                fabChangeUniversity.startAnimation(hideFabLayout);
-                fabSubscribe.startAnimation(hideFabLayout);
-                fabOpen = false;
-
-                if (serverHasSettings) {
-                    fabUnSubscribe.startAnimation(hideFabLayout);
-                }
-
-
+                //close Nav tray
+                closeNavTray();
             } else {
-                Utilities.rotateAnimation(v, rotateClockwise);
-                fabChangeUniversity.startAnimation(showFabLayout);
-                fabSubscribe.startAnimation(showFabLayout);
-                fabOpen = true;
-
-                if (serverHasSettings) {
-                    fabUnSubscribe.startAnimation(hideFabLayout);
-
-                }
-
-
+                // open tray
+                openNavTray();
             }
         });
     }
@@ -581,6 +572,8 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
         for (RApartmentNamesInUnivs apartmentNamesInUniv : settings.getApartmentNames()) {
 
             if (apartmentNamesInUniv.getUniversityId() == settings.getUniversityId()) {
+
+                mToolbar.setTitle(apartmentNamesInUniv.getUniversityName());
 
                 List<RApartmentNamesWithType> apartmentNamesWithType = apartmentNamesInUniv.getApartmentNames();
 
@@ -654,18 +647,18 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
     }
 
     /**
-     *
-     * @param settings
+     * @param settings called at page starting after getting university settings from server
      */
     private void populateNotifications(NotificationSettings settings) {
 
         if (settings.getUniversityId() == -1) {
 
             openSelectUniversityDialog(settings);
-
-
+            Utilities.hideView(findViewById(R.id.genderRadioGroup));
+            Utilities.hideView(findViewById(R.id.aptTypesChxBx));
         } else {
             serverHasSettings = true;
+            selectUniversityTv.setText(SAConstants.CHANGE_UNIVERSITY);
             setCheckboxes(settings);
             getApartmentNames(settings);
             populateSetsAndRadioButtons(settings);
@@ -698,6 +691,15 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
      * called when a new university is selected from SelectUniversity Dialog box
      */
     public void createNewNotificationSettings(NotificationSettings settings) {
+
+        settings.setApartmentName(null);
+        settings.setApartmentType(null);
+        settings.setGender(null);
+
+        selectUniversityTv.setText(SAConstants.CHANGE_UNIVERSITY);
+
+        Utilities.showView(findViewById(R.id.genderRadioGroup));
+        Utilities.showView(findViewById(R.id.aptTypesChxBx));
 
         mApartmentNamesSet.clear();
         mApartmentTypesSet.clear();
@@ -737,22 +739,10 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
         mApartmentNamesSet.addAll(settings.getApartmentName());
 
         if (mGender == null) {
-
-
-            mSubscriptionSw.setChecked(false);
-            // Utilities.hideView(actionButton);
-
-            mOnCampusCheckbox.setEnabled(false);
-            mOffCampusCheckbox.setEnabled(false);
-            mDormsCheckbox.setEnabled(false);
-
-            for (int i = 0; i < mGenderRadioGroup.getChildCount(); i++) {
-                (mGenderRadioGroup.getChildAt(i)).setEnabled(false);
-            }
-
+            Utilities.hideView(findViewById(R.id.genderRadioGroup));
+            Utilities.hideView(findViewById(R.id.aptTypesChxBx));
 
         } else {
-            mSubscriptionSw.setChecked(true);
 
             switch (mGender) {
                 case SAConstants.MALE:
@@ -792,20 +782,23 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
                 responseString = jObject.getString(SAConstants.RESPONSE);
             }
 
-
+            // after subscription is successful
             if (SAConstants.SUCCESS.equals(responseString)) {
 
                 Bundle b = new Bundle();
-                b.putString(SAConstants.ALERT_TEXT, SAConstants.SUCCESS);
+                b.putString(SAConstants.ALERT_TEXT, "Subscription saved successfully");
                 AlertDialogL alertDialogL = new AlertDialogL();
                 alertDialogL.setArguments(b);
                 alertDialogL.show(getSupportFragmentManager(), "");
+                serverHasSettings = true;
 
+                //server response with NotificationSettings
             } else if (!SAConstants.FAILURE.equals(response)) {
                 Gson gson = new Gson();
                 NotificationSettings settings = gson.fromJson(response, NotificationSettings.class);
                 this.settings = settings;
                 populateNotifications(settings);
+                openNavTray();
             }
         } catch (Exception e) {
 
@@ -821,6 +814,54 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+
+    @Override
+    public void onBackPressed() {
+
+        NotificationSettings settings = new NotificationSettings();
+        settings.setUniversityId(this.settings.getUniversityId());
+
+        for (String mApartmentName : mApartmentNamesSet) {
+            settings.getApartmentName().add(mApartmentName);
+        }
+        String gender = null;
+        int selectedId = mGenderRadioGroup.getCheckedRadioButtonId();
+        if (selectedId != -1) {
+            RadioButton genderRadioButton = (RadioButton) findViewById(selectedId);
+            gender = String.valueOf(genderRadioButton.getText());
+        }
+
+        settings.setGender(gender);
+
+        for (String mApartmentType : mApartmentTypesSet) {
+            settings.getApartmentType().add(mApartmentType);
+        }
+
+        // setting these to null because the default object from JSON has null values
+        if (settings.getApartmentType().isEmpty()) {
+            settings.setApartmentType(null);
+        }
+        if (settings.getApartmentName().isEmpty()) {
+            settings.setApartmentName(null);
+        }
+
+        if (settings.getGender() != null && settings.getGender().equals("")) {
+            settings.setGender(null);
+        }
+
+        if (!this.settings.equals(settings)) {
+            Bundle b = new Bundle();
+            b.putString(SAConstants.ALERT_TEXT, SAConstants.SAVE_SETTINGS_PROMPT);
+            SaveSettingsPrompt saveSettingsPrompt = new SaveSettingsPrompt();
+            saveSettingsPrompt.setArguments(b);
+            saveSettingsPrompt.show(getSupportFragmentManager(), "");
+        } else {
+            super.onBackPressed();
+        }
+
+
     }
 
     @Override

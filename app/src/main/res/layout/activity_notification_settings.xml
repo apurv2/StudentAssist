@@ -16,11 +16,6 @@
         android:background="@color/colorPrimary"
         android:titleTextColor="@color/editTextColourWhite"
         app:theme="@style/AppTheme">
-
-        <Switch
-            android:id="@+id/subscriptionSw"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
     </android.support.v7.widget.Toolbar>
 
     <RelativeLayout
@@ -115,7 +110,7 @@
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
                     android:paddingTop="1dp"
-                    android:text="Select University"
+                    android:text="Unsubscribe"
                     android:textColor="@color/buttonColourWhite" />
 
                 <android.support.design.widget.FloatingActionButton
@@ -141,6 +136,7 @@
                 <TextView
                     style="@style/TextAppearance.AppCompat.Body2"
                     android:layout_width="wrap_content"
+                    android:id="@+id/selectUniversity"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"

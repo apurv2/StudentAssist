@@ -129,6 +129,51 @@ public class NotificationSettings implements Parcelable {
         dest.writeString(instanceId);
         dest.writeStringList(apartmentType);
     }
-}
 
+    public boolean isTwoArrayListsWithSameValues(List list1, List list2) {
+        //null checking
+        if (list1 == null && list2 == null)
+            return true;
+        if ((list1 == null && list2 != null) || (list1 != null && list2 == null))
+            return false;
+
+        if (list1.size() != list2.size())
+            return false;
+        for (Object itemList1 : list1) {
+            if (!list2.contains(itemList1))
+                return false;
+        }
+
+        return true;
+    }
+
+
+    private boolean compareStrings(String s1, String s2) {
+
+        if (s1 == null && s2 == null)
+            return true;
+
+        if ((s1 == null && s2 != null) || (s1 != null && s2 == null))
+            return false;
+
+        return s1.equals(s2) ? true : false;
+
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        NotificationSettings settings = (NotificationSettings) obj;
+
+        if (isTwoArrayListsWithSameValues(this.apartmentName, settings.getApartmentName()) &&
+                isTwoArrayListsWithSameValues(this.apartmentType, settings.getApartmentType()) &&
+                compareStrings(this.gender, settings.gender)) {
+            return true;
+        } else {
+            return false;
+        }
+
+
+    }
+}
 

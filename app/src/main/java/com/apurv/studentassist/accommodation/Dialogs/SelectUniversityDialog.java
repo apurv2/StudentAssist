@@ -1,6 +1,9 @@
 package com.apurv.studentassist.accommodation.Dialogs;
 
+import android.annotation.TargetApi;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
@@ -45,7 +48,7 @@ public class SelectUniversityDialog extends DialogFragment {
 
     @Bind(R.id.sendUniversities)
     FloatingActionButton sendUniversities;
-
+    boolean univSelected = false;
 
     List<RadioButton> radioButtons = new ArrayList<>();
 
@@ -77,8 +80,19 @@ public class SelectUniversityDialog extends DialogFragment {
 
             Utilities.showView(radioButtons.get(index));
             radioButtons.get(index).setText(universityName.getUniversityName());
+
+            //logic to prepopulate univesity Name radio button
             if (settings.getUniversityId() != -1 && universityName.getUniversityId() == settings.getUniversityId()) {
                 universityRadioGroup.check(radioButtons.get(index).getId());
+
+                pageView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+                    @Override
+                    public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                        v.removeOnLayoutChangeListener(this);
+                        Utilities.revealShow(pageView.findViewById(R.id.sendUniversities));
+                    }
+                });
             }
             index++;
         }
@@ -87,35 +101,34 @@ public class SelectUniversityDialog extends DialogFragment {
 
             NotificationSettingsActivity parentActivity = (NotificationSettingsActivity)
                     getActivity();
-            String selectedUnivName = "";
             int selectedId = universityRadioGroup.getCheckedRadioButtonId();
 
             if (selectedId != -1) {
-
+                univSelected = true;
                 RadioButton universityRadioButton = (RadioButton) pageView.findViewById(selectedId);
-                selectedUnivName = String.valueOf(universityRadioButton.getText());
                 int idx = universityRadioGroup.indexOfChild(universityRadioButton);
 
                 settings.setUniversityId(universityNames.get(idx).getUniversityId());
                 parentActivity.createNewNotificationSettings(settings);
                 dismiss();
-
-            } else {
-
-
-                //TODO VALIDATION
             }
-
-
         });
 
-
         universityRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-
             Utilities.revealShow(pageView.findViewById(R.id.sendUniversities));
         });
 
         // Create the AlertDialog object and return it
         return builder.create();
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (!univSelected) {
+            NotificationSettingsActivity parentActivity = (NotificationSettingsActivity)
+                    getActivity();
+            parentActivity.openNavTray();
+        }
     }
 }

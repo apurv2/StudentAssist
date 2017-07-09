@@ -21,5 +21,8 @@
         <item name="colorControlActivated">@color/buttonColourBlack</item>
     </style>
 
+    <style name="radioStyle" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:textColor">@color/text_color</item>
+    </style>
 
 </resources>

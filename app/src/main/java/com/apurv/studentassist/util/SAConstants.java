@@ -303,5 +303,17 @@ public class SAConstants {
     public static final String NO_OF_ROOMS_POSITION = "noOfRooms";
 
     public static final String SELECTED_UNIVERSITY_NAME = "selected university name";
+
+    public static final String CHANGE_UNIVERSITY = "Change University";
+
+    public static final String SELECT_UNIVERSITY = "Select University";
+
+    public static final String CHANGE_UNIVERSITY_PROMPT = "Changing university will delete your existing University settings.\n" +
+            "Do you want to proceed?";
+
+    public static final String SELECT_UNIVERSITY_PROMPT = "Are you sure you want to delete your Notification Settings?";
+
+    public static final String SAVE_SETTINGS_PROMPT = "Do you want to save the changes you made to your Notification Settings?";
+
 }
 

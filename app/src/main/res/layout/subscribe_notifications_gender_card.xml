@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="10dp"
-    android:background="#fff">
+    android:background="#fff"
+    android:paddingBottom="10dp">
 
 
     <LinearLayout
@@ -28,37 +28,40 @@
         </LinearLayout>
 
         <RadioGroup
-            android:layout_marginLeft="10dp"
             android:id="@+id/genderRadioGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
             android:orientation="vertical">
 
             <RadioButton
-                android:layout_width="wrap_content"
                 android:id="@+id/maleRadio"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/buttonColourBlack"
                 android:text="Male"
-                android:textColor="@color/buttonColourBlack" />
+                android:textColor="@color/buttonColourBlack"
+                android:theme="@style/MyCheckBox" />
 
 
             <RadioButton
-                android:layout_width="wrap_content"
                 android:id="@+id/femaleRadio"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/buttonColourBlack"
                 android:text="Female"
-                android:textColor="@color/buttonColourBlack" />
+                android:textColor="@color/buttonColourBlack"
+                android:theme="@style/MyCheckBox" />
 
 
             <RadioButton
+                android:id="@+id/doesntMatterRadio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/doesntMatterRadio"
                 android:buttonTint="@color/buttonColourBlack"
                 android:text="Doesnt Matter"
-                android:textColor="@color/buttonColourBlack" />
+                android:textColor="@color/buttonColourBlack"
+                android:theme="@style/MyCheckBox" />
 
         </RadioGroup>
 

@@ -296,12 +296,10 @@ public class PostAccomodationActivity extends AppCompatActivity implements
                     //Storing requested permission into Shared Preferences
                     editor.putString(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-
                     editor.commit();
                 }
 
             } else {
-
                 dispatchTakePictureIntent();
             }
 
