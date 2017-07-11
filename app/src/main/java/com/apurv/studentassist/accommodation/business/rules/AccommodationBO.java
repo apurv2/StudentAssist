@@ -52,29 +52,18 @@ public class AccommodationBO {
             studentAssistBO.volleyRequest(url, new NetworkInterface() {
                 @Override
                 public void onResponseUpdate(String jsonResponse) {
-
-
                     try {
-
-
                         Gson gson = new Gson();
-                        ArrayList<AccommodationAdd> advertisements = gson.fromJson(jsonResponse, new TypeToken<List<AccommodationAdd>>() {}.getType());
-
+                        ArrayList<AccommodationAdd> advertisements = gson.fromJson(jsonResponse, new TypeToken<List<AccommodationAdd>>() {
+                        }.getType());
                         accommodationBI.onAccommodationAddsReady(advertisements);
-
-
                     } catch (Exception e) {
 
                         ErrorReporting.logReport(e);
                         accommodationBI.onAccommodationAddsReady(new ArrayList());
-
-
                     }
                 }
-
-
             }, null, Request.Method.GET);
-
 
         } else if (queryType.equals(SAConstants.APARTMENT_NAMES)) {
 
@@ -91,25 +80,16 @@ public class AccommodationBO {
                             apartmentNames.add((apartmentNamesJsonArray.getJSONObject(counter)).getString(SAConstants.APARTMENT_NAME));
 
                         }
-
                         accommodationBI.onApartmentNamesReady(apartmentNames);
-
-
                     } catch (Exception e) {
                         e.printStackTrace();
                         accommodationBI.onApartmentNamesReady(new ArrayList());
                     }
-
-
                 }
-
 
             }, null, Request.Method.GET);
 
-
         }
-
-
     }
 
     //Accommodation Business Object just returning response

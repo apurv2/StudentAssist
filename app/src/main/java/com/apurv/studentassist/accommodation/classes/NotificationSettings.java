@@ -134,6 +134,13 @@ public class NotificationSettings implements Parcelable {
         //null checking
         if (list1 == null && list2 == null)
             return true;
+
+        if ((list1 == null && (list2 != null && list2.size() == 0)))
+            return true;
+
+        if ((list2 == null && (list1 != null && list1.size() == 0)))
+            return true;
+
         if ((list1 == null && list2 != null) || (list1 != null && list2 == null))
             return false;
 

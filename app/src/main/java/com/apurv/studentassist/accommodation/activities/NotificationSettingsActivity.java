@@ -377,12 +377,12 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
                         case SAConstants.OFF:
                             mViewGroup = (ViewGroup) findViewById(R.id.offCampus);
                             Utilities.hideView(mViewGroup);
-                            unCheckAptNamesCheckboxes(mOnCampusCheckboxes);
+                            unCheckAptNamesCheckboxes(mOffCampusCheckboxes);
                             break;
                         case SAConstants.DORMS:
                             mViewGroup = (ViewGroup) findViewById(R.id.dorms);
                             Utilities.hideView(mViewGroup);
-                            unCheckAptNamesCheckboxes(mOnCampusCheckboxes);
+                            unCheckAptNamesCheckboxes(mDormsCheckboxes);
                             break;
                     }
                 }
@@ -657,6 +657,10 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
             Utilities.hideView(findViewById(R.id.genderRadioGroup));
             Utilities.hideView(findViewById(R.id.aptTypesChxBx));
         } else {
+            // logic to add settings to the sets
+            mApartmentTypesSet.addAll(settings.getApartmentType());
+            mApartmentNamesSet.addAll(settings.getApartmentName());
+
             serverHasSettings = true;
             selectUniversityTv.setText(SAConstants.CHANGE_UNIVERSITY);
             setCheckboxes(settings);
@@ -823,21 +827,16 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
         NotificationSettings settings = new NotificationSettings();
         settings.setUniversityId(this.settings.getUniversityId());
 
-        for (String mApartmentName : mApartmentNamesSet) {
-            settings.getApartmentName().add(mApartmentName);
-        }
+        settings.getApartmentName().addAll(mApartmentNamesSet);
+        settings.getApartmentType().addAll(mApartmentTypesSet);
+
         String gender = null;
         int selectedId = mGenderRadioGroup.getCheckedRadioButtonId();
         if (selectedId != -1) {
             RadioButton genderRadioButton = (RadioButton) findViewById(selectedId);
             gender = String.valueOf(genderRadioButton.getText());
         }
-
         settings.setGender(gender);
-
-        for (String mApartmentType : mApartmentTypesSet) {
-            settings.getApartmentType().add(mApartmentType);
-        }
 
         // setting these to null because the default object from JSON has null values
         if (settings.getApartmentType().isEmpty()) {
