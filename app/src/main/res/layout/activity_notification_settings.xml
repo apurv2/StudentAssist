@@ -15,8 +15,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
         android:titleTextColor="@color/editTextColourWhite"
-        app:theme="@style/AppTheme">
-    </android.support.v7.widget.Toolbar>
+        app:theme="@style/AppTheme"></android.support.v7.widget.Toolbar>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -97,7 +96,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:visibility="invisible">
+                android:visibility="invisible"
+                >
 
                 <TextView
                     style="@style/TextAppearance.AppCompat.Body2"
@@ -122,7 +122,7 @@
                     android:layout_marginRight="23dp"
                     android:background="@drawable/bluebutton"
                     android:scaleType="center"
-                    android:src="@drawable/ic_action_graduate_hat"
+                    android:src="@mipmap/ic_subscribe"
                     app:fabSize="mini" />
             </LinearLayout>
 
@@ -134,9 +134,9 @@
                 android:visibility="invisible">
 
                 <TextView
+                    android:id="@+id/selectUniversity"
                     style="@style/TextAppearance.AppCompat.Body2"
                     android:layout_width="wrap_content"
-                    android:id="@+id/selectUniversity"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"

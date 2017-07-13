@@ -158,8 +158,6 @@ public class SearchAccomodationFragment extends Fragment implements
         setRetainInstance(true);
 
 
-
-
         //reEntry flag is true if device is rotated or fragment state is restored
         if (savedInstanceState != null) {
             bundle = savedInstanceState;
@@ -465,9 +463,14 @@ public class SearchAccomodationFragment extends Fragment implements
                                                             rightSpinnerAdapter.notifyDataSetChanged();
 
 
-
                                                             if (reEntryFlag) {
-                                                                rightSpinner.setSelection(bundle.getInt(SAConstants.RIGHT_SPINNER), false);
+
+                                                                rightSpinner.post(new Runnable() {
+                                                                    public void run() {
+                                                                        rightSpinner.setSelection(bundle.getInt(SAConstants.RIGHT_SPINNER), false);
+                                                                    }
+                                                                });
+
                                                             } else {
                                                                 rightSpinner.setSelection(0, false);
                                                             }
@@ -486,12 +489,20 @@ public class SearchAccomodationFragment extends Fragment implements
                         rightSpinnerAdapter.notifyDataSetChanged();
 
                         //Setting the selected item of the spinner to restore the previous state of fragment.
+                        String rightSpinnerValue="";
                         if (reEntryFlag) {
-                            rightSpinner.setSelection(bundle.getInt(SAConstants.RIGHT_SPINNER), false);
+
+                            rightSpinner.post(new Runnable() {
+                                public void run() {
+                                    rightSpinner.setSelection(bundle.getInt(SAConstants.RIGHT_SPINNER), false);
+                                }
+                            });
+                            rightSpinnerValue = rightSpinnerValues[bundle.getInt(SAConstants.RIGHT_SPINNER)];
                         } else {
                             rightSpinner.setSelection(0, false);
+                            rightSpinnerValue = rightSpinnerValues[0];
+
                         }
-                        String rightSpinnerValue = rightSpinner.getSelectedItem().toString();
                         accommodationAddsUrl = urlGen.getSearchAccommodationAdds(leftSpinner.getSelectedItem().toString(), rightSpinnerValue);
                         //  if (adds.size() < 1) {
                         getFromServer(accommodationAddsUrl, leftSpinner.getSelectedItem().toString(), rightSpinnerValue);
