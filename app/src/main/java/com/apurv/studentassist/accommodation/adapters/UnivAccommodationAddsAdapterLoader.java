@@ -25,7 +25,6 @@ import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
 import com.apurv.studentassist.internet.Network;
 import com.apurv.studentassist.internet.NetworkInterface;
 import com.apurv.studentassist.internet.StudentAssistBO;
-import com.apurv.studentassist.util.CircleRectView;
 import com.apurv.studentassist.util.ErrorReporting;
 import com.apurv.studentassist.util.L;
 import com.apurv.studentassist.util.SAConstants;
@@ -34,6 +33,8 @@ import com.google.gson.Gson;
 
 import java.util.Collections;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by akamalapuri on 12/28/2016.
@@ -44,8 +45,6 @@ public class UnivAccommodationAddsAdapterLoader extends RecyclerView.Adapter {
 
 
     private LayoutInflater inflater;
-    ImageView mImage;
-
     List<AccommodationAdd> mAccommodationAdds = Collections.emptyList();
 
     private ImageLoader mImageLoader;
@@ -224,7 +223,7 @@ public class UnivAccommodationAddsAdapterLoader extends RecyclerView.Adapter {
         TextView noOfRooms;
         TextView costOfLiving;
         TextView univAcronym;
-        CircleRectView circularImageView;
+        CircleImageView circularImageView;
         ImageView userVisited;
 
 
@@ -236,7 +235,7 @@ public class UnivAccommodationAddsAdapterLoader extends RecyclerView.Adapter {
             noOfRooms = (TextView) itemView.findViewById(R.id.medium);
             univAcronym = (TextView) itemView.findViewById(R.id.univAcro);
             costOfLiving = (TextView) itemView.findViewById(R.id.small);
-            circularImageView = (CircleRectView) itemView.findViewById(R.id.userPhoto3);
+            circularImageView = (CircleImageView) itemView.findViewById(R.id.userPhoto3);
             userVisited = (ImageView) itemView.findViewById(R.id.userVisited);
 
         }

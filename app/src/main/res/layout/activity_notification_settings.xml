@@ -122,7 +122,7 @@
                     android:layout_marginRight="23dp"
                     android:background="@drawable/bluebutton"
                     android:scaleType="center"
-                    android:src="@mipmap/ic_subscribe"
+                    android:src="@drawable/ic_action_subscribe"
                     app:fabSize="mini" />
             </LinearLayout>
 

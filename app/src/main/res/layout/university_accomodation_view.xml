@@ -14,14 +14,12 @@
         android:paddingRight="16dp"
         android:paddingTop="8dp">
 
-
-        <com.apurv.studentassist.util.CircleRectView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/userPhoto3"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:transitionName="profile"
             app:circleRadius="25dp" />
-
 
         <LinearLayout
             android:layout_width="match_parent"

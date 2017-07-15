@@ -96,7 +96,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:visibility="invisible">
+                android:visibility="invisible"
+                >
 
                 <TextView
                     style="@style/TextAppearance.AppCompat.Body2"
@@ -121,7 +122,7 @@
                     android:layout_marginRight="23dp"
                     android:background="@drawable/bluebutton"
                     android:scaleType="center"
-                    android:src="@drawable/ic_unsubscribe"
+                    android:src="@drawable/ic_action_subscribe"
                     app:fabSize="mini" />
             </LinearLayout>
 

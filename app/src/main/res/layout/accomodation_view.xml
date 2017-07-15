@@ -9,13 +9,17 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="26dp"
         android:orientation="horizontal"
-        android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingTop="8dp">
 
 
-        <com.apurv.studentassist.util.CircleRectView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/userPhoto3"
             android:layout_width="50dp"
             android:layout_height="50dp"
