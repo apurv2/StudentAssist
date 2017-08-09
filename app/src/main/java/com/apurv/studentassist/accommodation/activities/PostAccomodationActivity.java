@@ -24,6 +24,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.transition.Fade;
@@ -79,9 +80,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -129,6 +132,7 @@ public class PostAccomodationActivity extends AppCompatActivity implements
     private final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 0;
     private final int MY_PERMISSIONS_REQUEST_CAMERA_EXTERNAL_STORAGE = 1;
     ArrayAdapter<String> universityNamesAdapter, apartmentTypesAdapter, apartmentNamesAdapter;
+    String mCurrentPhotoPath;
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -152,7 +156,7 @@ public class PostAccomodationActivity extends AppCompatActivity implements
 
         if (savedInstanceState != null) {
             mLlContainer.setVisibility(View.VISIBLE);
-
+            mCurrentPhotoPath = savedInstanceState.getString(SAConstants.CURRENT_PHOTO_PATH);
             bundle = savedInstanceState;
             reEntryFlag = true;
             ArrayList<String> selectedFilePaths;
@@ -426,12 +430,49 @@ public class PostAccomodationActivity extends AppCompatActivity implements
 
     }
 
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        Uri.fromFile(image);
+        mCurrentPhotoPath = Uri.fromFile(image).getPath();
+
+        // Save a file: path for use with ACTION_VIEW intents
+        return image;
+    }
+
     private void dispatchTakePictureIntent() {
 
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(cameraIntent, 2);
-    }
 
+        // Ensure that there's a camera activity to handle the intent
+        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.apurv.studentassist.fileprovider",
+                        photoFile);
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+
+                startActivityForResult(cameraIntent, 2);
+            }
+
+        }
+    }
 
     /**
      * opens a new activity with ViewPager to view photos
@@ -524,37 +565,31 @@ public class PostAccomodationActivity extends AppCompatActivity implements
             if (resultCode == RESULT_OK) {
 
                 if (mImagesList.size() < 3) {
+                    try {
+                        File file = new File(mCurrentPhotoPath);
+                        // getContentResolver().notifyChange(selectedImage, null);
 
-                    String[] projection = {MediaStore.Images.Media.DATA};
-                    Cursor cursor = getApplicationContext().getContentResolver().query(
-                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                            projection, null, null, null);
-                    int columnIndex = cursor
-                            .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                        if (file != null && file.exists()) {
 
+                            if (mImagesList.size() < 3 && !mImagesList.contains(file)) {
 
-                    File file = null;
-                    if (cursor.moveToLast()) {
-                        filePaths.add(cursor.getString(columnIndex));
-                        file = new File(cursor.getString(columnIndex));
-                    }
-                    cursor.close();
+                                Utilities.showView(findViewById(R.id.selectedPhotosView_post));
+                                mImagesList.add(file);
+                                Bitmap myBitmap = Utilities.decodeSampledBitmapFromResource(file, 100, 100);
 
-                    if (file != null && file.exists()) {
+                                WeakReference<Bitmap> imageViewReference;
+                                ImageView mImage = imageHolders.get(mImagesList.size() - 1);
+                                filePaths.add(mCurrentPhotoPath);
 
-                        if (mImagesList.size() < 3 && !mImagesList.contains(file)) {
-
-                            Utilities.showView(findViewById(R.id.selectedPhotosView_post));
-                            mImagesList.add(file);
-                            Bitmap myBitmap = Utilities.decodeSampledBitmapFromResource(file, 100, 100);
-
-                            WeakReference<Bitmap> imageViewReference;
-                            ImageView mImage = imageHolders.get(mImagesList.size() - 1);
-
-                            imageViewReference = new WeakReference<Bitmap>(myBitmap);
-                            mImage.setImageBitmap(imageViewReference.get());
+                                imageViewReference = new WeakReference<Bitmap>(myBitmap);
+                                mImage.setImageBitmap(imageViewReference.get());
+                            }
                         }
+                    } catch (Exception e) {
+                        ErrorReporting.logReport(e);
                     }
+
+
                 } else {
                     Utilities.showALertDialog("You can load maximum of 3 images", getSupportFragmentManager());
                 }
@@ -1075,6 +1110,8 @@ public class PostAccomodationActivity extends AppCompatActivity implements
 
         outState.putStringArrayList(SAConstants.APARTMENT_NAME, mApartmentNames);
         ArrayList<String> selectedFilePaths = new ArrayList<String>();
+
+        outState.putString(SAConstants.CURRENT_PHOTO_PATH, mCurrentPhotoPath);
 
         for (String filePath : filePaths) {
             selectedFilePaths.add(filePath);

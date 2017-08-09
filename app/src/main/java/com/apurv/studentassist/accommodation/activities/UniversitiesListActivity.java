@@ -137,8 +137,7 @@ public class UniversitiesListActivity extends AppCompatActivity implements Unive
                 for (University univ : universityList) {
                     if (univ.getUniversityName().matches("(?i).*" + queryText + ".*")) {
                         displayUnivList.add(univ);
-                    }
-                    if (univ.getUnivAcronym().matches("(?i).*" + queryText + ".*")) {
+                    } else if (univ.getUnivAcronym().matches("(?i).*" + queryText + ".*")) {
                         displayUnivList.add(univ);
 
                     }

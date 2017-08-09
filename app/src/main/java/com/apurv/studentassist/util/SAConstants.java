@@ -315,5 +315,6 @@ public class SAConstants {
 
     public static final String SAVE_SETTINGS_PROMPT = "Do you want to save the changes you made to your Notification Settings?";
 
+    public static final String CURRENT_PHOTO_PATH = "current_photo_path";
 }
 
