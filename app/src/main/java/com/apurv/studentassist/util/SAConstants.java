@@ -288,6 +288,7 @@ public class SAConstants {
 
     public static final String UNIVERSITY_ID = "universityId";
 
+
     public static final String APARTMENT_TYPE_POSITION = "apartmentTypePosition";
 
     public static final String GENDER_POSITION = "genderPosition";
