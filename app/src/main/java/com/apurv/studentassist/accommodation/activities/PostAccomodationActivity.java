@@ -368,8 +368,6 @@ public class PostAccomodationActivity extends AppCompatActivity implements
                 editor.putString(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
                 editor.commit();
             }
-
-
         } else {
 
             if (mImagesList.size() < 3) {

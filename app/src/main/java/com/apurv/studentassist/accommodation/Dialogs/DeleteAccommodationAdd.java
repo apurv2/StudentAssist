@@ -34,12 +34,9 @@ public class DeleteAccommodationAdd extends DialogFragment {
                 try {
 
                     if (parentActivity != null) {
-
                         parentActivity.deletePostCallback();
                     }
                     dismiss();
-
-
                 } catch (Exception e) {
                     ErrorReporting.logReport(e);
                 }

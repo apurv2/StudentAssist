@@ -595,10 +595,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
                         } else {
                             mApartmentNamesSet.remove(String.valueOf(checkBox.getText()));
                         }
-
                     });
-
-
                     switch (apartmentName.getApartmentType()) {
                         case SAConstants.ON:
                             onCampusLayout.addView(mApartmentNamesCheckbox);
@@ -610,10 +607,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
                         case SAConstants.DORMS:
                             dormsLayout.addView(mApartmentNamesCheckbox);
                             break;
-
                     }
-
-
                 }
             }
         }
@@ -670,13 +664,6 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
 
         Utilities.revealShow(fabPlus);
 
-        /*
-        rootNotificationSettingsView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                v.removeOnLayoutChangeListener(this);
-            }
-        });*/
 
 
     }

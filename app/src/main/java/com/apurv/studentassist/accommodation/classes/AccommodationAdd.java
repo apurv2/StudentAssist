@@ -49,6 +49,30 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
         userVisitedSw = in.readByte() != 0;
     }
 
+    @Override
+    public String toString() {
+        return "AccommodationAdd{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", emailId='" + emailId + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", apartmentName='" + apartmentName + '\'' +
+                ", vacancies='" + vacancies + '\'' +
+                ", gender='" + gender + '\'' +
+                ", noOfRooms='" + noOfRooms + '\'' +
+                ", cost='" + cost + '\'' +
+                ", userId='" + userId + '\'' +
+                ", addId='" + addId + '\'' +
+                ", notes='" + notes + '\'' +
+                ", universityName='" + universityName + '\'' +
+                ", universityId=" + universityId +
+                ", addPhotoIds=" + addPhotoIds +
+                ", univAcronym='" + univAcronym + '\'' +
+                ", universityPhotoUrl='" + universityPhotoUrl + '\'' +
+                ", userVisitedSw=" + userVisitedSw +
+                '}';
+    }
+
     public static final Creator<AccommodationAdd> CREATOR = new Creator<AccommodationAdd>() {
         @Override
         public AccommodationAdd createFromParcel(Parcel in) {
@@ -62,10 +86,6 @@ public class AccommodationAdd implements java.io.Serializable, Parcelable {
     };
 
     public static Comparator<AccommodationAdd> getComparatorByUnivId() {
-
-        //   Comparator<AccommodationAdd> comp = (accommodationAdd, t1) -> accommodationAdd.universityId.compareTo(t1.universityId);
-
-        // return comp;
 
         Comparator<AccommodationAdd> comp = new Comparator<AccommodationAdd>() {
             @Override

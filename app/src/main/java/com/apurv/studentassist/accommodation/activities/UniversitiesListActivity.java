@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -46,7 +47,7 @@ import static com.apurv.studentassist.util.Utilities.slideUp;
 
 public class UniversitiesListActivity extends AppCompatActivity implements UniversitiesRecyclerInterface {
 
-    private RecyclerView mRecyclerVIew;
+
     UniversitiesListAdapter universitiesListAdapter;
     private List<University> universityList = new ArrayList<>();
     ArrayList selectedUniversityIds = new ArrayList<>();
@@ -64,10 +65,19 @@ public class UniversitiesListActivity extends AppCompatActivity implements Unive
     @Bind(R.id.bottomBar)
     Button bottomBar;
 
+    @Bind(R.id.universitiesList)
+    RecyclerView mRecyclerVIew;
+
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_university_list);
         ButterKnife.bind(this);
+
+        ViewGroup.MarginLayoutParams marginLayoutParams =
+                (ViewGroup.MarginLayoutParams) mRecyclerVIew.getLayoutParams();
+        marginLayoutParams.setMargins(0, 20, 0, 20);
+        mRecyclerVIew.setLayoutParams(marginLayoutParams);
 
 
         // setup toolbar
@@ -77,10 +87,8 @@ public class UniversitiesListActivity extends AppCompatActivity implements Unive
         setSupportActionBar(toolbar);
         setmRecyclerVIew();
 
-
         Intent intent = this.getIntent();
         getFromServer(intent.getExtras().getBoolean(SAConstants.GET_UNIVERSITY_NAMES_WITH_USERS_LIST));
-
     }
 
     @OnClick(R.id.sendUniversities)
@@ -233,7 +241,7 @@ public class UniversitiesListActivity extends AppCompatActivity implements Unive
             selectedUniversityNames.remove(university.getUniversityName());
         } else {
 
-            if (selectedUniversityIds.size() == 4) {
+            if (selectedUniversityIds.size() >= 4) {
                 Toast.makeText(this, SAConstants.UNVS_LIMIT_EXCEEDED, Toast.LENGTH_LONG).show();
                 return false;
             }

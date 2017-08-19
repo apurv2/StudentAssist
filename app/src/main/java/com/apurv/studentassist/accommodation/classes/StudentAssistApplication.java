@@ -3,6 +3,8 @@ package com.apurv.studentassist.accommodation.classes;
 import android.app.Application;
 import android.content.Context;
 
+import io.branch.referral.Branch;
+
 //import com.squareup.leakcanary.LeakCanary;
 
 /**
@@ -16,6 +18,8 @@ public class StudentAssistApplication extends Application {
     public void onCreate() {
         super.onCreate();
         //  LeakCanary.install(this);
+        Branch.getAutoInstance(this);
+
         mInstance = this;
     }
 

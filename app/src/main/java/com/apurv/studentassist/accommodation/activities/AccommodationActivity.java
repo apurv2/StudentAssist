@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -35,6 +36,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
@@ -61,6 +64,11 @@ public class AccommodationActivity extends AppCompatActivity implements
     boolean reEntryFlag = false;
     Bundle bundle;
 
+
+    @Bind(R.id.fabAccommodation)
+    public FloatingActionButton fabAccommodation;
+
+
     /**
      * @param savedInstanceState
      */
@@ -69,7 +77,7 @@ public class AccommodationActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_accomodation);
-
+        ButterKnife.bind(this);
         //  LeakCanary.install((Application) StudentAssistApplication.getAppContext());
 
         if (savedInstanceState != null) {
@@ -126,17 +134,13 @@ public class AccommodationActivity extends AppCompatActivity implements
 
         }
 
-        View v = findViewById(R.id.fab);
-        v.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ActivityOptions options =
-                        ActivityOptions.makeSceneTransitionAnimation(AccommodationActivity.this, (View) v, v.getTransitionName());
+        fabAccommodation.setOnClickListener(v -> {
+            ActivityOptions options =
+                    ActivityOptions.makeSceneTransitionAnimation(AccommodationActivity.this, (View) v, v.getTransitionName());
 
-                Intent details = new Intent(getApplicationContext(), PostAccomodationActivity.class);
-                details.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivityForResult(details, 1, options.toBundle());
-            }
+            Intent details = new Intent(getApplicationContext(), PostAccomodationActivity.class);
+            details.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivityForResult(details, 1, options.toBundle());
         });
 
 

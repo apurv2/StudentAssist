@@ -37,6 +37,7 @@ public class UrlGenerator implements UrlInterface {
     public static final String GET_APARTMENTNAMES_WITH_TYPE = "accommodation/getAllApartmentsWithType";
     public static final String SET_USER_VISITED_ADDS = "accommodation/setUserVisitedAdds";
     public static final String UNSUBSCRIBE_NOTIFICATIONS = "accommodation/unSubscribeNotifications";
+    public static final String SIMPLE_SEARCH_PAGINATION_URL = "accommodation/getSimpleSearchAddsPagination";
 
     public static final String GET_UNIVERSITY_NAMES = "accommodation/getAllUniversitiesList";
     public static final String GET_ALL_UNIVS_INCL_USER_SELECTED = "accommodation/getAllUniversitiesWithUserSelected";
@@ -330,6 +331,34 @@ public class UrlGenerator implements UrlInterface {
         return frameUrlFromMap(preUrl, map);
 
 
+    }
+
+    public static String getSimpleSearchPaginationUrl(String url, int position, long universityId) {
+
+        String preUrl = SAConstants.URL + "/" + SIMPLE_SEARCH_PAGINATION_URL;
+        String params;
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        if (url.contains("?")) {
+            params = url.split("\\?")[1];
+            map = (LinkedHashMap<String, String>) getQueryMap(params);
+
+        } else {
+            preUrl = url + "?";
+        }
+
+        if (map.containsKey(SAConstants.POSITION)) {
+
+            map.remove(SAConstants.POSITION);
+        }
+        map.put(SAConstants.POSITION, String.valueOf(position));
+
+        if (map.containsKey(SAConstants.UNIVERSITY_ID)) {
+
+            map.remove(SAConstants.UNIVERSITY_ID);
+        }
+        map.put(SAConstants.UNIVERSITY_ID, String.valueOf(universityId));
+
+        return frameUrlFromMap(preUrl, map);
     }
 
     private static String frameUrlFromMap(String preUrl, LinkedHashMap<String, String> map) {

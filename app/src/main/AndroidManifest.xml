@@ -27,6 +27,16 @@
         android:icon="@drawable/ic_logo"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
+
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBeujaxUpqM2PX_C5GvtlYmoDySObrLgLs" />
+
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
             android:exported="true"
@@ -37,6 +47,15 @@
                 <category android:name="com.apurv.studentassist.notifications.receiver" />
             </intent-filter>
         </receiver>
+
+        <receiver
+            android:name="io.branch.referral.InstallListener"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER" />
+            </intent-filter>
+        </receiver>
+
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -110,13 +129,35 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".accommodation.activities.HomeScreenActivity" />
         </activity>
+
+        <activity
+            android:name=".accommodation.activities.AdDetailsLinkActivity"
+            android:label="@string/title_activity_ad_details"
+            android:launchMode="singleTask">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".accommodation.activities.AccommodationActivity" />
+            <intent-filter>
+                <data
+                    android:host="open"
+                    android:scheme="student" />
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+
+        </activity>
         <activity
             android:name=".accommodation.activities.AdDetailsActivity"
-            android:label="@string/title_activity_ad_details">
+            android:label="@string/title_activity_ad_details"
+            android:launchMode="singleTask">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".accommodation.activities.AccommodationActivity" />
         </activity>
+
+
         <activity
             android:name=".accommodation.activities.NotificationSettingsActivity"
             android:parentActivityName=".accommodation.activities.AccommodationActivity">
@@ -141,6 +182,12 @@
         </activity>
 
         <activity android:name=".accommodation.activities.UniversitiesListActivity" />
+
+        <meta-data
+            android:name="io.branch.sdk.BranchKey"
+            android:value="key_live_ljvA7ojt1BPcO0zpTFFdEimoqqhfGSXF" />
+
+
     </application>
 
 </manifest>

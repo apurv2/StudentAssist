@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/apartmentName"
@@ -24,14 +24,25 @@
                 android:text="Maple Square"
                 android:textColor="#000"
                 android:textSize="27sp" />
+
+            <TextView
+                android:id="@+id/universityAcronym"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp"
+                android:textStyle="bold"
+                android:text="UTA"
+                android:textColor="#000"
+                android:textSize="15sp" />
+
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:gravity="center_vertical"
             android:layout_marginLeft="6dp"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <ImageView

@@ -89,6 +89,7 @@ public class AccommodationAddsAdapterLoader extends RecyclerView.Adapter {
                         onLoadMoreListener.onLoadMore(totalItemCount);
                     }
                     loading = true;
+
                 }
             }
         });
@@ -292,5 +293,7 @@ public class AccommodationAddsAdapterLoader extends RecyclerView.Adapter {
     public void setLoaded() {
         loading = false;
     }
+
+
 
 }

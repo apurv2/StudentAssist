@@ -72,6 +72,21 @@
                 <include layout="@layout/ad_details_card" />
             </android.support.v7.widget.CardView>
 
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/ad_details_google_map"
+                android:layout_width="fill_parent"
+                android:layout_height="250dp"
+                android:layout_gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="20dp"
+                card_view:cardCornerRadius="6dp"
+                card_view:cardElevation="10dp"
+                card_view:cardUseCompatPadding="true">
+
+                <include layout="@layout/fragment_maps" />
+            </android.support.v7.widget.CardView>
+
             <android.support.v7.widget.CardView
                 android:id="@+id/ad_details_contactId"
                 android:layout_width="fill_parent"
@@ -86,13 +101,13 @@
                 <include layout="@layout/contact_details_buttons" />
             </android.support.v7.widget.CardView>
 
-
             <android.support.v7.widget.CardView
                 android:id="@+id/photosId"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:orientation="vertical"
+                android:paddingRight="15dp"
                 android:paddingTop="20dp"
                 card_view:cardCornerRadius="6dp"
                 card_view:cardElevation="10dp"
@@ -113,13 +128,7 @@
                 card_view:cardUseCompatPadding="true">
 
                 <include layout="@layout/addetails_notes" />
-
-
             </android.support.v7.widget.CardView>
-
-
         </LinearLayout>
-
     </android.support.v4.widget.NestedScrollView>
-
 </android.support.design.widget.CoordinatorLayout>

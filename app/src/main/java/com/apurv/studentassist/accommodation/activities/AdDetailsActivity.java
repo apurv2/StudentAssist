@@ -1,39 +1,31 @@
 package com.apurv.studentassist.accommodation.activities;
 
-import android.animation.LayoutTransition;
 import android.annotation.TargetApi;
-import android.app.SharedElementCallback;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
-import android.transition.Slide;
+import android.transition.Explode;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
-import android.transition.TransitionSet;
 import android.util.Base64;
-import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
@@ -42,7 +34,6 @@ import com.apurv.studentassist.accommodation.Dialogs.AlertDialogDismiss;
 import com.apurv.studentassist.accommodation.Dialogs.DeleteAccommodationAdd;
 import com.apurv.studentassist.accommodation.Dialogs.ImageViewDialog;
 import com.apurv.studentassist.accommodation.Dialogs.LoadingDialog;
-import com.apurv.studentassist.accommodation.Dialogs.TakeDownPost;
 import com.apurv.studentassist.accommodation.business.rules.AccommodationBO;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
 import com.apurv.studentassist.accommodation.classes.User;
@@ -56,6 +47,12 @@ import com.apurv.studentassist.util.ObjectSerializer;
 import com.apurv.studentassist.util.SAConstants;
 import com.apurv.studentassist.util.Utilities;
 import com.apurv.studentassist.util.interfaces.LodingDialogInterface;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,13 +61,14 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static android.R.attr.id;
-import static com.apurv.studentassist.R.id.ad_details_contactId;
+import io.branch.indexing.BranchUniversalObject;
+import io.branch.referral.Branch;
+import io.branch.referral.BranchError;
+import io.branch.referral.util.LinkProperties;
 
 //Using Serialization because parcel cannot be stored into shared Preferences
 
-public class AdDetailsActivity extends AppCompatActivity implements LodingDialogInterface {
+public class AdDetailsActivity extends AppCompatActivity implements LodingDialogInterface, OnMapReadyCallback {
 
 
     Bitmap imageBitmap;
@@ -83,6 +81,8 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
     SharedPreferences.Editor editor;
     Bitmap profilePic;
     final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 123;
+    BranchUniversalObject branchUniversalObject;
+    String branchLink = "";
 
     @Bind(R.id.adDetails_placeholder1)
     ImageView imageHolder1;
@@ -133,21 +133,29 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
 
     @Bind(R.id.imageFrameLayout3)
     FrameLayout frameLayout3;
-    List<FrameLayout> frameLayouts;
 
+
+    @Bind(R.id.shareButton)
+    LinearLayout shareButton;
+
+    @Bind(R.id.parentContactDetailsView)
+    LinearLayout parentContactDetailsView;
+
+    List<FrameLayout> frameLayouts;
+    AccommodationAdd linkedAdd;
 
     AccommodationAdd clickedAdd;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ad_details);
         ButterKnife.bind(this);
 
-
         setupEnterAnimation();
-
+        setupExitTransition();
 
         imageHolders = new ArrayList<>(Arrays.asList(imageHolder1, imageHolder2, imageHolder3));
         imageLoaders = new ArrayList<>(Arrays.asList(imageLoader1, imageLoader2, imageLoader3));
@@ -167,69 +175,47 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
         Intent intent = this.getIntent();
         clickedAdd = intent.getExtras().getParcelable(SAConstants.ACCOMMODATION_ADD_PARCELABLE);
         profilePic = intent.getExtras().getParcelable(SAConstants.PROFILE_PIC);
+        boolean hideShareOption = intent.getExtras().getBoolean(SAConstants.BRANCH_LINK);
+
+        if (hideShareOption) {
+            L.m("removing view");
+            parentContactDetailsView.removeView(shareButton);
+        }
 
         //Toast.makeText(this, "addId=="+clickedAdd.getAddId(), Toast.LENGTH_SHORT).show();
 
+        if (clickedAdd == null) {
+            clickedAdd = linkedAdd;
+        }
         loadAccommodationPictures(clickedAdd);
 
         populateAccommodationDetails();
-         //updateRecentlyViewed();
+        //updateRecentlyViewed();
 
         //Navigation Icon
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AdDetailsActivity.super.onBackPressed();
-            }
-        });
-
+        toolbar.setNavigationOnClickListener(view -> AdDetailsActivity.super.onBackPressed());
 
         ImageView profilePictureImage = (ImageView) findViewById(R.id.adDetailsImageView);
-        profilePictureImage.setOnClickListener(new View.OnClickListener()
+        profilePictureImage.setOnClickListener(v -> {
 
-        {
-            @Override
-            public void onClick(View v) {
+            DialogFragment enlargedImageFragment = new ImageViewDialog();
+            if (profilePic == null) {
+                enlargedImageFragment.setArguments(getIntent()
+                        .putExtra(SAConstants.PROFILE_PIC, imageBitmap).getExtras());
 
-                DialogFragment enlargedImageFragment = new ImageViewDialog();
-
-
-                if (profilePic == null) {
-
-
-                    enlargedImageFragment.setArguments(getIntent()
-                            .putExtra(SAConstants.PROFILE_PIC, imageBitmap).getExtras());
-
-
-                } else {
-                    enlargedImageFragment.setArguments(getIntent().getExtras());
-
-
-                }
-
-
-                enlargedImageFragment.show(getSupportFragmentManager(), "");
+            } else {
+                enlargedImageFragment.setArguments(getIntent().getExtras());
             }
+            enlargedImageFragment.show(getSupportFragmentManager(), "");
         });
 
 
-        Button takeDownPost = (Button) findViewById(R.id.takeDownButton);
-        takeDownPost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
-                Bundle bundle = new Bundle();
 
-                bundle.putString(SAConstants.ADD_ID, clickedAdd.getAddId());
-
-                DialogFragment takeDownDialog = new TakeDownPost();
-                takeDownDialog.setArguments(bundle);
-                takeDownDialog.show(getSupportFragmentManager(), "");
-
-            }
-        });
-
-        setupTransition(!clickedAdd.getAddPhotoIds().isEmpty());
+        setupTransition(clickedAdd != null && clickedAdd.getAddPhotoIds() != null && !clickedAdd.getAddPhotoIds().isEmpty());
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -242,8 +228,30 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
 
     }
 
-     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void setupExitTransition() {
+        getWindow().setExitTransition(new Explode());
+
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        // Add a marker in Sydney, Australia,
+        // and move the map's camera to the same location.
+        LatLng sydney = new LatLng(-33.852, 151.211);
+        googleMap.addMarker(new MarkerOptions().position(sydney)
+                .title("Marker in Sydney"));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        this.setIntent(intent);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void setupTransition(boolean displayPhotos) {
+
 
         Transition transition = TransitionInflater.from(this)
                 .inflateTransition(R.transition.changebounds_with_arcmotion);
@@ -309,12 +317,11 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
 
     }
 
-
     private void loadAccommodationPictures(AccommodationAdd clickedAdd) {
 
         int counter = 0;
 
-        if (clickedAdd.getAddPhotoIds().isEmpty()) {
+        if (clickedAdd == null || clickedAdd.getAddPhotoIds() == null || clickedAdd.getAddPhotoIds().isEmpty()) {
             Utilities.hideView(photosId);
         } else {
 
@@ -395,6 +402,53 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
             gender_NumberOfVacancies.setText(clickedAdd.getVacancies() + " " + clickedAdd.getGender() + " Roommate(s)");
         }
 
+        generateBranchLink();
+
+
+    }
+
+
+    private void generateBranchLink() {
+
+
+        branchUniversalObject = new BranchUniversalObject()
+                .setCanonicalIdentifier("Student")
+                .setTitle("Student Assist")
+                .setContentDescription("Student")
+                .setContentImageUrl("")
+                .addContentMetadata(SAConstants.APARTMENT_NAME, clickedAdd.getApartmentName())
+                .addContentMetadata(SAConstants.COST, clickedAdd.getCost())
+                .addContentMetadata(SAConstants.GENDER, clickedAdd.getGender())
+                .addContentMetadata(SAConstants.NAME, clickedAdd.getFirstName() + " " + clickedAdd.getLastName())
+                .addContentMetadata(SAConstants.FIRST_NAME, clickedAdd.getFirstName())
+                .addContentMetadata(SAConstants.LAST_NAME, clickedAdd.getLastName())
+                .addContentMetadata(SAConstants.NO_OF_ROOMS, clickedAdd.getNoOfRooms())
+                .addContentMetadata(SAConstants.NOTES, clickedAdd.getNotes())
+                .addContentMetadata(SAConstants.VACANCIES, clickedAdd.getVacancies())
+                .addContentMetadata(SAConstants.ADD_ID, clickedAdd.getAddId())
+                .addContentMetadata(SAConstants.USER_ID, clickedAdd.getUserId());
+
+        int index = 0;
+        for (String photoId : clickedAdd.getAddPhotoIds()) {
+            branchUniversalObject.addContentMetadata(SAConstants.PHOTO_ID + index, photoId);
+            index++;
+        }
+
+
+        LinkProperties linkProperties = new LinkProperties()
+                .setChannel("facebook")
+                .setFeature("sharing")
+                .addControlParameter("$desktop_url", "http://localhost:8080/#/leftNav/test");
+
+
+        branchUniversalObject.generateShortUrl(this, linkProperties, new Branch.BranchLinkCreateListener() {
+            @Override
+            public void onLinkCreate(String url, BranchError error) {
+                if (error == null) {
+                    branchLink = url;
+                }
+            }
+        });
     }
 
     private void fetchProfilePic(String userId, final ImageView image) {
@@ -517,6 +571,19 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
 
 
     }
+
+
+    @OnClick(R.id.shareButton)
+    public void shareButton() {
+
+        Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        String shareBodyText = "Your shearing message goes here";
+        intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Share");
+        intent.putExtra(android.content.Intent.EXTRA_TEXT, branchLink);
+        startActivity(Intent.createChooser(intent, "Choose sharing method"));
+    }
+
 
     @OnClick(R.id.adDetails_placeholder1)
     public void imageClick(View view) {

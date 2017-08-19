@@ -36,9 +36,9 @@ public class SAConstants {
     public static final String APARTMENT_NAME = "apartmentName";
 
 
-    public static final String URL = "http://studentassist.2mfu7mmben.us-east-1.elasticbeanstalk.com";
+    // public static final String URL = "http://studentassist.2mfu7mmben.us-east-1.elasticbeanstalk.com";
 
-    // public static final String URL = "http://10.0.2.2:8080";
+    public static final String URL = "http://10.0.2.2:8080";
 
 
     public static final String pageTitles[] = {"Easy Search", "Advanced Search", "Recently Viewed", "Notifications"};
@@ -317,5 +317,22 @@ public class SAConstants {
     public static final String SAVE_SETTINGS_PROMPT = "Do you want to save the changes you made to your Notification Settings?";
 
     public static final String CURRENT_PHOTO_PATH = "current_photo_path";
+
+    public static final String NAME = "name";
+
+    public static final String BRANCH_LINK = "branch link";
+
+    public static final String PHOTO_ID = "photoId";
+
+    //SPINNER
+    public static final char LOADER_INDICATOR_S = 'S';
+
+    //Text view
+    public static final char LOADER_INDICATOR_T = 'T';
+
+    //No loader
+    public static final char LOADER_INDICATOR_N = 'N';
+
+
 }
 
