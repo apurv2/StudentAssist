@@ -10,7 +10,7 @@ import android.content.SharedPreferences;
 
 import com.android.volley.Request;
 import com.apurv.studentassist.R;
-import com.apurv.studentassist.accommodation.classes.StudentAssistApplication;
+import com.apurv.studentassist.base.StudentAssistApplication;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
 import com.apurv.studentassist.internet.NetworkInterface;
@@ -58,7 +58,7 @@ public class RegistrationIntentService extends IntentService {
     private void uploadUserDetails(String registrationId, String instanceId) {
 
 
-        SharedPreferences sharedPreferences = StudentAssistApplication.getAppContext().getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
+        SharedPreferences sharedPreferences = StudentAssistApplication.Companion.getAppContext().getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
 
 
         // setting GCM id to user and storing it into shared preferences

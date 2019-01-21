@@ -31,7 +31,7 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
@@ -55,17 +55,17 @@ public class UniversitiesListActivity extends AppCompatActivity implements Unive
     List displayUnivList = new ArrayList<>();
 
 
-    @Bind(R.id.sendUniversities)
+    @BindView(R.id.sendUniversities)
     FloatingActionButton sendUniversities;
 
-    @Bind(R.id.searchForUniv)
+    @BindView(R.id.searchForUniv)
     EditText searchForUnivTextView;
 
 
-    @Bind(R.id.bottomBar)
+    @BindView(R.id.bottomBar)
     Button bottomBar;
 
-    @Bind(R.id.universitiesList)
+    @BindView(R.id.universitiesList)
     RecyclerView mRecyclerVIew;
 
 

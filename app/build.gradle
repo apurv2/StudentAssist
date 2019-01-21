@@ -1,36 +1,17 @@
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
-buildscript {
-    repositories {
-        //maven { url 'https://maven.fabric.io/public' }
-    }
-
-    dependencies {
-        // The Fabric Gradle plugin uses an open ended version to react
-        // quickly to Android tooling updates
-        //classpath 'io.fabric.tools:gradle:1.+'
-    }
-}
-
-
-/*apply plugin: 'io.fabric'*/
-
-repositories {
-/*
-    maven { url 'https://maven.fabric.io/public' }
-*/
-}
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         applicationId "com.apurv.studentassist"
         minSdkVersion 16
-        targetSdkVersion 25
+        targetSdkVersion 28
         multiDexEnabled true
-
     }
 
     buildTypes {
@@ -45,50 +26,38 @@ android {
     }
 }
 
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'me.tatarka:gradle-retrolambda:3.2.5'
-    }
-}
-
-// Required because retrolambda is on maven central
-repositories {
-    mavenCentral()
-}
-
 dependencies {
-
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     dependencies {
-        compile 'com.google.code.gson:gson:2.7'
-        compile 'com.mcxiaoke.volley:library:1.0.19'
-        compile 'it.neokree:MaterialTabs:0.11'
-        compile 'com.google.android.gms:play-services-gcm:11.0.4'
-        compile 'com.android.support:appcompat-v7:25.3.1'
-        compile 'com.android.support:recyclerview-v7:25.3.1'
-        compile 'com.android.support:cardview-v7:25.3.1'
-        compile 'com.android.support:design:25.3.1'
-        compile 'com.facebook.android:facebook-android-sdk:4.14.0'
-        compile 'com.jakewharton:butterknife:7.0.1'
-        compile 'com.cloudinary:cloudinary-android:1.1.2'
-        compile 'de.hdodenhof:circleimageview:2.1.0'
-        compile 'io.branch.sdk.android:library:2.10.2'
-        compile 'com.google.android.gms:play-services-maps:11.0.4'
+        implementation 'com.google.code.gson:gson:2.8.2'
+        implementation 'com.mcxiaoke.volley:library:1.0.19'
+        implementation 'it.neokree:MaterialTabs:0.11'
+        implementation 'com.google.android.gms:play-services-gcm:16.0.0'
+        implementation 'com.android.support:appcompat-v7:28.0.0'
+        implementation 'com.android.support:recyclerview-v7:28.0.0'
+        implementation 'com.android.support:cardview-v7:28.0.0'
+        implementation 'com.android.support:design:28.0.0'
+        implementation 'com.facebook.android:facebook-login:4.37.0'
+        implementation 'com.jakewharton:butterknife:9.0.0-rc1'
+        annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0-rc1'
+        implementation 'com.cloudinary:cloudinary-android:1.1.2'
+        implementation 'de.hdodenhof:circleimageview:2.1.0'
+        implementation 'io.branch.sdk.android:library:2.10.2'
+        implementation 'com.google.android.gms:play-services-maps:16.0.0'
+        implementation group: 'com.squareup.leakcanary', name: 'leakcanary-android', version: '1.3.1'
+        implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
+        implementation 'io.reactivex.rxjava2:rxjava:2.2.0'
 
+        implementation 'com.google.dagger:dagger-android:2.20'
+        implementation 'com.google.dagger:dagger-android-support:2.20' // if you use the support libraries
+        kapt 'com.google.dagger:dagger-android-processor:2.20'
+        kapt 'com.google.dagger:dagger-compiler:2.20'
 
+        implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+        implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+        implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
 
-        compile group: 'com.squareup.leakcanary', name: 'leakcanary-android', version: '1.3.1'
-
-
-       /* compile('com.crashlytics.sdk.android:crashlytics:2.6.2@aar') {
-            transitive = true;
-        }*/
     }
-
     apply plugin: 'com.google.gms.google-services'
-
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
-

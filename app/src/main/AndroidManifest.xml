@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.apurv.studentassist"
     android:versionCode="5"
     android:versionName="1.1.3">
@@ -13,7 +14,6 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-
     <permission
         android:name="com.apurv.studentassist.notifications.receiver.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
@@ -21,18 +21,15 @@
     <uses-permission android:name="com.apurv.studentassist.notifications.receiver.permission.C2D_MESSAGE" />
 
     <application
-        android:name=".accommodation.classes.StudentAssistApplication"
+        android:name=".base.StudentAssistApplication"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@drawable/ic_logo"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
-
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBeujaxUpqM2PX_C5GvtlYmoDySObrLgLs" />
@@ -47,7 +44,6 @@
                 <category android:name="com.apurv.studentassist.notifications.receiver" />
             </intent-filter>
         </receiver>
-
         <receiver
             android:name="io.branch.referral.InstallListener"
             android:exported="true">
@@ -56,7 +52,6 @@
             </intent-filter>
         </receiver>
 
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.apurv.studentassist.fileprovider"
@@ -64,7 +59,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
 
         <service
@@ -103,15 +98,16 @@
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            tools:replace="android:theme" />
         <activity
             android:name=".accommodation.activities.HomeScreenActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".airport.activities.AirportActivity"
@@ -129,7 +125,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".accommodation.activities.HomeScreenActivity" />
         </activity>
-
         <activity
             android:name=".accommodation.activities.AdDetailsLinkActivity"
             android:label="@string/title_activity_ad_details"
@@ -137,16 +132,17 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".accommodation.activities.AccommodationActivity" />
+
             <intent-filter>
                 <data
                     android:host="open"
                     android:scheme="student" />
+
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".accommodation.activities.AdDetailsActivity"
@@ -156,8 +152,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".accommodation.activities.AccommodationActivity" />
         </activity>
-
-
         <activity
             android:name=".accommodation.activities.NotificationSettingsActivity"
             android:parentActivityName=".accommodation.activities.AccommodationActivity">
@@ -180,14 +174,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".accommodation.activities.PostAccomodationActivity" />
         </activity>
-
         <activity android:name=".accommodation.activities.UniversitiesListActivity" />
 
         <meta-data
             android:name="io.branch.sdk.BranchKey"
             android:value="key_live_ljvA7ojt1BPcO0zpTFFdEimoqqhfGSXF" />
 
-
+        <activity android:name=".dashboard.view.DashboardActivity"></activity>
     </application>
 
 </manifest>

@@ -90,29 +90,29 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class PostAccomodationActivity extends AppCompatActivity implements
         OnItemSelectedListener, LodingDialogInterface {
 
-    @Bind(R.id.activity_contact_rl_container)
+    @BindView(R.id.activity_contact_rl_container)
     RelativeLayout mRlContainer;
 
-    @Bind(R.id.activity_contact_fab)
+    @BindView(R.id.activity_contact_fab)
     FloatingActionButton mFab;
 
-    @Bind(R.id.parent)
+    @BindView(R.id.parent)
     LinearLayout mLlContainer;
 
-    @Bind(R.id.placeholder1)
+    @BindView(R.id.placeholder1)
     ImageView imageHolder1;
 
-    @Bind(R.id.placeholder2)
+    @BindView(R.id.placeholder2)
     ImageView imageHolder2;
 
-    @Bind(R.id.placeholder3)
+    @BindView(R.id.placeholder3)
     ImageView imageHolder3;
     List<ImageView> imageHolders;
 

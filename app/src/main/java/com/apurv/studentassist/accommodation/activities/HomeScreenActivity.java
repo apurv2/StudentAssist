@@ -15,7 +15,6 @@ import android.os.Parcelable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
@@ -34,6 +33,7 @@ import com.apurv.studentassist.accommodation.classes.User;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
 import com.apurv.studentassist.airport.activities.AirportActivity;
+import com.apurv.studentassist.dashboard.view.DashboardActivity;
 import com.apurv.studentassist.internet.NetworkInterface;
 import com.apurv.studentassist.internet.StudentAssistBO;
 import com.apurv.studentassist.notifications.receiver.RegistrationIntentService;
@@ -43,7 +43,6 @@ import com.apurv.studentassist.util.ObjectSerializer;
 import com.apurv.studentassist.util.SAConstants;
 import com.apurv.studentassist.util.Utilities;
 import com.apurv.studentassist.util.interfaces.LodingDialogInterface;
-import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
@@ -85,56 +84,58 @@ public class HomeScreenActivity extends AppCompatActivity implements LodingDialo
         SharedPreferences sharedPreferences = getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        Intent intent = this.getIntent();
+        Intent intent = new Intent(this, DashboardActivity.class);
+        startActivity(intent);
+        finish();
 
-
-        //initializing toolbar
-        Toolbar toolbar;
-        toolbar = (Toolbar) findViewById(R.id.applicationBar);
-        toolbar.setTitle(SAConstants.welcome);
-        setSupportActionBar(toolbar);
-
-
-        initializeFbSdk();
-
-
-        //check if the user has logged in, else display login page
-        if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
-
-            // coming from University Screen -> new user
-            if (intent.getExtras() != null && intent.getExtras().getParcelableArrayList(SAConstants.UNIVERSITY_IDS) != null) {
-
-                selectedUniversityIds = intent.getExtras().getParcelableArrayList(SAConstants.UNIVERSITY_IDS);
-
-                editor.putString(SAConstants.UNIVERSITIES_IN_DB, SAConstants.YES);
-                editor.commit();
-                checkUserDetails();
-
-
-                // Could be existing user -> to confirm lets check the Shared prefs for list of univs,
-            } else {
-
-                //check if the user has previous shared prefs for univ list in DB
-                if (SAConstants.YES.equals(sharedPreferences.getString(SAConstants.UNIVERSITIES_IN_DB, ""))) {
-                    checkUserDetails();
-                } else {
-
-                    //nothing in sharedPreferences so need to call DB
-                    checkIfUserHasUnivsInDb();
-                }
-
-
-            }
-
-        } else {
-
-            //User not loggedin
-            Intent FacebookLoginIntent = new Intent(this, FacebookLogin.class);
-            startActivity(FacebookLoginIntent);
-            finish();
-
-
-        }
+//
+//        //initializing toolbar
+//        Toolbar toolbar;
+//        toolbar = (Toolbar) findViewById(R.id.applicationBar);
+//        toolbar.setTitle(SAConstants.welcome);
+//        setSupportActionBar(toolbar);
+//
+//
+//        initializeFbSdk();
+//
+//
+//        //check if the user has logged in, else display login page
+//        if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
+//
+//            // coming from University Screen -> new user
+//            if (intent.getExtras() != null && intent.getExtras().getParcelableArrayList(SAConstants.UNIVERSITY_IDS) != null) {
+//
+//                selectedUniversityIds = intent.getExtras().getParcelableArrayList(SAConstants.UNIVERSITY_IDS);
+//
+//                editor.putString(SAConstants.UNIVERSITIES_IN_DB, SAConstants.YES);
+//                editor.commit();
+//                checkUserDetails();
+//
+//
+//                // Could be existing user -> to confirm lets check the Shared prefs for list of univs,
+//            } else {
+//
+//                //check if the user has previous shared prefs for univ list in DB
+//                if (SAConstants.YES.equals(sharedPreferences.getString(SAConstants.UNIVERSITIES_IN_DB, ""))) {
+//                    checkUserDetails();
+//                } else {
+//
+//                    //nothing in sharedPreferences so need to call DB
+//                    checkIfUserHasUnivsInDb();
+//                }
+//
+//
+//            }
+//
+//        } else {
+//
+//            //User not loggedin
+//            Intent FacebookLoginIntent = new Intent(this, FacebookLogin.class);
+//            startActivity(FacebookLoginIntent);
+//            finish();
+//
+//
+//        }
 
 
     }

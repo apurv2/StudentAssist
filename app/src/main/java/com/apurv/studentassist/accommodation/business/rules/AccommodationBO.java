@@ -9,7 +9,7 @@ import com.apurv.studentassist.accommodation.Interfaces.NotificationsBI;
 import com.apurv.studentassist.accommodation.Interfaces.PostAccommodationBI;
 import com.apurv.studentassist.accommodation.classes.AccommodationAdd;
 import com.apurv.studentassist.accommodation.classes.ApartmentNamesWithType;
-import com.apurv.studentassist.accommodation.classes.StudentAssistApplication;
+import com.apurv.studentassist.base.StudentAssistApplication;
 import com.apurv.studentassist.internet.NetworkInterface;
 import com.apurv.studentassist.internet.StudentAssistBO;
 import com.apurv.studentassist.util.ErrorReporting;
@@ -168,7 +168,7 @@ public class AccommodationBO {
                     dialog.dismiss();
 
                 } else {
-                    Toast.makeText(StudentAssistApplication.getAppContext(), "There was an error, please try again", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(StudentAssistApplication.Companion.getAppContext(), "There was an error, please try again", Toast.LENGTH_SHORT).show();
                 }
 
             }

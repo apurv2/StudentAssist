@@ -6,7 +6,7 @@ import android.util.LruCache;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
-import com.apurv.studentassist.accommodation.classes.StudentAssistApplication;
+import com.apurv.studentassist.base.StudentAssistApplication;
 
 /**
  * Created by apurv on 6/3/15.
@@ -20,7 +20,7 @@ public class Network {
 
     private Network() {
 
-        mRequestQueue = Volley.newRequestQueue(StudentAssistApplication.getAppContext());
+        mRequestQueue = Volley.newRequestQueue(StudentAssistApplication.Companion.getAppContext());
 
         mImageLoader = new ImageLoader(mRequestQueue, new ImageLoader.ImageCache() {
 

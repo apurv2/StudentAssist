@@ -35,7 +35,7 @@ import com.apurv.studentassist.accommodation.classes.ApartmentNamesWithType;
 import com.apurv.studentassist.accommodation.classes.NotificationSettings;
 import com.apurv.studentassist.accommodation.classes.RApartmentNamesInUnivs;
 import com.apurv.studentassist.accommodation.classes.RApartmentNamesWithType;
-import com.apurv.studentassist.accommodation.classes.StudentAssistApplication;
+import com.apurv.studentassist.base.StudentAssistApplication;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.accommodation.urlInfo.UrlInterface;
 import com.apurv.studentassist.internet.StudentAssistBO;
@@ -55,7 +55,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -78,49 +78,49 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
     boolean serverHasSettings;
     boolean fabOpen;
 
-    @Bind(genderRadioGroup)
+    @BindView(genderRadioGroup)
     RadioGroup mGenderRadioGroup;
 
-    @Bind(R.id.notificationToolbar)
+    @BindView(R.id.notificationToolbar)
     Toolbar mToolbar;
 
-    @Bind(R.id.onCampusCheckbox)
+    @BindView(R.id.onCampusCheckbox)
     CheckBox mOnCampusCheckbox;
 
 
-    @Bind(R.id.offCampusCheckbox)
+    @BindView(R.id.offCampusCheckbox)
     CheckBox mOffCampusCheckbox;
 
-    @Bind(R.id.fabPlus)
+    @BindView(R.id.fabPlus)
     FloatingActionButton fabPlus;
 
-    @Bind(R.id.fabChangeUniversity)
+    @BindView(R.id.fabChangeUniversity)
     LinearLayout fabChangeUniversity;
 
-    @Bind(R.id.unsubscribe)
+    @BindView(R.id.unsubscribe)
     LinearLayout fabUnSubscribe;
 
-    @Bind(R.id.fabSubscribe)
+    @BindView(R.id.fabSubscribe)
     LinearLayout fabSubscribe;
 
-    @Bind(R.id.dormsCheckbox)
+    @BindView(R.id.dormsCheckbox)
     CheckBox mDormsCheckbox;
 
 
-    @Bind(R.id.onCampusCheckboxes)
+    @BindView(R.id.onCampusCheckboxes)
     LinearLayout mOnCampusCheckboxes;
 
-    @Bind(R.id.offCampusCheckboxes)
+    @BindView(R.id.offCampusCheckboxes)
     LinearLayout mOffCampusCheckboxes;
 
-    @Bind(R.id.dormsCheckboxes)
+    @BindView(R.id.dormsCheckboxes)
     LinearLayout mDormsCheckboxes;
 
 
-    @Bind(R.id.rootNotificationSettingsView)
+    @BindView(R.id.rootNotificationSettingsView)
     LinearLayout rootNotificationSettingsView;
 
-    @Bind(R.id.selectUniversity)
+    @BindView(R.id.selectUniversity)
     TextView selectUniversityTv;
 
     ValueAnimator anim;
@@ -129,7 +129,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification_settings);
-        FacebookSdk.sdkInitialize(StudentAssistApplication.getAppContext());
+        FacebookSdk.sdkInitialize(StudentAssistApplication.Companion.getAppContext());
         ButterKnife.bind(this);
 
         mToolbar.setTitle(SAConstants.SUBSCRIBE_FOR_NOTIFICATIONS);
@@ -450,7 +450,7 @@ public class NotificationSettingsActivity extends AppCompatActivity implements L
                     L.m("apartment type==" + mApartmentType);
 
                 }
-                SharedPreferences sharedPreferences = StudentAssistApplication.getAppContext().getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
+                SharedPreferences sharedPreferences = StudentAssistApplication.Companion.getAppContext().getSharedPreferences(SAConstants.SHARED_PREFERENCE_NAME, 0);
                 settings.setGcmId(sharedPreferences.getString(SAConstants.GCM_ID, ""));
                 settings.setInstanceId(sharedPreferences.getString(SAConstants.INSTANCE_ID, ""));
 

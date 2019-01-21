@@ -12,7 +12,7 @@ import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.activities.NotificationSettingsActivity;
 import com.apurv.studentassist.util.SAConstants;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -21,7 +21,7 @@ import butterknife.ButterKnife;
 public class ChangeUniversityPromptDialog extends DialogFragment {
 
 
-    @Bind(R.id.text)
+    @BindView(R.id.text)
     TextView prompt;
 
     @Override

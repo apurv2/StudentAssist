@@ -27,14 +27,14 @@ import com.apurv.studentassist.util.Utilities;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class PhotosViewActivity extends AppCompatActivity implements View.OnClickListener {
 
 
-    @Bind(R.id.photosViewPager)
+    @BindView(R.id.photosViewPager)
     ViewPager mPager;
     List imageUrls;
     ImageSliderAdapter mImageSliderAdapter;

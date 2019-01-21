@@ -1,6 +1,6 @@
 package com.apurv.studentassist.accommodation.urlInfo;
 
-import com.apurv.studentassist.accommodation.classes.StudentAssistApplication;
+import com.apurv.studentassist.base.StudentAssistApplication;
 import com.apurv.studentassist.util.ErrorReporting;
 import com.apurv.studentassist.util.SAConstants;
 import com.facebook.AccessToken;
@@ -70,7 +70,7 @@ public class UrlGenerator implements UrlInterface {
     public String getAccessToken() {
 
 
-        FacebookSdk.sdkInitialize(StudentAssistApplication.getAppContext());
+        FacebookSdk.sdkInitialize(StudentAssistApplication.Companion.getAppContext());
         if (AccessToken.getCurrentAccessToken() != null && !AccessToken.getCurrentAccessToken().isExpired()) {
             String fbToken = AccessToken.getCurrentAccessToken().getToken();
             return fbToken;

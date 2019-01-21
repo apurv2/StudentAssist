@@ -23,7 +23,7 @@ import com.android.volley.toolbox.ImageLoader;
 import com.apurv.studentassist.R;
 import com.apurv.studentassist.accommodation.Dialogs.AlertDialogL;
 import com.apurv.studentassist.accommodation.Dialogs.LoadingDialog;
-import com.apurv.studentassist.accommodation.classes.StudentAssistApplication;
+import com.apurv.studentassist.base.StudentAssistApplication;
 import com.apurv.studentassist.internet.Network;
 
 import java.io.File;
@@ -54,18 +54,18 @@ public class Utilities {
         fadeOut.setInterpolator(new AccelerateInterpolator()); //and this
         fadeOut.setDuration(100);
 
-        slideUp = AnimationUtils.loadAnimation(StudentAssistApplication.getmInstance(), R.anim.bottom_up);
+        slideUp = AnimationUtils.loadAnimation(StudentAssistApplication.Companion.getmInstance(), R.anim.bottom_up);
         slideUp.setDuration(100);
 
-        slideDown = AnimationUtils.loadAnimation(StudentAssistApplication.getmInstance(), R.anim.slide_out_bottom);
+        slideDown = AnimationUtils.loadAnimation(StudentAssistApplication.Companion.getmInstance(), R.anim.slide_out_bottom);
         slideDown.setDuration(100);
 
-        rotateClockwise = AnimationUtils.loadAnimation(StudentAssistApplication.getmInstance(), R.anim.rotate_clockwise);
+        rotateClockwise = AnimationUtils.loadAnimation(StudentAssistApplication.Companion.getmInstance(), R.anim.rotate_clockwise);
         rotateClockwise.setDuration(100);
 
-        rotateAnticlockwise = AnimationUtils.loadAnimation(StudentAssistApplication.getmInstance(), R.anim.rotate_anticlockwise);
-        showFabLayout = AnimationUtils.loadAnimation(StudentAssistApplication.getmInstance(), R.anim.show_layout);
-        hideFabLayout = AnimationUtils.loadAnimation(StudentAssistApplication.getmInstance(), R.anim.hide_layout);
+        rotateAnticlockwise = AnimationUtils.loadAnimation(StudentAssistApplication.Companion.getmInstance(), R.anim.rotate_anticlockwise);
+        showFabLayout = AnimationUtils.loadAnimation(StudentAssistApplication.Companion.getmInstance(), R.anim.show_layout);
+        hideFabLayout = AnimationUtils.loadAnimation(StudentAssistApplication.Companion.getmInstance(), R.anim.hide_layout);
     }
 
 

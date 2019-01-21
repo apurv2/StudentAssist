@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
@@ -65,7 +65,7 @@ public class AccommodationActivity extends AppCompatActivity implements
     Bundle bundle;
 
 
-    @Bind(R.id.fabAccommodation)
+    @BindView(R.id.fabAccommodation)
     public FloatingActionButton fabAccommodation;
 
 

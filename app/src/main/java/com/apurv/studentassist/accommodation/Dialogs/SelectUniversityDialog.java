@@ -22,7 +22,7 @@ import com.apurv.studentassist.util.Utilities;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -31,22 +31,22 @@ import butterknife.ButterKnife;
 public class SelectUniversityDialog extends DialogFragment {
 
 
-    @Bind(R.id.univ1)
+    @BindView(R.id.univ1)
     RadioButton radioButton1;
 
-    @Bind(R.id.univ2)
+    @BindView(R.id.univ2)
     RadioButton radioButton2;
 
-    @Bind(R.id.univ3)
+    @BindView(R.id.univ3)
     RadioButton radioButton3;
 
-    @Bind(R.id.univ4)
+    @BindView(R.id.univ4)
     RadioButton radioButton4;
 
-    @Bind(R.id.universityRadioGroup)
+    @BindView(R.id.universityRadioGroup)
     RadioGroup universityRadioGroup;
 
-    @Bind(R.id.sendUniversities)
+    @BindView(R.id.sendUniversities)
     FloatingActionButton sendUniversities;
     boolean univSelected = false;
 

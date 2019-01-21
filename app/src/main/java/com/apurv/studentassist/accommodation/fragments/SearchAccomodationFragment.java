@@ -49,7 +49,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SearchAccomodationFragment extends Fragment implements
@@ -81,74 +81,74 @@ public class SearchAccomodationFragment extends Fragment implements
     Bundle bundle;
     boolean reEntryFlag = false;
 
-    @Bind(R.id.universityName1)
+    @BindView(R.id.universityName1)
     TextView universityName1;
 
-    @Bind(R.id.universityName2)
+    @BindView(R.id.universityName2)
     TextView universityName2;
 
-    @Bind(R.id.universityName3)
+    @BindView(R.id.universityName3)
     TextView universityName3;
 
-    @Bind(R.id.universityName4)
+    @BindView(R.id.universityName4)
     TextView universityName4;
 
-    @Bind(R.id.imageView1)
+    @BindView(R.id.imageView1)
     ImageView imageView1;
 
-    @Bind(R.id.imageView2)
+    @BindView(R.id.imageView2)
     ImageView imageView2;
 
-    @Bind(R.id.imageView3)
+    @BindView(R.id.imageView3)
     ImageView imageView3;
 
-    @Bind(R.id.imageView4)
+    @BindView(R.id.imageView4)
     ImageView imageView4;
 
 
-    @Bind(R.id.addslist1)
+    @BindView(R.id.addslist1)
     RecyclerView mRecyclerVIew1;
 
-    @Bind(R.id.addslist2)
+    @BindView(R.id.addslist2)
     RecyclerView mRecyclerVIew2;
 
-    @Bind(R.id.addslist3)
+    @BindView(R.id.addslist3)
     RecyclerView mRecyclerVIew3;
 
-    @Bind(R.id.addslist4)
+    @BindView(R.id.addslist4)
     RecyclerView mRecyclerVIew4;
 
-    @Bind(R.id.cardView1)
+    @BindView(R.id.cardView1)
     CardView cardView1;
 
-    @Bind(R.id.cardView2)
+    @BindView(R.id.cardView2)
     CardView cardView2;
 
-    @Bind(R.id.cardView3)
+    @BindView(R.id.cardView3)
     CardView cardView3;
 
-    @Bind(R.id.cardView4)
+    @BindView(R.id.cardView4)
     CardView cardView4;
 
-    @Bind(R.id.loadingPanel1)
+    @BindView(R.id.loadingPanel1)
     LinearLayout loadingPanel1;
 
-    @Bind(R.id.loadingPanel2)
+    @BindView(R.id.loadingPanel2)
     LinearLayout loadingPanel2;
 
-    @Bind(R.id.loadingPanel3)
+    @BindView(R.id.loadingPanel3)
     LinearLayout loadingPanel3;
 
-    @Bind(R.id.loadingPanel4)
+    @BindView(R.id.loadingPanel4)
     LinearLayout loadingPanel4;
 
-    @Bind(R.id.leftSpinner)
+    @BindView(R.id.leftSpinner)
     Spinner leftSpinner;
 
-    @Bind(R.id.rightSpinner)
+    @BindView(R.id.rightSpinner)
     Spinner rightSpinner;
 
-    @Bind(R.id.scrollView)
+    @BindView(R.id.scrollView)
     NestedScrollView nestedScrollView;
 
 

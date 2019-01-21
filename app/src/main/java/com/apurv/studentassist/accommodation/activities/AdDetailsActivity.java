@@ -58,7 +58,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.branch.indexing.BranchUniversalObject;
@@ -84,61 +84,61 @@ public class AdDetailsActivity extends AppCompatActivity implements LodingDialog
     BranchUniversalObject branchUniversalObject;
     String branchLink = "";
 
-    @Bind(R.id.adDetails_placeholder1)
+    @BindView(R.id.adDetails_placeholder1)
     ImageView imageHolder1;
 
 
-    @Bind(R.id.ad_details_contactId)
+    @BindView(R.id.ad_details_contactId)
     CardView ad_details_contactId;
 
 
-    @Bind(R.id.photosId)
+    @BindView(R.id.photosId)
     CardView photosId;
 
 
-    @Bind(R.id.notesCardId)
+    @BindView(R.id.notesCardId)
     CardView notesCardId;
 
-    @Bind(R.id.ad_details_cardId)
+    @BindView(R.id.ad_details_cardId)
     CardView ad_details_cardId;
 
 
-    @Bind(R.id.adDetailsLinearLayout)
+    @BindView(R.id.adDetailsLinearLayout)
     LinearLayout adDetailsLinearLayout;
 
-    @Bind(R.id.adDetails_placeholder2)
+    @BindView(R.id.adDetails_placeholder2)
     ImageView imageHolder2;
 
-    @Bind(R.id.adDetails_placeholder3)
+    @BindView(R.id.adDetails_placeholder3)
     ImageView imageHolder3;
     List<ImageView> imageHolders;
 
 
-    @Bind(R.id.imageLoader1)
+    @BindView(R.id.imageLoader1)
     RelativeLayout imageLoader1;
 
-    @Bind(R.id.imageLoader2)
+    @BindView(R.id.imageLoader2)
     RelativeLayout imageLoader2;
 
-    @Bind(R.id.imageLoader3)
+    @BindView(R.id.imageLoader3)
     RelativeLayout imageLoader3;
     List<RelativeLayout> imageLoaders;
 
 
-    @Bind(R.id.imageFrameLayout1)
+    @BindView(R.id.imageFrameLayout1)
     FrameLayout frameLayout1;
 
-    @Bind(R.id.imageFrameLayout2)
+    @BindView(R.id.imageFrameLayout2)
     FrameLayout frameLayout2;
 
-    @Bind(R.id.imageFrameLayout3)
+    @BindView(R.id.imageFrameLayout3)
     FrameLayout frameLayout3;
 
 
-    @Bind(R.id.shareButton)
+    @BindView(R.id.shareButton)
     LinearLayout shareButton;
 
-    @Bind(R.id.parentContactDetailsView)
+    @BindView(R.id.parentContactDetailsView)
     LinearLayout parentContactDetailsView;
 
     List<FrameLayout> frameLayouts;

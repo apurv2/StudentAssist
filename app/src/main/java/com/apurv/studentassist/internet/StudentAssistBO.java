@@ -9,7 +9,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.apurv.studentassist.accommodation.Dialogs.LoadingDialog;
-import com.apurv.studentassist.accommodation.classes.StudentAssistApplication;
+import com.apurv.studentassist.base.StudentAssistApplication;
 import com.apurv.studentassist.accommodation.urlInfo.UrlGenerator;
 import com.apurv.studentassist.util.L;
 import com.apurv.studentassist.util.SAConstants;
@@ -35,7 +35,7 @@ public class StudentAssistBO {
 
         RequestQueue requestQueue = Network.getNetworkInstnace().getRequestQueue();
         Map<String, String> mHeaders = new ArrayMap<String, String>();
-        FacebookSdk.sdkInitialize(StudentAssistApplication.getAppContext());
+        FacebookSdk.sdkInitialize(StudentAssistApplication.Companion.getAppContext());
 
         UrlGenerator urlGenerator = new UrlGenerator();
         mHeaders.put(SAConstants.ACCESS_TOKEN, urlGenerator.getAccessToken());
@@ -55,7 +55,7 @@ public class StudentAssistBO {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(StudentAssistApplication.getAppContext(), SAConstants.VOLLEY_ERROR, Toast.LENGTH_LONG).show();
+                Toast.makeText(StudentAssistApplication.Companion.getAppContext(), SAConstants.VOLLEY_ERROR, Toast.LENGTH_LONG).show();
                 dialog.lodingDialogInterface.onResponse("Failure");
                 dialog.dismiss();
 
@@ -109,7 +109,7 @@ public class StudentAssistBO {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(StudentAssistApplication.getAppContext(), SAConstants.VOLLEY_ERROR, Toast.LENGTH_LONG).show();
+                Toast.makeText(StudentAssistApplication.Companion.getAppContext(), SAConstants.VOLLEY_ERROR, Toast.LENGTH_LONG).show();
                 networkInterface.onResponseUpdate("Failure");
 
             }
