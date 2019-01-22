@@ -1,5 +1,6 @@
 package com.apurv.studentassist.base.di.modules
 
+import com.apurv.studentassist.accommodation.adapters.UniversitiesListAdapter
 import com.apurv.studentassist.base.BasePresenter
 import com.apurv.studentassist.dashboard.presenter.DashboardPresenter
 import com.apurv.studentassist.dashboard.presenter.IDashboardPresenter
@@ -24,6 +25,11 @@ class DashboardModule {
 
     @Provides
     fun provideDasboardresenter(dasboardPresenter: DashboardPresenter): IDashboardPresenter {
-        return  dasboardPresenter
+        return dasboardPresenter
+    }
+
+    @Provides
+    fun provideUniversitiesListAdapter(): UniversitiesListAdapter {
+        return UniversitiesListAdapter(ArrayList())
     }
 }

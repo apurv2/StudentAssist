@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import com.apurv.studentassist.R
+import com.apurv.studentassist.accommodation.adapters.UniversitiesListAdapter
+import com.apurv.studentassist.accommodation.classes.FlashCardsResponseDTO
 import com.apurv.studentassist.base.BaseActivity
 import com.apurv.studentassist.dashboard.presenter.IDashboardPresenter
 import dagger.android.AndroidInjection
@@ -16,12 +18,24 @@ class DashboardActivity : BaseActivity(), IDashboardView {
     @Inject
     lateinit var dashboardPresenter: IDashboardPresenter
 
+    @Inject
+    lateinit var dashboardAdapter: UniversitiesListAdapter;
+
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dashboard)
+        dashboardPresenter.initializeView(this);
+
+
         dashboardPresenter.getFlashCards()
         searchTextChangeListener();
+        todo();
+
+    }
+
+    private fun todo() {
+        flashCardsRecyclerView.adapter = dashboardAdapter;
 
     }
 
@@ -51,7 +65,9 @@ class DashboardActivity : BaseActivity(), IDashboardView {
         dashboardPresenter.search(subject)
     }
 
-    override fun populateRecyclerView() {
+    override fun populateApartmentsRecyclerView(apartments: FlashCardsResponseDTO) {
+
+        dashboardAdapter.addAll(apartments.accommodationCards!!);
 
 
     }

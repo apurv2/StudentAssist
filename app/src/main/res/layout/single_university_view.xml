@@ -17,125 +17,134 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <FrameLayout
-                android:layout_width="140dp"
-                android:layout_height="100dp">
-
-                <ImageView
-                    android:id="@+id/universityPhoto"
-                    android:layout_width="130dp"
-                    android:layout_height="80dp"
-                    android:layout_marginRight="5dp"
-                    android:src="@drawable/ic_us_dollar_256" />
-
-                <ImageView
-                    android:id="@+id/selectedPhoto"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|left"
-                    android:src="@drawable/ic_round_tick" />
-            </FrameLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/universityName"
+                <ImageView
+                    android:id="@+id/universityPhoto"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="University Name (1970)"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/buttonColourBlackSolid"
-                    android:textSize="15dp" />
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/ic_us_dollar_256" />
 
-                <TextView
-                    android:id="@+id/UniversityAddress"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="Arlington, Texas"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    android:layout_height="30dp">
 
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="7dp"
-                    android:text="Number of Listings"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="@color/buttonColourBlackSolid" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginRight="4dp"
                         android:layout_weight="1"
-                        android:orientation="horizontal">
+                        android:background="@android:color/darker_gray" />
 
-                        <ImageView
-                            android:id="@+id/imageView"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:src="@drawable/icon_home" />
-
-
-                        <TextView
-                            android:id="@+id/noOfListings"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:gravity="bottom"
-                            android:text="   30"
-                            android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:textColor="@color/buttonColourBlackSolid" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
+                    <TextView
+                        android:id="@+id/apartmentNameFlashCards"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="horizontal">
+                        android:paddingLeft="20px"
+                        android:paddingTop="10px"
+                        android:text="Maple Square"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/buttonColourWhite"
+                        android:textSize="15dp" />
 
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:src="@drawable/ic_user" />
-
-
-                        <TextView
-                            android:id="@+id/noOfUsers"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:gravity="bottom"
-                            android:text="   20"
-                            android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:textColor="@color/buttonColourBlackSolid" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="horizontal"
-                        android:textColor="@color/buttonColourBlackSolid">
-
-                    </LinearLayout>
-                </LinearLayout>
-
+                </FrameLayout>
 
             </LinearLayout>
 
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/cost"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/hello_world" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="20px"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="2"
+                    android:src="@drawable/ic_action_locate" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="8"
+                    android:id="@+id/apartmentAddress"
+                    android:text="address" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="2" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:id="@+id/noOfRoomsFlashCards"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="8"
+                    android:text="1bhk/1bath" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20px"
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/logo" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="10 Views" />
+            </LinearLayout>
 
         </LinearLayout>
     </android.support.v7.widget.CardView>

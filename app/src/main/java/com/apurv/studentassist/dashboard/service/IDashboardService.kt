@@ -1,12 +1,12 @@
 package com.apurv.studentassist.dashboard.service
 
 
-import com.apurv.studentassist.dashboard.model.Recipes
+import com.apurv.studentassist.accommodation.classes.FlashCardsResponseDTO
 import io.reactivex.Observable
-import retrofit2.http.GET
+import retrofit2.http.POST
 
 interface IDashboardService {
 
-    @GET("similar?q=red+hot+chili+peppers%2C+pulp+fiction")
-    fun getMovies(): Observable<Recipes>
+    @POST("getFlashCards")
+    fun getFlashCards(flashCardsRequest: FlashCardsResponseDTO): Observable<FlashCardsResponseDTO>
 }

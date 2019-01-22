@@ -1,8 +1,9 @@
 package com.apurv.studentassist.dashboard.presenter
 
+import com.apurv.studentassist.accommodation.classes.FlashCardsResponseDTO
 import com.apurv.studentassist.base.BasePresenter
-import com.apurv.studentassist.dashboard.model.Recipes
 import com.apurv.studentassist.dashboard.service.IDashboardService
+import com.apurv.studentassist.dashboard.view.IDashboardView
 import com.apurv.studentassist.util.L
 import io.reactivex.ObservableSource
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -18,8 +19,16 @@ import javax.inject.Inject
 class DashboardPresenter @Inject constructor(private val compositeDisposable: CompositeDisposable)
     : BasePresenter(compositeDisposable), IDashboardPresenter {
 
+    lateinit var dashboardView: IDashboardView
+
+    override fun initializeView(dashBoardView: IDashboardView) {
+        dashboardView = dashBoardView;
+    }
+
+
     @Inject
     lateinit var dashboardService: IDashboardService;
+
 
     override fun search(subject: PublishSubject<String>) {
         compositeDisposable.add(
@@ -29,13 +38,13 @@ class DashboardPresenter @Inject constructor(private val compositeDisposable: Co
                             return@Predicate it.isNotEmpty()
                         })
                         .distinctUntilChanged()
-                        .switchMap(Function<String, ObservableSource<Recipes>> { it ->
-                            return@Function dashboardService.getMovies()
+                        .switchMap(Function<String, ObservableSource<FlashCardsResponseDTO>> { it ->
+                            return@Function dashboardService.getFlashCards(FlashCardsResponseDTO())
                         })
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({ recipes ->
-                            L.m("came here" + recipes.similar?.results?.get(0)?.name)
+                        .subscribe({ apartments: FlashCardsResponseDTO ->
+                            dashboardView.populateApartmentsRecyclerView(apartments)
                         }, { error -> L.m("ello" + error) })
         )
     }
